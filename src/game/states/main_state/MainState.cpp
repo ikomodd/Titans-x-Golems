@@ -1,7 +1,9 @@
 #include "MainState.hpp"
 
+#include "game/instances/arena/Arena.hpp"
+
 void GAME_MainState::_Ready() {
 
-    auto* TestNode = new BSPLT_Node("node");
-    AddNode(TestNode);
+    auto* Arena = new GAME_Arena("resources/json_arenas/Arena1.json");
+    AddNode(Arena);
 }

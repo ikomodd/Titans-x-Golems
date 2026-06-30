@@ -13,10 +13,18 @@ add_executable(Game
     src/baseplate/inheritances/children/Children.cpp
     src/game/states/main_state/MainState.cpp
     src/game/states/state/State.cpp
+    src/game/instances/arena/Arena.cpp
+    src/baseplate/data_models/vector/Vector2.cpp
 )
 
 find_package(SDL3 CONFIG REQUIRED)
-target_link_libraries(Game PRIVATE SDL3::SDL3)
+find_package(nlohmann_json CONFIG REQUIRED)
+
+target_link_libraries(Game PRIVATE
+
+    SDL3::SDL3
+    nlohmann_json::nlohmann_json
+)
 
 target_include_directories(Game PRIVATE
     ${CMAKE_SOURCE_DIR}/src

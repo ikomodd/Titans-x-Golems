@@ -11,7 +11,10 @@ public:
 
     float X, Y;
 
-    Vector2(float x, float y) : X(x), Y(y) {}
+    Vector2(float x = 0, float y = 0) : X(x), Y(y) {}
+
+    Vector2(float value = 0.0f) : X(value), Y(value) {}
+    Vector2(int value = 0) : X(value), Y(value) {}
 
     // + / +=
 
