@@ -31,6 +31,9 @@ private:
 
     std::string m_JsonPath;
 
+    SDL_Texture* m_Texture = nullptr;
+    SDL_Surface* m_Surface = nullptr;
+
 public:
 
     GAME_Arena(const char* json_path) : m_JsonPath(json_path), BSPLT_Node("arena") {}

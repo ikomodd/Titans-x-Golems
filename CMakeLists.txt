@@ -18,11 +18,13 @@ add_executable(Game
 )
 
 find_package(SDL3 CONFIG REQUIRED)
+find_package(SDL3_image CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 
 target_link_libraries(Game PRIVATE
 
     SDL3::SDL3
+    SDL3_image::SDL3_image
     nlohmann_json::nlohmann_json
 )
 

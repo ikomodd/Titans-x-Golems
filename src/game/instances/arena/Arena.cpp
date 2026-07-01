@@ -1,18 +1,26 @@
 #include "Arena.hpp"
 
 #include "game/managers/display/Display.hpp"
+#include "game/managers/asset/Asset.hpp"
 
 #include <fstream>
 
 void GAME_Arena::BuildArena() {
 
     GAME_DisplayManager& DisplayManager = BSPLT_Manager<GAME_DisplayManager>::Get();
+    GAME_AssetManager& AssetManager = BSPLT_Manager<GAME_AssetManager>::Get();
 
     std::ifstream File("../" + m_JsonPath);
     nlohmann::json Data = nlohmann::json::parse(File);
 
     m_TileSize = Vector2(Data["tile_size"][0], Data["tile_size"][1]);
-    m_OffsetPosition = DisplayManager.GetWindowSize() / 2 - Vector2(Data["map"][0].size() * m_TileSize.X, Data["map"].size() * m_TileSize.Y) / 2;
+    m_OffsetPosition = DisplayManager.GetWindowSize() / 2 - Vector2(Data["map"][0].size() * m_TileSize.X * 2, Data["map"].size() * m_TileSize.Y * 2) / 2;
+    std::string TexturePath = Data["texture_path"];
+
+    ASSET_TextureAsset* TextureAsset = AssetManager.GetTextureAsset("assets/Block.png");
+
+    m_Texture = TextureAsset->Texture;
+    m_Surface = TextureAsset->Surface;
 
     // Converte o Tileset em dictionary JSON para o vetor de m_Tileset
 
