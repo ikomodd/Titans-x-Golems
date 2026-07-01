@@ -16,7 +16,7 @@ void GAME_DisplayManager::SetWindowSize() {
 
 void GAME_DisplayManager::_Init() {
 
-    Window = SDL_CreateWindow("game", 800, 600, NULL);
+    Window = SDL_CreateWindow("game", 800, 600, SDL_WINDOW_RESIZABLE);
     Renderer = SDL_CreateRenderer(Window, NULL);
 
     SetWindowSize();
@@ -35,9 +35,11 @@ void GAME_DisplayManager::_Process() {
     SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 255);
     SDL_RenderClear(Renderer);
 
+    float RelativeViewportScale = std::min(m_WindowSize.X, m_WindowSize.Y) * m_ViewportScale * 0.1;
+
     for (BSPLT_Node* node : LinearStateChildren) {
 
-        node->_Draw(Renderer);
+        node->_Draw(Renderer, RelativeViewportScale);
     }
 
     SDL_RenderPresent(Renderer);

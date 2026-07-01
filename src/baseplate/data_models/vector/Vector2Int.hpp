@@ -85,6 +85,20 @@ struct Vector2i {
         return !(*this == other);
     }
 
+    // < / >
+
+    bool operator < (const Vector2i& other) const {
+
+        if (X != other.X) return X < other.X;
+        else return Y < other.Y;
+    }
+
+    bool operator > (const Vector2i& other) const {
+
+        if (X != other.X) return X > other.X;
+        else return Y > other.Y;
+    }
+
     // Metodos
 
     Vector2 ToVector2();

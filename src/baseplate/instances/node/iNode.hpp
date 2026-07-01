@@ -11,9 +11,9 @@ public:
     BSPLT_iNode(const char* name) : Name(name) {}
     virtual ~BSPLT_iNode() = default;
 
-    virtual void _Ready()                      = 0;
-    virtual void _Event(SDL_Event& event)      = 0;
-    virtual void _Draw(SDL_Renderer* renderer) = 0;
-    virtual void _Process(double delta)        = 0;
-    virtual void _Close()                      = 0;
+    virtual void _Ready() = 0;
+    virtual void _Event(SDL_Event& event) = 0;
+    virtual void _Draw(SDL_Renderer* renderer, float viewport_scale) = 0;
+    virtual void _Process(double delta) = 0;
+    virtual void _Close() = 0;
 };

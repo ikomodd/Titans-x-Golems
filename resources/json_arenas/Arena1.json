@@ -8,7 +8,7 @@
     "tile_size": [8, 8],
 
     "tileset": [
-        {"id": 1, "name": "block", "position": [0, 0], "size": [16, 32], "is_collidible": false}
+        {"id": 1, "name": "block", "position": [0.0, 0.0], "size": [16.0, 32.0], "is_collidible": false}
     ],
 
     "map": [

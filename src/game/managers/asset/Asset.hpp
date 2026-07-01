@@ -21,6 +21,7 @@ struct ASSET_TextureAsset {
             std::cerr << "[ASSET_TextureAsset] Nao foi possivel carregar a textura: " << texture_path << ": \n" << SDL_GetError() << "\n";
 
         Texture = SDL_CreateTextureFromSurface(renderer, Surface);
+        SDL_SetTextureScaleMode(Texture, SDL_SCALEMODE_NEAREST);
     }
 };
 
