@@ -17,7 +17,7 @@ private:
 
     GAME_Camera* m_CurrentCamera = nullptr;
 
-    Vector2 m_WindowSize = 0;
+    Vector2 m_WindowSize = Vector2(320.f, 180.f);
 
 public:
 

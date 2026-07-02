@@ -23,8 +23,8 @@ public:
 
     //
 
-    template <typename T>
-    T GetNode(const char* name) {
+    template <typename T = BSPLT_Node>
+    T* GetNode(const char* name) {
 
         for (size_t i = 0; i <= m_Children.size(); i++) {
             BSPLT_iNode* iNode = m_Children[i];
@@ -35,8 +35,8 @@ public:
         return nullptr;
     }
 
-    template <typename T>
-    T GetParent() {
+    template <typename T = BSPLT_Node>
+    T* GetParent() {
 
         return dynamic_cast<T*>(m_Parent);
     }

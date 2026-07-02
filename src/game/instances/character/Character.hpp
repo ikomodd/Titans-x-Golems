@@ -28,6 +28,8 @@ public:
 
     void BuildCharacter();
 
+    void MoveTo(Vector2i tile_position);
+
     void _Ready() override;
     void _Draw(SDL_Renderer* renderer) override;
 };

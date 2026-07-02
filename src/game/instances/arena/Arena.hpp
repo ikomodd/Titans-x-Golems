@@ -24,7 +24,7 @@ class GAME_Arena : public BSPLT_Node2D, private GAME_AssetData {
 private:
 
     Vector2 m_TileSize = 0;
-    Vector2 m_OffsetPosition = 0;
+    Vector2 m_TileOffset = 0;
 
     std::unordered_map<int, ARENA_Tile*> m_Tileset;
     std::vector<std::pair<Vector2i, int>> m_Tilemap;
@@ -40,6 +40,10 @@ private:
     void BuildArena();
 
 public:
+
+    Vector2 GetTileSize() {
+        return m_TileSize;
+    }
 
     void _Ready() override;
     void _Draw(SDL_Renderer* renderer) override;

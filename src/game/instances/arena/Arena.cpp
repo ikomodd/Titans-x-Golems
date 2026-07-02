@@ -9,10 +9,11 @@ void GAME_Arena::BuildArena() {
     nlohmann::json Data = nlohmann::json::parse(File);
 
     m_TileSize = Vector2(Data["tile_size"][0], Data["tile_size"][1]);
+    m_TileOffset = Vector2(Data["tile_offset"][0], Data["tile_offset"][1]);
 
     LoadTexture(Data["texture_path"]);
 
-    Position = Vector2(Data["map"][0].size() * m_TileSize.X * -1, 0);
+    m_DisplayManager->GetCurrentCamera()->Position = Vector2((Data["map"][0].size() - 1) * m_TileSize.X, 0);
 
     // Converte o Tileset em dictionary JSON para o vetor de m_Tileset
 
@@ -41,12 +42,14 @@ void GAME_Arena::BuildArena() {
     }
 }
 
+//
+
 void GAME_Arena::_Ready() {
 
     BuildArena();
 }
 
-void GAME_Arena::_Draw(SDL_Renderer* renderer) { // ESSE VIEWPORT SCALE TA DANDO PROBLEMA
+void GAME_Arena::_Draw(SDL_Renderer* renderer) {
 
     for (auto [tile_position, tile_id] : m_Tilemap) {
 
@@ -58,8 +61,8 @@ void GAME_Arena::_Draw(SDL_Renderer* renderer) { // ESSE VIEWPORT SCALE TA DANDO
             Vector2 TileSize = Tile->SourceSize;
 
             SDL_FRect TileRect = {
-                Position.X + ((float)tile_position.X * m_TileSize.X + (float)tile_position.Y * m_TileSize.Y),
-                Position.Y + ((float)tile_position.Y * m_TileSize.Y - (float)tile_position.X * m_TileSize.X),
+                Position.X + ((float)tile_position.X * m_TileSize.X + (float)tile_position.Y * m_TileSize.Y) - m_TileOffset.X,
+                Position.Y + ((float)tile_position.Y * m_TileSize.Y - (float)tile_position.X * m_TileSize.X) - m_TileOffset.Y,
                 TileSize.X,
                 TileSize.Y
             };

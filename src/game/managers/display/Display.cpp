@@ -5,12 +5,12 @@
 
 #include "baseplate/data_models/vector/Vector2Int.hpp"
 
-void GAME_DisplayManager::SetWindowSize() {
+// void GAME_DisplayManager::SetWindowSize() {
 
-    Vector2i WindowSizeInt = 0;
-    SDL_GetWindowSize(Window, &WindowSizeInt.X, &WindowSizeInt.Y);
-    m_WindowSize = WindowSizeInt.ToVector2();
-}
+//     Vector2i WindowSizeInt = 0;
+//     SDL_GetWindowSize(Window, &WindowSizeInt.X, &WindowSizeInt.Y);
+//     m_WindowSize = 
+// }
 
 //
 
@@ -19,12 +19,14 @@ void GAME_DisplayManager::_Init() {
     Window = SDL_CreateWindow("game", 800, 600, SDL_WINDOW_RESIZABLE);
     Renderer = SDL_CreateRenderer(Window, NULL);
 
-    SetWindowSize();
+    SDL_SetRenderLogicalPresentation(Renderer, 320, 180, SDL_LOGICAL_PRESENTATION_INTEGER_SCALE);
+
+    //SetWindowSize();
 }
 
 void GAME_DisplayManager::_Event(SDL_Event& event) {
-    if (event.type == SDL_EVENT_WINDOW_RESIZED)
-        SetWindowSize();
+    //if (event.type == SDL_EVENT_WINDOW_RESIZED)
+    //    SetWindowSize();
 }
 
 void GAME_DisplayManager::_Process() {
