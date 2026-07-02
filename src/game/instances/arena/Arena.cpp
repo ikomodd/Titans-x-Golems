@@ -15,9 +15,8 @@ void GAME_Arena::BuildArena() {
     nlohmann::json Data = nlohmann::json::parse(File);
 
     m_TileSize = Vector2(Data["tile_size"][0], Data["tile_size"][1]);
-    std::string TexturePath = Data["texture_path"];
 
-    ASSET_TextureAsset* TextureAsset = AssetManager.GetTextureAsset("assets/Block.png");
+    ASSET_TextureAsset* TextureAsset = AssetManager.GetTextureAsset(Data["texture_path"]);
 
     m_Texture = TextureAsset->Texture;
     m_Surface = TextureAsset->Surface;
@@ -58,7 +57,7 @@ void GAME_Arena::_Ready() {
     BuildArena();
 }
 
-void GAME_Arena::_Draw(SDL_Renderer* renderer, float viewport_scale) { // ESSE VIEWPORT SCALE TA DANDO PROBLEMA
+void GAME_Arena::_Draw(SDL_Renderer* renderer) { // ESSE VIEWPORT SCALE TA DANDO PROBLEMA
 
     for (auto [tile_position, tile_id] : m_Tilemap) {
 

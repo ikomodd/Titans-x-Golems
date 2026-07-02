@@ -12,7 +12,7 @@ public:
 
     void _Ready()  override {}
     void _Event(SDL_Event& event) override {}
-    void _Draw(SDL_Renderer* renderer, float viewport_scale) override {}
+    void _Draw(SDL_Renderer* renderer) override {}
     void _Process(double delta)  override {}
     void _Close() override {}
 };

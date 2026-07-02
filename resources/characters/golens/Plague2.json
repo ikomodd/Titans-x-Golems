@@ -1,0 +1,15 @@
+{
+    "id": "frog_golen",
+    "name": "Frog",
+    "description": "2 praga",
+
+    "texture_path": "",
+
+    "health": 80.0,
+    "shield": 40.0,
+
+    "damage": 16.0,
+    "damage_variation": 4.0,
+
+    "action_directions": [[0, 1], [1, 0], [-1, 0], [0, -1]]
+}

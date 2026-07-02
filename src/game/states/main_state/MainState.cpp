@@ -1,6 +1,8 @@
 #include "MainState.hpp"
 
 #include "game/instances/arena/Arena.hpp"
+#include "game/instances/character/Character.hpp"
+
 #include "game/instances/camera/Camera.hpp"
 
 void GAME_MainState::_Ready() {
@@ -10,4 +12,7 @@ void GAME_MainState::_Ready() {
 
     auto* Arena = new GAME_Arena("resources/json_arenas/Arena1.json");
     AddNode(Arena);
+
+    auto* Golem = new GAME_Character(Vector2i(0, 0), "resources/characters/golens/Plague2.json");
+    Arena->AddNode(Golem);
 }

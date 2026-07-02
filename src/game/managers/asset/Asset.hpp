@@ -36,6 +36,12 @@ private:
 public:
 
     ASSET_TextureAsset* GetTextureAsset(std::string path) {
+
+        if (path.empty()) {
+            std::cout << "[GAME_AssetManager] Solicitacao de asset vazia recebida\n";
+            return GetTextureAsset("assets/NoTextureResource.png");
+        }
+
         auto it = m_LoadedTextures.find(path);
 
         if (it != m_LoadedTextures.end())

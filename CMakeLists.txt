@@ -15,6 +15,7 @@ add_executable(Game
     src/game/states/state/State.cpp
     src/game/instances/arena/Arena.cpp
     src/baseplate/data_models/vector/Vector2.cpp
+    src/game/instances/character/Character.cpp
 )
 
 find_package(SDL3 CONFIG REQUIRED)

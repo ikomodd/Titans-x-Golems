@@ -18,7 +18,6 @@ private:
     GAME_Camera* m_CurrentCamera = nullptr;
 
     Vector2 m_WindowSize = 0;
-    float m_ViewportScale = 0.04f;
 
 public:
 
