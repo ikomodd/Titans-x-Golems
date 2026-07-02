@@ -1,25 +1,16 @@
 #include "Arena.hpp"
 
-#include "game/managers/display/Display.hpp"
-#include "game/managers/asset/Asset.hpp"
-#include "game/instances/camera/Camera.hpp"
-
 #include <fstream>
 #include <algorithm>
 
 void GAME_Arena::BuildArena() {
-
-    GAME_AssetManager& AssetManager = BSPLT_Manager<GAME_AssetManager>::Get();
 
     std::ifstream File("../" + m_JsonPath);
     nlohmann::json Data = nlohmann::json::parse(File);
 
     m_TileSize = Vector2(Data["tile_size"][0], Data["tile_size"][1]);
 
-    ASSET_TextureAsset* TextureAsset = AssetManager.GetTextureAsset(Data["texture_path"]);
-
-    m_Texture = TextureAsset->Texture;
-    m_Surface = TextureAsset->Surface;
+    LoadTexture(Data["texture_path"]);
 
     Position = Vector2(Data["map"][0].size() * m_TileSize.X * -1, 0);
 
@@ -51,8 +42,6 @@ void GAME_Arena::BuildArena() {
 }
 
 void GAME_Arena::_Ready() {
-
-    m_DisplayManager = &BSPLT_Manager<GAME_DisplayManager>::Get();
 
     BuildArena();
 }

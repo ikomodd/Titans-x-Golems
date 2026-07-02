@@ -1,9 +1,11 @@
 #pragma once
 
 #include "baseplate/instances/node2d/Node2D.hpp"
+#include "game/inheritances/asset_data/AssetData.hpp"
+
 #include "baseplate/data_models/vector/Vector2Int.hpp"
 
-class GAME_Character : public BSPLT_Node2D {
+class GAME_Character : public BSPLT_Node2D, private GAME_AssetData {
 private:
     
     inline static unsigned int m_PrevCharacterId = 0;
@@ -19,9 +21,6 @@ private:
 
     std::vector<Vector2i> m_ActionDirections {};
     Vector2i m_TilePosition = 0;
-
-    SDL_Texture* Texture;
-    SDL_Surface* Surface;
 
 public:
 

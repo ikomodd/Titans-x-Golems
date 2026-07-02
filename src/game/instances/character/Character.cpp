@@ -3,13 +3,7 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 
-#include "game/managers/asset/Asset.hpp"
-
-//
-
 void GAME_Character::BuildCharacter() {
-
-    GAME_AssetManager& AssetManager = BSPLT_Manager<GAME_AssetManager>::Get();
 
     std::ifstream File("../" + m_SourcePath);
     nlohmann::json Data = nlohmann::json::parse(File);
@@ -21,9 +15,7 @@ void GAME_Character::BuildCharacter() {
     m_Damage          = Data["damage"];
     m_DamageVariation = Data["damage_variation"];
 
-    ASSET_TextureAsset* TextureAsset = AssetManager.GetTextureAsset(Data["texture_path"]);
-    Texture = TextureAsset->Texture;
-    Surface = TextureAsset->Surface;
+    LoadTexture(Data["texture_path"]);
 
     for (auto& [key, value] : Data["action_directions"].items()) {
 
@@ -40,12 +32,10 @@ void GAME_Character::_Ready() {
 
 void GAME_Character::_Draw(SDL_Renderer* renderer) {
 
-    Vector2 TextureSize = Vector2(Surface->w, Surface->h);
+    Vector2 TextureSize = Vector2(m_Surface->w, m_Surface->h);
+    
+    SDL_FRect Rect = {Position.X, Position.Y, TextureSize.X, TextureSize.Y};
+    Rect = m_DisplayManager->GetCurrentCamera()->GetRectCameraView(Rect);
 
-    SDL_FRect Rect = {
-        Position.X, Position.Y,
-        TextureSize.X, TextureSize.Y
-    };
-
-    SDL_RenderTexture(renderer, Texture, NULL, &Rect);
+    SDL_RenderTexture(renderer, m_Texture, NULL, &Rect);
 }
