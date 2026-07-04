@@ -6,10 +6,11 @@
     "texture_path": "assets/Block.png",
 
     "tile_size": [8, 8],
+    "tile_source_size": [16, 32],
     "tile_offset": [8, 16],
 
     "tileset": [
-        {"id": 1, "name": "block", "position": [0.0, 0.0], "size": [16.0, 32.0], "is_collidible": false}
+        {"id": 1, "name": "block", "position": [0.0, 0.0], "is_collidible": false}
     ],
 
     "map": [

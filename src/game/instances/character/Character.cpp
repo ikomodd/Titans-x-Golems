@@ -2,8 +2,23 @@
 
 #include <fstream>
 #include <nlohmann/json.hpp>
+#include <algorithm>
 
 #include "game/instances/arena/Arena.hpp"
+
+bool GAME_Character::TileIsInActionDirections(Vector2i tile) {
+
+    auto& CharactionActionDirections = m_ActionDirections;;
+
+    if (std::any_of(CharactionActionDirections.begin(), CharactionActionDirections.end(),
+    [this, tile](const Vector2i& A) {
+
+        Vector2i ActionTile = m_TilePosition + A;
+        return ActionTile.X == tile.X && ActionTile.Y == tile.Y;
+    }))
+        return true;
+    return false;
+}
 
 void GAME_Character::BuildCharacter() {
 
@@ -30,22 +45,29 @@ void GAME_Character::MoveTo(Vector2i tile_position) {
     GAME_Arena* Arena = GetParent<GAME_Arena>();
 
     m_TilePosition = tile_position;
-    Position = tile_position.ToVector2() * Arena->GetTileSize();
+
+    Position = Vector2(
+        tile_position.X + tile_position.Y,
+        tile_position.Y - tile_position.X
+    ) * Arena->GetTileSize();
 }
 
 void GAME_Character::Select() {
 
-    m_CharacterSelected = true;
 }
 
 void GAME_Character::Unselect() {
 
-    m_CharacterSelected = false;
 }
 
 void GAME_Character::TileSelected(Vector2i tile) {
 
-    
+    MoveTo(tile);
+}
+
+void GAME_Character::RunIa() {
+
+    MoveTo(m_TilePosition + Vector2i(-1, 0));
 }
 
 //
@@ -54,7 +76,7 @@ void GAME_Character::_Ready() {
 
     BuildCharacter();
 
-    MoveTo(Vector2i(0, 0));
+    MoveTo(m_TilePosition);
 }
 
 void GAME_Character::_Draw(SDL_Renderer* renderer) {

@@ -15,17 +15,19 @@ class GAME_Character;
 struct ARENA_Tile {
 
     Vector2 SourcePosition;
-    Vector2 SourceSize;
 
     bool Collidible;
 
-    ARENA_Tile(Vector2 source_position, Vector2 source_size, bool collidible) : SourcePosition(source_position), SourceSize(source_size), Collidible(collidible) {}
+    ARENA_Tile(Vector2 source_position, bool collidible) : SourcePosition(source_position), Collidible(collidible) {}
 };
 
 class GAME_Arena : public BSPLT_Node2D, private GAME_AssetData {
 private:
 
+    unsigned int m_CurrentRound = 1;
+
     Vector2 m_TileSize = 0;
+    Vector2 m_TileSourceSize = 0;
     Vector2 m_TileOffset = 0;
 
     std::unordered_map<int, ARENA_Tile*> m_Tileset;
@@ -42,7 +44,13 @@ public:
 private:
 
     bool TestTileClicked(Vector2 click_position, Vector2i tile_position);
+
+    void SelectCharacter(GAME_Character* character);
+    void UnselectCharacter();
+
     void BuildArena();
+
+    void PlayerRoundEnded();
 
 public:
 

@@ -21,18 +21,21 @@ private:
     float m_Damage = 0.f;
     float m_DamageVariation = 0.f;
 
-    bool m_PlayerOwner = true;
-    bool m_CharacterSelected = false;
+    bool m_PlayerOwner;
+
+    unsigned int m_CurrentRound = 0;
 
     std::vector<Vector2i> m_ActionDirections {};
     Vector2i m_TilePosition = 0;
 
 public:
 
-    GAME_Character(Vector2i tile_position, std::string source_path) : m_TilePosition(tile_position), m_SourcePath(source_path), BSPLT_Node2D("no_name_character", 0, 0) {}
+    GAME_Character(Vector2i tile_position, std::string source_path, bool player_owner) : m_TilePosition(tile_position), m_SourcePath(source_path), m_PlayerOwner(player_owner), BSPLT_Node2D("no_name_character", 0, 0) {}
     friend class GAME_Arena;
 
     //
+
+    bool TileIsInActionDirections(Vector2i tile);
 
     void BuildCharacter();
     void MoveTo(Vector2i tile_position);
@@ -41,6 +44,7 @@ public:
     void Unselect();
     void TileSelected(Vector2i tile);
     
+    void RunIa();
 
     //
 

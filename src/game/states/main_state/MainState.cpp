@@ -13,6 +13,9 @@ void GAME_MainState::_Ready() {
     auto* Arena = new GAME_Arena("resources/json_arenas/Arena1.json");
     AddNode(Arena);
 
-    auto* Golem = new GAME_Character(Vector2i(0, 0), "resources/characters/golens/Plague2.json");
+    auto* Golem = new GAME_Character(Vector2i(0, 0), "resources/characters/golens/Plague2.json", true);
     Arena->AddNode(Golem);
+
+    auto* Titan = new GAME_Character(Vector2i(7, 7), "resources/characters/golens/Plague2.json", false);
+    Arena->AddNode(Titan);
 }
