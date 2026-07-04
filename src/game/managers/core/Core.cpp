@@ -12,6 +12,14 @@ void GAME_CoreManager::_Event(SDL_Event& event) {
 
     if (event.type == SDL_EVENT_QUIT)
         Running = false;
+
+    GAME_StateManager& StateManager = BSPLT_Manager<GAME_StateManager>::Get();
+
+    auto LinearStateChildren = StateManager.GetCurrentState()->GetLinearChildren();
+    for (BSPLT_Node* node : LinearStateChildren) {
+
+        node->_Event(event);
+    }
 }
 
 void GAME_CoreManager::_Process() {

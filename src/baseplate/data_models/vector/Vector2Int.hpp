@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <cmath>
 
 struct Vector2;
@@ -102,4 +103,5 @@ struct Vector2i {
     // Metodos
 
     Vector2 ToVector2();
+    std::string ToString();
 };

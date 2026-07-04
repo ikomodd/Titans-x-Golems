@@ -37,6 +37,7 @@ public:
 
 private:
 
+    bool TestTileClicked(Vector2 click_position, Vector2i tile_position);
     void BuildArena();
 
 public:
@@ -46,6 +47,7 @@ public:
     }
 
     void _Ready() override;
+    void _Event(SDL_Event& event) override;
     void _Draw(SDL_Renderer* renderer) override;
     void _Process(double delta) override;
 };

@@ -39,6 +39,8 @@ int main() {
         }
 
         BSPLT_iManager::ProcessManagers();
+
+        SDL_Delay(10);
     }
 
     // Fecha

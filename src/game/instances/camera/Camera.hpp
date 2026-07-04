@@ -10,6 +10,9 @@ private:
     GAME_DisplayManager* m_DisplayManager = nullptr;
     bool m_MakeCurrent;
 
+    Uint64 m_PrevDebugBufferClear = 0;
+    std::vector<SDL_FRect> m_DebugBuffer = {};
+
 public:
 
     float Zoom;
@@ -29,11 +32,39 @@ public:
         };
     }
 
+    Vector2 GetWorldPosition(Vector2 point) {
+
+        Vector2 WindowSize = m_DisplayManager->GetWindowSize();
+
+        return (point - WindowSize / 2.f) / Zoom + Position;
+    }
+
+    void DrawRect(SDL_FRect rect) {
+
+        if (SDL_GetTicks() - m_PrevDebugBufferClear > 100) {
+            m_DebugBuffer.clear();
+            m_PrevDebugBufferClear = SDL_GetTicks();
+        }
+
+        m_DebugBuffer.push_back(GetRectCameraView(rect));
+    }
+
+    //
+
     void _Ready() override {
 
         m_DisplayManager = &BSPLT_Manager<GAME_DisplayManager>::Get();
         
         if (m_MakeCurrent)
         m_DisplayManager->m_CurrentCamera = this;
+    }
+
+    void _Draw(SDL_Renderer* renderer) override {
+
+        for (SDL_FRect& rect : m_DebugBuffer) {
+
+            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+            SDL_RenderFillRect(renderer, &rect);
+        }
     }
 };

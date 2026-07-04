@@ -3,6 +3,38 @@
 #include <fstream>
 #include <algorithm>
 
+bool GAME_Arena::TestTileClicked(Vector2 click_position, Vector2i tile_position) {
+
+    // OBS: Esse bloco de codigo foi feito pela IA Claude. Sorry, geometria não é comigo.
+
+    // centro do losango na posição isométrica (sem o offset visual do debug rect)
+    float tileCenterX = Position.X + ((float)tile_position.X * m_TileSize.X + (float)tile_position.Y * m_TileSize.Y);
+    float tileCenterY = Position.Y + ((float)tile_position.Y * m_TileSize.Y - (float)tile_position.X * m_TileSize.X);
+
+    float dx = fabsf(click_position.X - tileCenterX);
+    float dy = fabsf(click_position.Y - tileCenterY);
+
+    // meio-eixos do losango (ajuste se a proporção real for diferente)
+    float halfW = m_TileSize.X;
+    float halfH = m_TileSize.Y;
+
+    // rect de debug continua só como referência visual
+    // SDL_FRect Rect = {
+    //     tileCenterX - m_TileOffset.X * 0.5f,
+    //     tileCenterY - m_TileOffset.Y * 0.5f,
+    //     m_TileOffset.X,
+    //     m_TileOffset.Y
+    // };
+    // m_DisplayManager->GetCurrentCamera()->DrawRect(Rect);
+
+    //
+
+    if ((dx / halfW) + (dy / halfH) < 1.0f) {
+        return true;
+    }
+    return false;
+}
+
 void GAME_Arena::BuildArena() {
 
     std::ifstream File("../" + m_JsonPath);
@@ -47,6 +79,24 @@ void GAME_Arena::BuildArena() {
 void GAME_Arena::_Ready() {
 
     BuildArena();
+}
+
+void GAME_Arena::_Event(SDL_Event& event) {
+
+    if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT) {
+
+        Vector2 LogicalPosition = 0;
+        SDL_RenderCoordinatesFromWindow(m_DisplayManager->Renderer, event.button.x, event.button.y, &LogicalPosition.X, &LogicalPosition.Y);
+        Vector2 ClickPosition = m_DisplayManager->GetCurrentCamera()->GetWorldPosition(LogicalPosition);
+
+        for (auto& [tile_position, tile_id] : m_Tilemap) {
+
+            if (TestTileClicked(ClickPosition, tile_position)) {
+
+                std::cout << tile_position.ToString() << " clicado\n";
+            }
+        }
+    }
 }
 
 void GAME_Arena::_Draw(SDL_Renderer* renderer) {

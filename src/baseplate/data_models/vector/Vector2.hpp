@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <cmath>
 
 struct Vector2 {
@@ -89,4 +90,8 @@ public:
 
         return !(*this == other);
     }
+
+    // Metodos
+
+    std::string ToString();
 };
