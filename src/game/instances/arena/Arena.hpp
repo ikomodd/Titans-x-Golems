@@ -10,6 +10,8 @@
 #include "baseplate/data_models/vector/Vector2.hpp"
 #include "baseplate/data_models/vector/Vector2Int.hpp"
 
+class GAME_Character;
+
 struct ARENA_Tile {
 
     Vector2 SourcePosition;
@@ -30,6 +32,8 @@ private:
     std::vector<std::pair<Vector2i, int>> m_Tilemap;
 
     std::string m_JsonPath = "";
+
+    GAME_Character* m_CharacterSelected = nullptr;
 
 public:
 

@@ -10,6 +10,16 @@ public:
 
     BSPLT_Node(const char* name) : BSPLT_iNode(name) {}
 
+    //
+
+    template<typename T>
+    T* As() {
+
+        return dynamic_cast<T*>(this);
+    }
+
+    //
+
     void _Ready()  override {}
     void _Event(SDL_Event& event) override {}
     void _Draw(SDL_Renderer* renderer) override {}

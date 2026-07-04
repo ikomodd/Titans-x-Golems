@@ -20,6 +20,7 @@ public:
     bool HasNode(const char* name);
 
     std::vector<BSPLT_Node*> GetLinearChildren();
+    std::vector<BSPLT_Node*> GetChildren();
 
     //
 

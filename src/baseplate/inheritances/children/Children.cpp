@@ -67,3 +67,15 @@ std::vector<BSPLT_Node*> BSPLT_Children::GetLinearChildren() {
 
     return Result;
 }
+
+std::vector<BSPLT_Node*> BSPLT_Children::GetChildren() {
+
+    std::vector<BSPLT_Node*> Result = {};
+
+    for (BSPLT_iNode* inode : m_Children) {
+
+        Result.push_back(static_cast<BSPLT_Node*>(inode));
+    }
+
+    return Result;
+}

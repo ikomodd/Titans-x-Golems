@@ -3,6 +3,8 @@
 #include <fstream>
 #include <algorithm>
 
+#include "game/instances/character/Character.hpp"
+
 bool GAME_Arena::TestTileClicked(Vector2 click_position, Vector2i tile_position) {
 
     // OBS: Esse bloco de codigo foi feito pela IA Claude. Sorry, geometria não é comigo.
@@ -93,7 +95,28 @@ void GAME_Arena::_Event(SDL_Event& event) {
 
             if (TestTileClicked(ClickPosition, tile_position)) {
 
-                std::cout << tile_position.ToString() << " clicado\n";
+                bool CharacterSelected = false;
+                for (auto* node : GetChildren()) {
+
+                    // Essa parte ta meio suspeita, fica de olho
+                    auto* Character = node->As<GAME_Character>();
+                    if (Character && Character->m_TilePosition == tile_position && Character != m_CharacterSelected && Character->m_PlayerOwner) {
+
+                        if (m_CharacterSelected) {
+                            m_CharacterSelected->Unselect();
+                            m_CharacterSelected = nullptr;
+                        }
+
+                        CharacterSelected = true;
+                        m_CharacterSelected = Character;
+                        Character->Select();
+                    }
+                }
+                
+                if (m_CharacterSelected && !CharacterSelected)
+                    m_CharacterSelected->TileSelected(tile_position);
+                
+                break;
             }
         }
     }
@@ -102,6 +125,17 @@ void GAME_Arena::_Event(SDL_Event& event) {
 void GAME_Arena::_Draw(SDL_Renderer* renderer) {
 
     for (auto [tile_position, tile_id] : m_Tilemap) {
+
+        bool IsActionTile = false;        
+
+        // feio
+        if (m_CharacterSelected) {
+            auto& CharactionActionDirections = m_CharacterSelected->m_ActionDirections;
+            if (std::any_of(CharactionActionDirections.begin(), CharactionActionDirections.end(), [tile_position](const Vector2i& A) {
+                return A.X == tile_position.X && A.Y == tile_position.Y;
+            }))
+                IsActionTile = true;
+        }
 
         if (tile_id != 0) {
             ARENA_Tile* Tile = m_Tileset[tile_id];
@@ -127,7 +161,7 @@ void GAME_Arena::_Draw(SDL_Renderer* renderer) {
             };
 
             SDL_RenderTexture(renderer, m_Texture, &SourceRect, &TileRect);
-       }
+        }
     }
 } 
 

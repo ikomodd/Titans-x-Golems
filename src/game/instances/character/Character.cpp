@@ -33,6 +33,21 @@ void GAME_Character::MoveTo(Vector2i tile_position) {
     Position = tile_position.ToVector2() * Arena->GetTileSize();
 }
 
+void GAME_Character::Select() {
+
+    m_CharacterSelected = true;
+}
+
+void GAME_Character::Unselect() {
+
+    m_CharacterSelected = false;
+}
+
+void GAME_Character::TileSelected(Vector2i tile) {
+
+    
+}
+
 //
 
 void GAME_Character::_Ready() {
@@ -44,16 +59,16 @@ void GAME_Character::_Ready() {
 
 void GAME_Character::_Draw(SDL_Renderer* renderer) {
 
-    Vector2 TextureSize = Vector2(m_Surface->w, m_Surface->h);
+    // Renderiza o Character
 
-    SDL_FRect Rect = {
+    Vector2 TextureSize = Vector2(m_Surface->w, m_Surface->h);
+    SDL_FRect CharacterRect = {
         Position.X - TextureSize.X / 2,
         Position.Y - TextureSize.Y,
         TextureSize.X,
         TextureSize.Y
     };
 
-    Rect = m_DisplayManager->GetCurrentCamera()->GetRectCameraView(Rect);
-
-    SDL_RenderTexture(renderer, m_Texture, NULL, &Rect);
+    CharacterRect = m_DisplayManager->GetCurrentCamera()->GetRectCameraView(CharacterRect);
+    SDL_RenderTexture(renderer, m_Texture, NULL, &CharacterRect);
 }
