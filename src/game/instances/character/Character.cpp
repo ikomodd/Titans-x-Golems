@@ -3,6 +3,7 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 #include <algorithm>
+#include <iostream>
 
 #include "game/instances/arena/Arena.hpp"
 
@@ -44,30 +45,18 @@ void GAME_Character::MoveTo(Vector2i tile_position) {
 
     GAME_Arena* Arena = GetParent<GAME_Arena>();
 
-    m_TilePosition = tile_position;
+    if (!Arena->HasCharacterIn(tile_position)) {
 
-    Position = Vector2(
-        tile_position.X + tile_position.Y,
-        tile_position.Y - tile_position.X
-    ) * Arena->GetTileSize();
+        m_TilePosition = tile_position;
+        Position = Vector2(tile_position.X + tile_position.Y, tile_position.Y - tile_position.X) * Arena->GetTileSize();
+    }
+    else
+    Arena->AttackTile(tile_position);
 }
 
-void GAME_Character::Select() {
+void GAME_Character::GetDamage(float damage) {
 
-}
-
-void GAME_Character::Unselect() {
-
-}
-
-void GAME_Character::TileSelected(Vector2i tile) {
-
-    MoveTo(tile);
-}
-
-void GAME_Character::RunIa() {
-
-    MoveTo(m_TilePosition + Vector2i(-1, 0));
+    std::cout << "ai levei dano\n";
 }
 
 //
@@ -76,7 +65,7 @@ void GAME_Character::_Ready() {
 
     BuildCharacter();
 
-    MoveTo(m_TilePosition);
+    MoveTo(m_SpawnPosition);
 }
 
 void GAME_Character::_Draw(SDL_Renderer* renderer) {

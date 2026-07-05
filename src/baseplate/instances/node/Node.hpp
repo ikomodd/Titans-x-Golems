@@ -18,6 +18,12 @@ public:
         return dynamic_cast<T*>(this);
     }
 
+    template<typename T>
+    bool Is() {
+
+        return dynamic_cast<T*>(this);
+    }
+
     //
 
     void _Ready()  override {}

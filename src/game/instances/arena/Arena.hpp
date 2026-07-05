@@ -11,6 +11,8 @@
 #include "baseplate/data_models/vector/Vector2Int.hpp"
 
 class GAME_Character;
+class GAME_Golem;
+class GAME_Titan;
 
 struct ARENA_Tile {
 
@@ -35,7 +37,7 @@ private:
 
     std::string m_JsonPath = "";
 
-    GAME_Character* m_CharacterSelected = nullptr;
+    GAME_Golem* m_CurrentGolem = nullptr;
 
 public:
 
@@ -45,8 +47,8 @@ private:
 
     bool TestTileClicked(Vector2 click_position, Vector2i tile_position);
 
-    void SelectCharacter(GAME_Character* character);
-    void UnselectCharacter();
+    void SelectGolem(GAME_Golem* golem);
+    void UnselectGolem();
 
     void BuildArena();
 
@@ -57,6 +59,10 @@ public:
     Vector2 GetTileSize() {
         return m_TileSize;
     }
+
+    bool HasCharacterIn(Vector2i tile);
+
+    void AttackTile(Vector2i tile);
 
     void _Ready() override;
     void _Event(SDL_Event& event) override;

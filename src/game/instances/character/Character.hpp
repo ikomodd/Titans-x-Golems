@@ -9,11 +9,10 @@ class GAME_Arena;
 
 class GAME_Character : public BSPLT_Node2D, private GAME_AssetData {
 private:
-    
-    inline static unsigned int m_PrevCharacterId = 0;
-    unsigned int m_CharacterId = m_PrevCharacterId++;
 
     std::string m_SourcePath;
+
+protected:
 
     float m_Health = 0.f;
     float m_Shield = 0.f;
@@ -21,16 +20,16 @@ private:
     float m_Damage = 0.f;
     float m_DamageVariation = 0.f;
 
-    bool m_PlayerOwner;
-
     unsigned int m_CurrentRound = 0;
 
     std::vector<Vector2i> m_ActionDirections {};
+
+    Vector2i m_SpawnPosition;
     Vector2i m_TilePosition = 0;
 
 public:
 
-    GAME_Character(Vector2i tile_position, std::string source_path, bool player_owner) : m_TilePosition(tile_position), m_SourcePath(source_path), m_PlayerOwner(player_owner), BSPLT_Node2D("no_name_character", 0, 0) {}
+    GAME_Character(Vector2i tile_position, std::string source_path) : m_SpawnPosition(tile_position), m_SourcePath(source_path), BSPLT_Node2D("no_name_character", 0, 0) {}
     friend class GAME_Arena;
 
     //
@@ -40,11 +39,7 @@ public:
     void BuildCharacter();
     void MoveTo(Vector2i tile_position);
 
-    void Select();
-    void Unselect();
-    void TileSelected(Vector2i tile);
-    
-    void RunIa();
+    void GetDamage(float damage);
 
     //
 

@@ -4,6 +4,8 @@
 #include <algorithm>
 
 #include "game/instances/character/Character.hpp"
+#include "game/instances/character/golem/Golem.hpp"
+#include "game/instances/character/titan/Titan.hpp"
 
 bool GAME_Arena::TestTileClicked(Vector2 click_position, Vector2i tile_position) {
 
@@ -37,23 +39,45 @@ bool GAME_Arena::TestTileClicked(Vector2 click_position, Vector2i tile_position)
     return false;
 }
 
-void GAME_Arena::SelectCharacter(GAME_Character* character) {
+void GAME_Arena::SelectGolem(GAME_Golem* golem) {
 
-    character->m_CurrentRound = m_CurrentRound;
+    golem->m_CurrentRound = m_CurrentRound;
 
     // Se ja tiver um character selecionado, deseleciona
-    if (m_CharacterSelected)
-    UnselectCharacter();
+    if (m_CurrentGolem)
+        UnselectGolem();
 
     // seleciona
-    m_CharacterSelected = character;
-    character->Select();
+    m_CurrentGolem = golem;
+}
+ 
+void GAME_Arena::UnselectGolem() {
+
+    m_CurrentGolem = nullptr;
 }
 
-void GAME_Arena::UnselectCharacter() {
+bool GAME_Arena::HasCharacterIn(Vector2i tile) {
 
-    m_CharacterSelected->Unselect();
-    m_CharacterSelected = nullptr;
+    for (auto* node : GetChildren()) {
+
+        GAME_Character* Character = node->As<GAME_Character>();
+        if (Character && Character->m_TilePosition == tile)
+
+        return true;
+    }
+    return false;
+}
+
+void GAME_Arena::AttackTile(Vector2i tile) {
+
+    for (auto* node : GetChildren()) {
+
+        GAME_Character* Character = node->As<GAME_Character>();
+        if (Character && Character->m_TilePosition == tile) {
+
+            Character->GetDamage(Character->m_Damage);
+        }
+    }
 }
 
 //
@@ -99,14 +123,11 @@ void GAME_Arena::BuildArena() {
 void GAME_Arena::PlayerRoundEnded() {
 
     for (auto* node : GetChildren()) {
-        GAME_Character* Character = node->As<GAME_Character>();
 
-        if (Character && !Character->m_PlayerOwner) {
-
-            Character->RunIa();
-        }
+        GAME_Titan* Titan = node->As<GAME_Titan>();
+        if (Titan)
+            Titan->RunIa();
     }
-
     m_CurrentRound++;
 }
 
@@ -131,25 +152,25 @@ void GAME_Arena::_Event(SDL_Event& event) {
             // Encontra o tile clicado
             if (TestTileClicked(ClickPosition, tile_position)) {
 
-                bool CharacterSelected = false;
+                bool HasGolemSelected = false;
 
-                // Vê se a posição do tile clicado corresponde a algum character
+                // Vê se a posição do tile clicado corresponde a algum golem
                 for (auto* node : GetChildren()) {
-                    auto* Character = node->As<GAME_Character>();
+                    auto* Golem = node->As<GAME_Golem>();
 
-                    // Verifica se é um character; se a ultima ação foi nesse round; se está na posição do tile clicado; se não é o character selecionado atual e se ele pertence ao player
-                    if (Character && m_CurrentRound > Character->m_CurrentRound && Character->m_TilePosition == tile_position && Character != m_CharacterSelected && Character->m_PlayerOwner) {
+                    // Verifica se é um character; se a ultima ação foi nesse round; se está na posição do tile clicado e se não é o character selecionado atual
+                    if (Golem && m_CurrentRound > Golem->m_CurrentRound && Golem->m_TilePosition == tile_position && Golem != m_CurrentGolem) {
 
-                        CharacterSelected = true;
-                        SelectCharacter(Character);
+                        HasGolemSelected = true;
+                        SelectGolem(Golem);
                     }
                 }
                 
                 // se nenhum tile for selecionado; se tem um character selecionado e se o a posição do tile ta presente na ActionDirections do character selecionado, executa a ação do character e deseleciona
-                if (m_CharacterSelected && !CharacterSelected && m_CharacterSelected->TileIsInActionDirections(tile_position)) {
+                if (m_CurrentGolem && !HasGolemSelected && m_CurrentGolem->TileIsInActionDirections(tile_position)) {
 
-                    m_CharacterSelected->TileSelected(tile_position);
-                    UnselectCharacter();
+                    m_CurrentGolem->TileSelected(tile_position);
+                    UnselectGolem();
                 }
                 break;
             }
@@ -165,7 +186,7 @@ void GAME_Arena::_Draw(SDL_Renderer* renderer) {
 
         bool IsActionTile = false;        
 
-        if (m_CharacterSelected && m_CharacterSelected->TileIsInActionDirections(tile_position))
+        if (m_CurrentGolem && m_CurrentGolem->TileIsInActionDirections(tile_position))
             IsActionTile = true;
 
         if (tile_id != 0) {
