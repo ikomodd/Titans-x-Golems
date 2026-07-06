@@ -35,7 +35,15 @@ void BSPLT_Children::AddNode(BSPLT_Node* node) {
 
 void BSPLT_Children::RemoveNode(BSPLT_Node* node) {
 
+    for (size_t i = 0; i < m_Children.size(); i++) {
 
+        BSPLT_iNode* iNode = m_Children[i];
+        if (iNode == node) {
+            
+            m_Children.erase(m_Children.begin() + i);
+            break;
+        }
+    }
 }
 
 bool BSPLT_Children::HasNode(const char* name) {

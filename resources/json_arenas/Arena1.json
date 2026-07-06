@@ -10,7 +10,7 @@
     "tile_offset": [8, 16],
 
     "tileset": [
-        {"id": 1, "name": "block", "position": [0.0, 0.0], "is_collidible": false}
+        {"id": 1, "name": "block", "position": [0.0, 0.0], "obstacle": false}
     ],
 
     "map": [

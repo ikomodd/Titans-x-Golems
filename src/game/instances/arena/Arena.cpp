@@ -56,26 +56,40 @@ void GAME_Arena::UnselectGolem() {
     m_CurrentGolem = nullptr;
 }
 
-bool GAME_Arena::HasCharacterIn(Vector2i tile) {
+bool GAME_Arena::CanMoveTo(Vector2i tile) {
 
+    bool IsValid = false;
+
+    // Ve se o tile é valido
+    for (auto& [tile_position, tile_id] : m_Tilemap)  {
+
+        if (tile_position == tile && !m_Tileset[tile_id]->Obstacle) {
+            IsValid = true;
+            break;
+        }
+    }
+
+    if (!IsValid)
+        return false;
+
+    // Vê se tem algum character no tile
     for (auto* node : GetChildren()) {
 
         GAME_Character* Character = node->As<GAME_Character>();
         if (Character && Character->m_TilePosition == tile)
-
-        return true;
+            return false;
     }
-    return false;
+    return true;
 }
 
-void GAME_Arena::AttackTile(Vector2i tile) {
+void GAME_Arena::AttackTile(Vector2i tile, float damage) {
 
     for (auto* node : GetChildren()) {
 
         GAME_Character* Character = node->As<GAME_Character>();
         if (Character && Character->m_TilePosition == tile) {
 
-            Character->GetDamage(Character->m_Damage);
+            Character->GetDamage(damage);
         }
     }
 }
@@ -102,9 +116,9 @@ void GAME_Arena::BuildArena() {
 
         int Id = data["id"];
         Vector2 SourcePosition = Vector2(data["position"][0], data["position"][1]);
-        bool Collidible = data["is_collidible"];
+        bool Obstacle = data["obstacle"];
 
-        m_Tileset[Id] = new ARENA_Tile(SourcePosition, Collidible);
+        m_Tileset[Id] = new ARENA_Tile(SourcePosition, Obstacle);
     }
 
     // Converte o Tilemap em array JSON para o vetor 1D do m_Tilemap
@@ -167,10 +181,16 @@ void GAME_Arena::_Event(SDL_Event& event) {
                 }
                 
                 // se nenhum tile for selecionado; se tem um character selecionado e se o a posição do tile ta presente na ActionDirections do character selecionado, executa a ação do character e deseleciona
-                if (m_CurrentGolem && !HasGolemSelected && m_CurrentGolem->TileIsInActionDirections(tile_position)) {
+                if (m_CurrentGolem && !HasGolemSelected) {
 
-                    m_CurrentGolem->TileSelected(tile_position);
-                    UnselectGolem();
+                    if (m_CurrentGolem->TileIsInMotionDirections(tile_position)) {
+                        m_CurrentGolem->MoveTo(tile_position);
+                        UnselectGolem();
+                    }
+                    else if (m_CurrentGolem->TileIsInAttackDirections(tile_position)) {
+                        m_CurrentGolem->AttackOn(tile_position);
+                        UnselectGolem();
+                    }
                 }
                 break;
             }
@@ -184,10 +204,13 @@ void GAME_Arena::_Draw(SDL_Renderer* renderer) {
 
     for (auto [tile_position, tile_id] : m_Tilemap) {
 
-        bool IsActionTile = false;        
+        bool IsMotionTile = false;
+        bool IsAttackTile = false;   
 
-        if (m_CurrentGolem && m_CurrentGolem->TileIsInActionDirections(tile_position))
-            IsActionTile = true;
+        if (m_CurrentGolem && m_CurrentGolem->TileIsInMotionDirections(tile_position))
+            IsMotionTile = true;
+        else if (m_CurrentGolem && m_CurrentGolem->TileIsInAttackDirections(tile_position))
+            IsAttackTile = true;
 
         if (tile_id != 0) {
             ARENA_Tile* Tile = m_Tileset[tile_id];
@@ -209,8 +232,10 @@ void GAME_Arena::_Draw(SDL_Renderer* renderer) {
                 m_TileSourceSize.X,
                 m_TileSourceSize.Y
             };
-            if (IsActionTile)
+            if (IsMotionTile)
                 SourceRect.x += m_TileSourceSize.X;
+            else if (IsAttackTile)
+                SourceRect.x += m_TileSourceSize.X * 2.f;
 
             SDL_RenderTexture(renderer, m_Texture, &SourceRect, &TileRect);
         }

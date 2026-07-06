@@ -7,11 +7,21 @@
 
 #include "game/instances/arena/Arena.hpp"
 
-bool GAME_Character::TileIsInActionDirections(Vector2i tile) {
+bool GAME_Character::TileIsInMotionDirections(Vector2i tile) {
 
-    auto& CharactionActionDirections = m_ActionDirections;;
+    if (std::any_of(m_MotionDirections.begin(), m_MotionDirections.end(),
+    [this, tile](const Vector2i& A) {
 
-    if (std::any_of(CharactionActionDirections.begin(), CharactionActionDirections.end(),
+        Vector2i ActionTile = m_TilePosition + A;
+        return ActionTile.X == tile.X && ActionTile.Y == tile.Y;
+    }))
+        return true;
+    return false;
+}
+
+bool GAME_Character::TileIsInAttackDirections(Vector2i tile) {
+
+    if (std::any_of(m_AttackDirections.begin(), m_AttackDirections.end(),
     [this, tile](const Vector2i& A) {
 
         Vector2i ActionTile = m_TilePosition + A;
@@ -35,9 +45,14 @@ void GAME_Character::BuildCharacter() {
 
     LoadTexture(Data["texture_path"]);
 
-    for (auto& [key, value] : Data["action_directions"].items()) {
+    for (auto& [key, value] : Data["motion_directions"].items()) {
 
-        m_ActionDirections.emplace_back(value[0], value[1]);
+        m_MotionDirections.emplace_back(value[0], value[1]);
+    }
+
+    for (auto& [key, value] : Data["attack_directions"].items()) {
+
+        m_AttackDirections.emplace_back(value[0], value[1]);
     }
 }
 
@@ -45,18 +60,33 @@ void GAME_Character::MoveTo(Vector2i tile_position) {
 
     GAME_Arena* Arena = GetParent<GAME_Arena>();
 
-    if (!Arena->HasCharacterIn(tile_position)) {
+    if (Arena->CanMoveTo(tile_position)) {
 
         m_TilePosition = tile_position;
         Position = Vector2(tile_position.X + tile_position.Y, tile_position.Y - tile_position.X) * Arena->GetTileSize();
     }
-    else
-    Arena->AttackTile(tile_position);
+}
+
+void GAME_Character::AttackOn(Vector2i tile_position) {
+
+    GAME_Arena* Arena = GetParent<GAME_Arena>();
+
+    float CurrentDamage = m_Damage + m_DamageVariation; // precisa de um random pra m_DamageVariation
+
+    Arena->AttackTile(tile_position, CurrentDamage);
 }
 
 void GAME_Character::GetDamage(float damage) {
 
-    std::cout << "ai levei dano\n";
+    float CurrentDamage = damage - m_Shield;
+    if (m_Shield > 0) m_Shield--;
+
+    m_Health -= CurrentDamage;
+
+    std::cout << m_Health << "\n";
+
+    if (m_Health <= 0)
+        Destroy();
 }
 
 //
@@ -64,7 +94,6 @@ void GAME_Character::GetDamage(float damage) {
 void GAME_Character::_Ready() {
 
     BuildCharacter();
-
     MoveTo(m_SpawnPosition);
 }
 

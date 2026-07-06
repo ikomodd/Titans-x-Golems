@@ -22,7 +22,8 @@ protected:
 
     unsigned int m_CurrentRound = 0;
 
-    std::vector<Vector2i> m_ActionDirections {};
+    std::vector<Vector2i> m_MotionDirections {};
+    std::vector<Vector2i> m_AttackDirections {};
 
     Vector2i m_SpawnPosition;
     Vector2i m_TilePosition = 0;
@@ -34,11 +35,14 @@ public:
 
     //
 
-    bool TileIsInActionDirections(Vector2i tile);
+    bool TileIsInMotionDirections(Vector2i tile);
+    bool TileIsInAttackDirections(Vector2i tile);
 
     void BuildCharacter();
-    void MoveTo(Vector2i tile_position);
 
+    void MoveTo(Vector2i tile_position);
+    void AttackOn(Vector2i tile_position);
+    
     void GetDamage(float damage);
 
     //

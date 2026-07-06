@@ -18,9 +18,9 @@ struct ARENA_Tile {
 
     Vector2 SourcePosition;
 
-    bool Collidible;
+    bool Obstacle;
 
-    ARENA_Tile(Vector2 source_position, bool collidible) : SourcePosition(source_position), Collidible(collidible) {}
+    ARENA_Tile(Vector2 source_position, bool obstacle) : SourcePosition(source_position), Obstacle(obstacle) {}
 };
 
 class GAME_Arena : public BSPLT_Node2D, private GAME_AssetData {
@@ -60,9 +60,11 @@ public:
         return m_TileSize;
     }
 
-    bool HasCharacterIn(Vector2i tile);
 
-    void AttackTile(Vector2i tile);
+
+    bool CanMoveTo(Vector2i tile);
+
+    void AttackTile(Vector2i tile, float damage);
 
     void _Ready() override;
     void _Event(SDL_Event& event) override;

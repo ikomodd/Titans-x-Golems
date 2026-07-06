@@ -6,9 +6,14 @@
 #include "baseplate/data_models/vector/Vector2.hpp"
 
 class BSPLT_Node : public BSPLT_iNode, public BSPLT_Children {
+private:
+
+    bool m_DestroyMark = false;
+
 public:
 
     BSPLT_Node(const char* name) : BSPLT_iNode(name) {}
+    friend class GAME_CoreManager;
 
     //
 
@@ -24,6 +29,9 @@ public:
         return dynamic_cast<T*>(this);
     }
 
+    void Destroy() {
+        m_DestroyMark = true;
+    }
     //
 
     void _Ready()  override {}
