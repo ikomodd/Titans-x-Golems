@@ -11,6 +11,8 @@
     "damage": 16.0,
     "damage_variation": 4.0,
 
+    "actions": 2,
+
     "motion_directions": [
         [0, 1], [1, 0], [-1, 0], [0, -1]
     ],

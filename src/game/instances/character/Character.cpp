@@ -42,6 +42,9 @@ void GAME_Character::BuildCharacter() {
     m_Shield          = Data["shield"];
     m_Damage          = Data["damage"];
     m_DamageVariation = Data["damage_variation"];
+    m_ActionsQuantity = Data["actions"];
+
+    m_Actions = m_ActionsQuantity + 1; // + 1 porque tem que conciderar o MoveTo quando o character é criado
 
     LoadTexture(Data["texture_path"]);
 
@@ -65,6 +68,8 @@ void GAME_Character::MoveTo(Vector2i tile_position) {
         m_TilePosition = tile_position;
         Position = Vector2(tile_position.X + tile_position.Y, tile_position.Y - tile_position.X) * Arena->GetTileSize();
     }
+
+    m_Actions--;
 }
 
 void GAME_Character::AttackOn(Vector2i tile_position) {
@@ -74,6 +79,8 @@ void GAME_Character::AttackOn(Vector2i tile_position) {
     float CurrentDamage = m_Damage + m_DamageVariation; // precisa de um random pra m_DamageVariation
 
     Arena->AttackTile(tile_position, CurrentDamage);
+
+    m_Actions--;
 }
 
 void GAME_Character::GetDamage(float damage) {

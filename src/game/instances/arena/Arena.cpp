@@ -41,8 +41,6 @@ bool GAME_Arena::TestTileClicked(Vector2 click_position, Vector2i tile_position)
 
 void GAME_Arena::SelectGolem(GAME_Golem* golem) {
 
-    golem->m_CurrentRound = m_CurrentRound;
-
     // Se ja tiver um character selecionado, deseleciona
     if (m_CurrentGolem)
         UnselectGolem();
@@ -138,9 +136,13 @@ void GAME_Arena::PlayerRoundEnded() {
 
     for (auto* node : GetChildren()) {
 
+        GAME_Golem* Golem = node->As<GAME_Golem>();
         GAME_Titan* Titan = node->As<GAME_Titan>();
+
         if (Titan)
             Titan->RunIa();
+        else if (Golem)
+            Golem->m_Actions = Golem->m_ActionsQuantity;
     }
     m_CurrentRound++;
 }
@@ -172,8 +174,8 @@ void GAME_Arena::_Event(SDL_Event& event) {
                 for (auto* node : GetChildren()) {
                     auto* Golem = node->As<GAME_Golem>();
 
-                    // Verifica se é um character; se a ultima ação foi nesse round; se está na posição do tile clicado e se não é o character selecionado atual
-                    if (Golem && m_CurrentRound > Golem->m_CurrentRound && Golem->m_TilePosition == tile_position && Golem != m_CurrentGolem) {
+                    // Verifica se é um character; se tem ações; se está na posição do tile clicado e se não é o character selecionado atual
+                    if (Golem && Golem->m_Actions > 0 && Golem->m_TilePosition == tile_position && Golem != m_CurrentGolem) {
 
                         HasGolemSelected = true;
                         SelectGolem(Golem);
