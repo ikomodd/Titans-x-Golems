@@ -16,17 +16,22 @@ add_executable(Game
     src/game/instances/arena/Arena.cpp
     src/baseplate/data_models/vector/Vector2.cpp
     src/game/instances/character/Character.cpp
+    src/game/managers/asset/Asset.cpp
 )
 
 find_package(SDL3 CONFIG REQUIRED)
 find_package(SDL3_image CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
+find_package(glad CONFIG REQUIRED)
+find_package(glm CONFIG REQUIRED)
 
 target_link_libraries(Game PRIVATE
 
     SDL3::SDL3
     SDL3_image::SDL3_image
     nlohmann_json::nlohmann_json
+    glad::glad
+    glm::glm
 )
 
 target_include_directories(Game PRIVATE

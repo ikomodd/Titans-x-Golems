@@ -59,12 +59,12 @@ public:
         m_DisplayManager->m_CurrentCamera = this;
     }
 
-    void _Draw(SDL_Renderer* renderer) override {
+    void _Draw() override {
 
         for (SDL_FRect& rect : m_DebugBuffer) {
 
-            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-            SDL_RenderFillRect(renderer, &rect);
+            //SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+            //SDL_RenderFillRect(renderer, &rect);
         }
     }
 };

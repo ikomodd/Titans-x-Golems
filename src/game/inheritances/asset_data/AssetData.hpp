@@ -14,8 +14,8 @@ protected:
     GAME_AssetManager* m_AssetManager = nullptr;
     GAME_DisplayManager* m_DisplayManager = nullptr;
 
-    SDL_Texture* m_Texture = nullptr;
-    SDL_Surface* m_Surface = nullptr;
+    ASSET_ShaderAsset* m_ShaderAsset;
+    ASSET_TextureAsset* m_TextureAsset;
 
     std::string m_SourcePath = "";
 
@@ -29,8 +29,11 @@ public:
 
     void LoadTexture(std::string source_path) {
 
-        ASSET_TextureAsset* TextureAsset = m_AssetManager->GetTextureAsset(source_path);
-        m_Texture = TextureAsset->Texture;
-        m_Surface = TextureAsset->Surface;
+        m_TextureAsset = m_AssetManager->GetTextureAsset(source_path);
+    }
+
+    void LoadShader(std::string vertex_path, std::string fragment_path) {
+
+        m_ShaderAsset = m_AssetManager->GetShaderAsset(vertex_path, fragment_path);
     }
 };

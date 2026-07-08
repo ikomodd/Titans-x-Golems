@@ -104,18 +104,18 @@ void GAME_Character::_Ready() {
     MoveTo(m_SpawnPosition);
 }
 
-void GAME_Character::_Draw(SDL_Renderer* renderer) {
+void GAME_Character::_Draw() {
 
     // Renderiza o Character
 
-    Vector2 TextureSize = Vector2(m_Surface->w, m_Surface->h);
-    SDL_FRect CharacterRect = {
-        Position.X - TextureSize.X / 2,
-        Position.Y - TextureSize.Y,
-        TextureSize.X,
-        TextureSize.Y
-    };
+    // Vector2 TextureSize = Vector2(m_Surface->w, m_Surface->h);
+    // SDL_FRect CharacterRect = {
+    //     Position.X - TextureSize.X / 2,
+    //     Position.Y - TextureSize.Y,
+    //     TextureSize.X,
+    //     TextureSize.Y
+    // };
 
-    CharacterRect = m_DisplayManager->GetCurrentCamera()->GetRectCameraView(CharacterRect);
-    SDL_RenderTexture(renderer, m_Texture, NULL, &CharacterRect);
+    // CharacterRect = m_DisplayManager->GetCurrentCamera()->GetRectCameraView(CharacterRect);
+    // SDL_RenderTexture(renderer, m_Texture, NULL, &CharacterRect);
 }

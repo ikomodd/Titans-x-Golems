@@ -50,5 +50,5 @@ public:
     //
 
     void _Ready() override;
-    void _Draw(SDL_Renderer* renderer) override;
+    void _Draw() override;
 };

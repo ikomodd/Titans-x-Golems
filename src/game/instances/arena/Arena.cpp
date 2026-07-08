@@ -106,6 +106,8 @@ void GAME_Arena::BuildArena() {
 
     LoadTexture(Data["texture_path"]);
 
+    LoadShader("assets/shaders/block/BlockShader.vert", "assets/shaders/block/BlockShader.frag");
+
     m_DisplayManager->GetCurrentCamera()->Position = Vector2((Data["map"][0].size() - 1) * m_TileSize.X, 0);
 
     // Converte o Tileset em dictionary JSON para o vetor de m_Tileset
@@ -158,9 +160,7 @@ void GAME_Arena::_Event(SDL_Event& event) {
 
     if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT) {
 
-        Vector2 LogicalPosition = 0;
-        SDL_RenderCoordinatesFromWindow(m_DisplayManager->Renderer, event.button.x, event.button.y, &LogicalPosition.X, &LogicalPosition.Y);
-        Vector2 ClickPosition = m_DisplayManager->GetCurrentCamera()->GetWorldPosition(LogicalPosition);
+        Vector2 ClickPosition = m_DisplayManager->GetCurrentCamera()->GetWorldPosition(Vector2(event.button.x, event.button.y));
 
         // Passa por todos os tiles
         for (auto& [tile_position, tile_id] : m_Tilemap) {
@@ -202,46 +202,95 @@ void GAME_Arena::_Event(SDL_Event& event) {
         PlayerRoundEnded();
 }
 
-void GAME_Arena::_Draw(SDL_Renderer* renderer) {
+void GAME_Arena::_Draw() {
+
+    GAME_Camera* CurrentCamera = m_DisplayManager->GetCurrentCamera();
+    m_ShaderAsset->Bind();
 
     for (auto [tile_position, tile_id] : m_Tilemap) {
 
-        bool IsMotionTile = false;
-        bool IsAttackTile = false;   
+        SDL_FRect TileRect = {
+            Position.X + ((float)tile_position.X * m_TileSize.X + (float)tile_position.Y * m_TileSize.Y) - m_TileOffset.X,
+            Position.Y + ((float)tile_position.Y * m_TileSize.Y - (float)tile_position.X * m_TileSize.X) - m_TileOffset.Y,
+            m_TileSourceSize.X,
+            m_TileSourceSize.Y
+        };
+        TileRect = CurrentCamera->GetRectCameraView(TileRect);
 
+        glm::mat4 Model = glm::mat4(1.0f);
+        Model = glm::translate(Model, glm::vec3(TileRect.x, TileRect.y, 0.0f));
+        Model = glm::scale(Model, glm::vec3(TileRect.w, TileRect.h, 1.0f));
+
+        //
+
+        GLint MotionTileLoc = glGetUniformLocation(m_ShaderAsset->Program, "uIsMotionTile");
         if (m_CurrentGolem && m_CurrentGolem->TileIsInMotionDirections(tile_position))
-            IsMotionTile = true;
-        else if (m_CurrentGolem && m_CurrentGolem->TileIsInAttackDirections(tile_position))
-            IsAttackTile = true;
+            glUniform1i(MotionTileLoc, 1);
+        else
+            glUniform1i(MotionTileLoc, 0);
 
-        if (tile_id != 0) {
-            ARENA_Tile* Tile = m_Tileset[tile_id];
+        GLint AttackTileLoc = glGetUniformLocation(m_ShaderAsset->Program, "uIsAttackTile");
+        if (m_CurrentGolem && m_CurrentGolem->TileIsInAttackDirections(tile_position))
+            glUniform1i(AttackTileLoc, 1);
+        else
+            glUniform1i(AttackTileLoc, 0);
 
-            GAME_Camera* CurrentCamera = m_DisplayManager->GetCurrentCamera();
+        //
 
-            SDL_FRect TileRect = {
-                Position.X + ((float)tile_position.X * m_TileSize.X + (float)tile_position.Y * m_TileSize.Y) - m_TileOffset.X,
-                Position.Y + ((float)tile_position.Y * m_TileSize.Y - (float)tile_position.X * m_TileSize.X) - m_TileOffset.Y,
-                m_TileSourceSize.X,
-                m_TileSourceSize.Y
-            };
+        GLint ProjectionLoc = glGetUniformLocation(m_ShaderAsset->Program, "uProjection");
+        GLint ModelLoc = glGetUniformLocation(m_ShaderAsset->Program, "uModel");
 
-            TileRect = CurrentCamera->GetRectCameraView(TileRect);
+        glUniformMatrix4fv(ProjectionLoc, 1, GL_FALSE, glm::value_ptr(m_DisplayManager->GetProjection()));
+        glUniformMatrix4fv(ModelLoc, 1, GL_FALSE, glm::value_ptr(Model));
 
-            SDL_FRect SourceRect = {
-                Tile->SourcePosition.X,
-                Tile->SourcePosition.Y,
-                m_TileSourceSize.X,
-                m_TileSourceSize.Y
-            };
-            if (IsMotionTile)
-                SourceRect.x += m_TileSourceSize.X;
-            else if (IsAttackTile)
-                SourceRect.x += m_TileSourceSize.X * 2.f;
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_TextureAsset->Texture);
 
-            SDL_RenderTexture(renderer, m_Texture, &SourceRect, &TileRect);
-        }
+        GLint TextureLoc = glGetUniformLocation(m_ShaderAsset->Program, "uTexture");
+        glUniform1i(TextureLoc, 0);
+
+        glBindVertexArray(m_DisplayManager->GetVAO());
+        glDrawArrays(GL_TRIANGLES, 0, 6);
     }
+
+    // for (auto [tile_position, tile_id] : m_Tilemap) 
+    //
+    //     bool IsMotionTile = false;
+    //     bool IsAttackTile = false;   
+    //
+    //     if (m_CurrentGolem && m_CurrentGolem->TileIsInMotionDirections(tile_position))
+    //         IsMotionTile = true;
+    //     else if (m_CurrentGolem && m_CurrentGolem->TileIsInAttackDirections(tile_position))
+    //         IsAttackTile = true;
+    //
+    //     if (tile_id != 0) {
+    //         ARENA_Tile* Tile = m_Tileset[tile_id];
+    //
+    //         GAME_Camera* CurrentCamera = m_DisplayManager->GetCurrentCamera();
+    //
+    //         SDL_FRect TileRect = {
+    //             Position.X + ((float)tile_position.X * m_TileSize.X + (float)tile_position.Y * m_TileSize.Y) - m_TileOffset.X,
+    //             Position.Y + ((float)tile_position.Y * m_TileSize.Y - (float)tile_position.X * m_TileSize.X) - m_TileOffset.Y,
+    //             m_TileSourceSize.X,
+    //             m_TileSourceSize.Y
+    //         };
+    //
+    //         TileRect = CurrentCamera->GetRectCameraView(TileRect);
+    //
+    //         SDL_FRect SourceRect = {
+    //             Tile->SourcePosition.X,
+    //             Tile->SourcePosition.Y,
+    //             m_TileSourceSize.X,
+    //             m_TileSourceSize.Y
+    //         };
+    //         if (IsMotionTile)
+    //             SourceRect.x += m_TileSourceSize.X;
+    //         else if (IsAttackTile)
+    //             SourceRect.x += m_TileSourceSize.X * 2.f;
+    //
+    //         SDL_RenderTexture(renderer, m_Texture, &SourceRect, &TileRect);
+    //     }
+    // }
 } 
 
 void GAME_Arena::_Process(double delta) {
