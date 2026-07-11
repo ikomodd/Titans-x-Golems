@@ -19,17 +19,11 @@ public:
 
     GAME_Camera(const char* name, Vector2 position, float zoom, bool make_current) : Zoom(zoom), m_MakeCurrent(make_current), BSPLT_Node2D(name, position, 0) {}
 
-    SDL_FRect GetRectCameraView(SDL_FRect rect) {
-
+    void TransformToCameraView(Vector2& node_position, Vector2& node_size) {
         Vector2 WindowSize = m_DisplayManager->GetWindowSize();
 
-        return SDL_FRect {
-
-            WindowSize.X / 2 + (rect.x - Position.X) * Zoom,
-            WindowSize.Y / 2 + (rect.y - Position.Y) * Zoom,
-            rect.w * Zoom,
-            rect.h * Zoom
-        };
+        node_position = Vector2(WindowSize.X / 2 + (node_position.X - Position.X) * Zoom, WindowSize.Y / 2 + (node_position.Y - Position.Y) * Zoom);
+        node_size = Vector2(node_size.X * Zoom, node_size.Y * Zoom);
     }
 
     Vector2 GetWorldPosition(Vector2 point) {
@@ -41,12 +35,12 @@ public:
 
     void DrawRect(SDL_FRect rect) {
 
-        if (SDL_GetTicks() - m_PrevDebugBufferClear > 100) {
-            m_DebugBuffer.clear();
-            m_PrevDebugBufferClear = SDL_GetTicks();
-        }
+        // if (SDL_GetTicks() - m_PrevDebugBufferClear > 100) {
+        //     m_DebugBuffer.clear();
+        //     m_PrevDebugBufferClear = SDL_GetTicks();
+        // }
 
-        m_DebugBuffer.push_back(GetRectCameraView(rect));
+        // m_DebugBuffer.push_back(GetRectCameraView(rect));
     }
 
     //

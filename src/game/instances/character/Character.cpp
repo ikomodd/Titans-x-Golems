@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "game/instances/arena/Arena.hpp"
+#include "baseplate/data_models/model/RenderModel.hpp"
 
 bool GAME_Character::TileIsInMotionDirections(Vector2i tile) {
 
@@ -106,16 +107,18 @@ void GAME_Character::_Ready() {
 
 void GAME_Character::_Draw() {
 
-    // Renderiza o Character
+    m_ShaderAsset->Bind();
 
-    // Vector2 TextureSize = Vector2(m_Surface->w, m_Surface->h);
-    // SDL_FRect CharacterRect = {
-    //     Position.X - TextureSize.X / 2,
-    //     Position.Y - TextureSize.Y,
-    //     TextureSize.X,
-    //     TextureSize.Y
-    // };
+    GAME_Camera* CurrentCamera = m_DisplayManager->GetCurrentCamera();
+    Vector2 TextureSize = m_TextureAsset->TextureSize.ToVector2();
 
-    // CharacterRect = m_DisplayManager->GetCurrentCamera()->GetRectCameraView(CharacterRect);
-    // SDL_RenderTexture(renderer, m_Texture, NULL, &CharacterRect);
+    Vector2 CharacterPosition = Vector2(Position.X - TextureSize.X / 2, Position.Y - TextureSize.Y);
+    Vector2 CharacterSize = Vector2(TextureSize.X, TextureSize.Y);
+
+    CurrentCamera->TransformToCameraView(CharacterPosition, CharacterSize);
+
+    BSPLT_GLM_RenderModel Model(CharacterPosition, CharacterSize);
+    Model.Bind(m_ShaderAsset->Program, "uModel");
+
+    
 }
