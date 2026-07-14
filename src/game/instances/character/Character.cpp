@@ -48,6 +48,7 @@ void GAME_Character::BuildCharacter() {
     m_Actions = m_ActionsQuantity + 1; // + 1 porque tem que conciderar o MoveTo quando o character é criado
 
     LoadTexture(Data["texture_path"]);
+    LoadShader("assets/shaders/character/CharacterShader.vert", "assets/shaders/character/CharacterShader.frag");
 
     for (auto& [key, value] : Data["motion_directions"].items()) {
 
@@ -120,5 +121,15 @@ void GAME_Character::_Draw() {
     BSPLT_GLM_RenderModel Model(CharacterPosition, CharacterSize);
     Model.Bind(m_ShaderAsset->Program, "uModel");
 
-    
+    GLint ProjectionLoc = glGetUniformLocation(m_ShaderAsset->Program, "uProjection");
+    glUniformMatrix4fv(ProjectionLoc, 1, GL_FALSE, glm::value_ptr(m_DisplayManager->GetProjection()));
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_TextureAsset->Texture);
+
+    GLint TextureLoc = glGetUniformLocation(m_ShaderAsset->Program, "uTexture");
+    glUniform1i(TextureLoc, 0);
+
+    glBindVertexArray(m_DisplayManager->GetVAO());
+    glDrawArrays(GL_TRIANGLES, 0, 6);
 }
