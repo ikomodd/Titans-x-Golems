@@ -60,6 +60,8 @@ bool GAME_Arena::CanMoveTo(Vector2i tile) {
 
     bool IsValid = false;
 
+    
+
     // Ve se o tile é valido
     for (auto& [tile_position, tile_id] : m_Tilemap)  {
 
@@ -143,8 +145,10 @@ void GAME_Arena::PlayerRoundEnded() {
         GAME_Golem* Golem = node->As<GAME_Golem>();
         GAME_Titan* Titan = node->As<GAME_Titan>();
 
-        if (Titan)
+        if (Titan) {
             Titan->RunIa();
+            Titan->m_Actions = Titan->m_ActionsQuantity;
+        }
         else if (Golem)
             Golem->m_Actions = Golem->m_ActionsQuantity;
     }

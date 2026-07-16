@@ -9,8 +9,8 @@ struct Vector2i {
 
     int X, Y;
 
+    Vector2i(int value = 0) : X(value), Y(value) {}
     Vector2i(int x, int y) : X(x), Y(y) {}
-    Vector2i(int value) : X(value), Y(value) {}
 
     // + / +=
 
@@ -104,4 +104,9 @@ struct Vector2i {
 
     Vector2 ToVector2();
     std::string ToString();
+
+    int LengthSquared() const {
+
+        return X * X + Y * Y;
+    }
 };

@@ -20,7 +20,6 @@ protected:
     float m_Damage = 0.f;
     float m_DamageVariation = 0.f;
 
-
     unsigned int m_Actions = 0;
     unsigned int m_ActionsQuantity = 0;
 
@@ -46,6 +45,11 @@ public:
     void AttackOn(Vector2i tile_position);
     
     void GetDamage(float damage);
+
+    Vector2i GetTilePosition() {
+
+        return m_TilePosition;
+    }
 
     //
 

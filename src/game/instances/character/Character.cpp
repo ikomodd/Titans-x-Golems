@@ -65,7 +65,7 @@ void GAME_Character::MoveTo(Vector2i tile_position) {
 
     GAME_Arena* Arena = GetParent<GAME_Arena>();
 
-    if (Arena->CanMoveTo(tile_position)) {
+    if (Arena->CanMoveTo(tile_position) && tile_position != m_TilePosition) {
 
         m_TilePosition = tile_position;
         Position = Vector2(tile_position.X + tile_position.Y, tile_position.Y - tile_position.X) * Arena->GetTileSize();

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "baseplate/manager/Manager.hpp"
-#include "baseplate/stack/Stack.hpp"
+#include "baseplate/data_models/stack/Stack.hpp"
 
 class GAME_GameState;
 

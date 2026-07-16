@@ -3,6 +3,8 @@
 #include <string>
 #include <cmath>
 
+struct Vector2i;
+
 struct Vector2 {
 private:
 
@@ -12,7 +14,7 @@ public:
 
     float X, Y;
 
-    Vector2(float x = 0, float y = 0) : X(x), Y(y) {}
+    Vector2(float x, float y) : X(x), Y(y) {}
 
     Vector2(float value = 0.0f) : X(value), Y(value) {}
     Vector2(int value = 0) : X(value), Y(value) {}
@@ -93,5 +95,32 @@ public:
 
     // Metodos
 
+    Vector2i ToVector2i();
     std::string ToString();
+
+    float LengthSquared() const {
+
+        return X * X + Y * Y;
+    }
+
+    float Length() const {
+
+        return std::sqrtf(X * X + Y * Y);
+    }
+
+    Vector2 Normalize() const {
+
+        float Distance = Length();
+
+        if (Distance == 0.0f) return 0;
+        return Vector2(X / Distance, Y / Distance);
+    }
+
+    Vector2 Sign() {
+
+        X = (X > 0) - (X < 0);
+        Y = (Y > 0) - (Y < 0);
+
+        return *this;
+    }
 };
