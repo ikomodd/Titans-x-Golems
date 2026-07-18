@@ -14,8 +14,8 @@ bool GAME_Arena::TestTileClicked(Vector2 click_position, Vector2i tile_position)
     // OBS: Esse bloco de codigo foi feito pela IA Claude. Sorry, geometria não é comigo.
 
     // centro do losango na posição isométrica (sem o offset visual do debug rect)
-    float tileCenterX = Position.X + ((float)tile_position.X * m_TileSize.X + (float)tile_position.Y * m_TileSize.Y);
-    float tileCenterY = Position.Y + ((float)tile_position.Y * m_TileSize.Y - (float)tile_position.X * m_TileSize.X);
+    float tileCenterX = GetPosition().X + ((float)tile_position.X * m_TileSize.X + (float)tile_position.Y * m_TileSize.Y);
+    float tileCenterY = GetPosition().Y + ((float)tile_position.Y * m_TileSize.Y - (float)tile_position.X * m_TileSize.X);
 
     float dx = fabsf(click_position.X - tileCenterX);
     float dy = fabsf(click_position.Y - tileCenterY);
@@ -112,7 +112,7 @@ void GAME_Arena::BuildArena() {
 
     LoadShader("assets/shaders/block/BlockShader.vert", "assets/shaders/block/BlockShader.frag");
 
-    m_DisplayManager->GetCurrentCamera()->Position = Vector2((Data["map"][0].size() - 1) * m_TileSize.X, 0);
+    m_DisplayManager->GetCurrentCamera()->SetPosition(Vector2((Data["map"][0].size() - 1) * m_TileSize.X, 0));
 
     // Converte o Tileset em dictionary JSON para o vetor de m_Tileset
 
@@ -216,8 +216,8 @@ void GAME_Arena::_Draw() {
     for (auto [tile_position, tile_id] : m_Tilemap) {
 
         Vector2 TilePosition = Vector2(
-            Position.X + ((float)tile_position.X * m_TileSize.X + (float)tile_position.Y * m_TileSize.Y) - m_TileOffset.X,
-            Position.Y + ((float)tile_position.Y * m_TileSize.Y - (float)tile_position.X * m_TileSize.X) - m_TileOffset.Y
+            GetPosition().X + ((float)tile_position.X * m_TileSize.X + (float)tile_position.Y * m_TileSize.Y) - m_TileOffset.X,
+            GetPosition().Y + ((float)tile_position.Y * m_TileSize.Y - (float)tile_position.X * m_TileSize.X) - m_TileOffset.Y
         );
 
         Vector2 TileSize = Vector2(

@@ -18,6 +18,7 @@ add_executable(Game
     src/game/instances/character/Character.cpp
     src/game/managers/asset/Asset.cpp
     src/game/instances/character/titan/Titan.cpp
+    src/baseplate/inheritances/transform/Transform.cpp
 )
 
 find_package(SDL3 CONFIG REQUIRED)

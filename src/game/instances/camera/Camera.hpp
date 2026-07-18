@@ -22,7 +22,7 @@ public:
     void TransformToCameraView(Vector2& node_position, Vector2& node_size) {
         Vector2 WindowSize = m_DisplayManager->GetWindowSize();
 
-        node_position = Vector2(WindowSize.X / 2 + (node_position.X - Position.X) * Zoom, WindowSize.Y / 2 + (node_position.Y - Position.Y) * Zoom);
+        node_position = Vector2(WindowSize.X / 2 + (node_position.X - GetPosition().X) * Zoom, WindowSize.Y / 2 + (node_position.Y - GetPosition().Y) * Zoom);
         node_size = Vector2(node_size.X * Zoom, node_size.Y * Zoom);
     }
 
@@ -30,7 +30,7 @@ public:
 
         Vector2 WindowSize = m_DisplayManager->GetWindowSize();
 
-        return (point - WindowSize / 2.f) / Zoom + Position;
+        return (point - WindowSize / 2.f) / Zoom + GetPosition();
     }
 
     void DrawRect(SDL_FRect rect) {

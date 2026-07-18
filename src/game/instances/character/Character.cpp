@@ -68,7 +68,7 @@ void GAME_Character::MoveTo(Vector2i tile_position) {
     if (Arena->CanMoveTo(tile_position) && tile_position != m_TilePosition) {
 
         m_TilePosition = tile_position;
-        Position = Vector2(tile_position.X + tile_position.Y, tile_position.Y - tile_position.X) * Arena->GetTileSize();
+        SetPosition(Vector2(tile_position.X + tile_position.Y, tile_position.Y - tile_position.X) * Arena->GetTileSize());
     }
 
     m_Actions--;
@@ -113,7 +113,7 @@ void GAME_Character::_Draw() {
     GAME_Camera* CurrentCamera = m_DisplayManager->GetCurrentCamera();
     Vector2 TextureSize = m_TextureAsset->TextureSize.ToVector2();
 
-    Vector2 CharacterPosition = Vector2(Position.X - TextureSize.X / 2, Position.Y - TextureSize.Y);
+    Vector2 CharacterPosition = Vector2(GetPosition().X - TextureSize.X / 2, GetPosition().Y - TextureSize.Y);
     Vector2 CharacterSize = Vector2(TextureSize.X, TextureSize.Y);
 
     CurrentCamera->TransformToCameraView(CharacterPosition, CharacterSize);
