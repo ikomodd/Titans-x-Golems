@@ -3,6 +3,9 @@
 #include <string>
 #include <SDL3/SDL.h>
 
+#include "baseplate/data_models/color/Color4.hpp"
+#include "baseplate/data_models/color/Color4Float.hpp"
+
 #include "game/managers/display/Display.hpp"
 #include "game/instances/camera/Camera.hpp"
 
@@ -20,6 +23,8 @@ protected:
     std::string m_SourcePath = "";
 
 public:
+
+    Color4 BackgroundColor = Color4::TRANSPARENT;
 
     GAME_AssetData() {
 

@@ -60,8 +60,6 @@ bool GAME_Arena::CanMoveTo(Vector2i tile) {
 
     bool IsValid = false;
 
-    
-
     // Ve se o tile é valido
     for (auto& [tile_position, tile_id] : m_Tilemap)  {
 
@@ -110,7 +108,7 @@ void GAME_Arena::BuildArena() {
 
     LoadTexture(Data["texture_path"]);
 
-    LoadShader("assets/shaders/block/BlockShader.vert", "assets/shaders/block/BlockShader.frag");
+    LoadShader("assets/shaders/BasicVertex.vert", "assets/shaders/block/BlockShader.frag");
 
     m_DisplayManager->GetCurrentCamera()->SetPosition(Vector2((Data["map"][0].size() - 1) * m_TileSize.X, 0));
 

@@ -48,7 +48,7 @@ void GAME_Character::BuildCharacter() {
     m_Actions = m_ActionsQuantity + 1; // + 1 porque tem que conciderar o MoveTo quando o character é criado
 
     LoadTexture(Data["texture_path"]);
-    LoadShader("assets/shaders/character/CharacterShader.vert", "assets/shaders/character/CharacterShader.frag");
+    LoadShader("assets/shaders/BasicVertex.vert", "assets/shaders/texture/TextureShader.frag");
 
     for (auto& [key, value] : Data["motion_directions"].items()) {
 
@@ -123,6 +123,11 @@ void GAME_Character::_Draw() {
 
     GLint ProjectionLoc = glGetUniformLocation(m_ShaderAsset->Program, "uProjection");
     glUniformMatrix4fv(ProjectionLoc, 1, GL_FALSE, glm::value_ptr(m_DisplayManager->GetProjection()));
+
+    //nesse contexto é inultil, mas manti para uma futura implementação
+    Color4f BackgroundColorNormalized = BackgroundColor.Normalize();
+    GLint BackgroundColorLoc = glGetUniformLocation(m_ShaderAsset->Program, "uBackgroundColor");
+    glUniform4f(BackgroundColorLoc, BackgroundColorNormalized.R, BackgroundColorNormalized.G, BackgroundColorNormalized.B, BackgroundColorNormalized.A);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_TextureAsset->Texture);

@@ -19,6 +19,9 @@ add_executable(Game
     src/game/managers/asset/Asset.cpp
     src/game/instances/character/titan/Titan.cpp
     src/baseplate/inheritances/transform/Transform.cpp
+    src/game/instances/health_bar/HealthBar.cpp
+    src/baseplate/data_models/color/Color4.cpp
+
 )
 
 find_package(SDL3 CONFIG REQUIRED)
