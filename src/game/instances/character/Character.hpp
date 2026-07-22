@@ -1,13 +1,13 @@
 #pragma once
 
 #include "baseplate/instances/node2d/Node2D.hpp"
-#include "game/inheritances/asset_data/AssetData.hpp"
+#include "baseplate/inheritances/asset_data/AssetData.hpp"
 
 #include "baseplate/data_models/vector/Vector2Int.hpp"
 
 class GAME_Arena;
 
-class GAME_Character : public BSPLT_Node2D, private GAME_AssetData {
+class GAME_Character : public BSPLT_Node2D, private BSPLT_AssetData {
 private:
 
     std::string m_SourcePath;

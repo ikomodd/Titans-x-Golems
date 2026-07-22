@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 #include "baseplate/instances/node2d/Node2D.hpp"
-#include "game/inheritances/asset_data/AssetData.hpp"
+#include "baseplate/inheritances/asset_data/AssetData.hpp"
 
 #include "baseplate/data_models/vector/Vector2.hpp"
 #include "baseplate/data_models/vector/Vector2Int.hpp"
@@ -23,7 +23,7 @@ struct ARENA_Tile {
     ARENA_Tile(Vector2 source_position, bool obstacle) : SourcePosition(source_position), Obstacle(obstacle) {}
 };
 
-class GAME_Arena : public BSPLT_Node2D, private GAME_AssetData {
+class GAME_Arena : public BSPLT_Node2D, private BSPLT_AssetData {
 private:
 
     unsigned int m_CurrentRound = 1;

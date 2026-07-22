@@ -3,7 +3,7 @@
     "name": "Frog",
     "description": "2a praga",
 
-    "texture_path": "",
+    "texture_name": "",
 
     "health": 80.0,
     "shield": 4.0,

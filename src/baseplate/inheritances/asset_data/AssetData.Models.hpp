@@ -12,7 +12,13 @@
 
 //
 
-struct ASSET_TextureAsset {
+struct ASSET_AssetModel {
+
+    ASSET_AssetModel() {}
+    virtual ~ASSET_AssetModel() {}
+};
+
+struct ASSET_TextureAsset : public ASSET_AssetModel {
 
     GLuint Texture;
     Vector2i TextureSize = 0;
@@ -50,7 +56,7 @@ struct ASSET_TextureAsset {
 
 //
 
-struct ASSET_ShaderAsset {
+struct ASSET_ShaderAsset : public ASSET_AssetModel {
 
     GLuint Program;
 

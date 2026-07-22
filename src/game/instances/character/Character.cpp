@@ -47,8 +47,8 @@ void GAME_Character::BuildCharacter() {
 
     m_Actions = m_ActionsQuantity + 1; // + 1 porque tem que conciderar o MoveTo quando o character é criado
 
-    LoadTexture(Data["texture_path"]);
-    LoadShader("assets/shaders/BasicVertex.vert", "assets/shaders/texture/TextureShader.frag");
+    DefineTextureAsset(Data["texture_name"]);
+    DefineShaderAsset("texture_shader");
 
     for (auto& [key, value] : Data["motion_directions"].items()) {
 

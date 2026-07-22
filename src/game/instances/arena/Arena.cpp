@@ -106,9 +106,9 @@ void GAME_Arena::BuildArena() {
 
     m_TileOffset = Vector2(Data["tile_offset"][0], Data["tile_offset"][1]);
 
-    LoadTexture(Data["texture_path"]);
+    DefineTextureAsset(Data["texture_name"]);
 
-    LoadShader("assets/shaders/BasicVertex.vert", "assets/shaders/block/BlockShader.frag");
+    DefineShaderAsset("block_shader");
 
     m_DisplayManager->GetCurrentCamera()->SetPosition(Vector2((Data["map"][0].size() - 1) * m_TileSize.X, 0));
 

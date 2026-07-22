@@ -3,7 +3,7 @@
     "name": "Arena 1",
     "description": "Arena inicial teste",
 
-    "texture_path": "assets/Block.png",
+    "texture_name": "block_texture",
 
     "tile_size": [8, 8],
     "tile_source_size": [16, 32],

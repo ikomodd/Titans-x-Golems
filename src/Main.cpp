@@ -4,11 +4,11 @@
 #include <SDL3_image/SDL_image.h>
 
 #include "baseplate/manager/Manager.hpp"
+#include "baseplate/inheritances/asset_data/AssetData.hpp"
 
 #include "game/managers/core/Core.hpp"
 #include "game/managers/display/Display.hpp"
 #include "game/managers/state/State.hpp"
-#include "game/managers/asset/Asset.hpp"
 
 #include "game/states/main_state/MainState.hpp"
 
@@ -22,9 +22,17 @@ int main() {
     GAME_CoreManager& Core = BSPLT_Manager<GAME_CoreManager>::Get();
     GAME_DisplayManager& Display = BSPLT_Manager<GAME_DisplayManager>::Get();
     GAME_StateManager& State = BSPLT_Manager<GAME_StateManager>::Get();
-    GAME_AssetManager& Asset = BSPLT_Manager<GAME_AssetManager>::Get();
 
     BSPLT_iManager::InitManagers();
+
+    // Inicia Assets
+
+    BSPLT_AssetData::CreateTextureAsset("block_texture", "assets/textures/Block.png");
+    BSPLT_AssetData::CreateTextureAsset("undefined_texture", "assets/textures/UndefinedTexture.png");
+
+    BSPLT_AssetData::CreateShaderAsset("block_shader",  "assets/shaders/BasicVertex.vert", "assets/shaders/block/BlockShader.frag");
+    BSPLT_AssetData::CreateShaderAsset("texture_shader", "assets/shaders/BasicVertex.vert", "assets/shaders/texture/TextureShader.frag");
+    BSPLT_AssetData::CreateShaderAsset("color_shader",   "assets/shaders/BasicVertex.vert", "assets/shaders/color/ColorShader.frag");
 
     // Cena inicial
 
