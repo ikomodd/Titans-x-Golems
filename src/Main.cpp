@@ -29,6 +29,7 @@ int main() {
 
     BSPLT_AssetData::CreateTextureAsset("block_texture", "assets/textures/Block.png");
     BSPLT_AssetData::CreateTextureAsset("undefined_texture", "assets/textures/UndefinedTexture.png");
+    BSPLT_AssetData::CreateTextureAsset("character_standart", "assets/textures/CharacterStandart.png");
 
     BSPLT_AssetData::CreateShaderAsset("block_shader",  "assets/shaders/BasicVertex.vert", "assets/shaders/block/BlockShader.frag");
     BSPLT_AssetData::CreateShaderAsset("texture_shader", "assets/shaders/BasicVertex.vert", "assets/shaders/texture/TextureShader.frag");
