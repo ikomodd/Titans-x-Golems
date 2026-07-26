@@ -9,6 +9,8 @@
 #include "game/instances/character/golem/Golem.hpp"
 #include "game/instances/character/titan/Titan.hpp"
 
+// [TODO] Esse arquivo ta muito grande e bem que poderia ser fragmentado
+
 bool GAME_Arena::TestTileClicked(Vector2 click_position, Vector2i tile_position) {
 
     // OBS: Esse bloco de codigo foi feito pela IA Claude. Sorry, geometria não é comigo.
@@ -114,6 +116,8 @@ void GAME_Arena::BuildArena() {
 
     // Converte o Tileset em dictionary JSON para o vetor de m_Tileset
 
+    m_Tileset.clear();
+
     for (auto& [key, data] : Data["tileset"].items()) {
 
         int Id = data["id"];
@@ -125,6 +129,8 @@ void GAME_Arena::BuildArena() {
 
     // Converte o Tilemap em array JSON para o vetor 1D do m_Tilemap
 
+    m_Tilemap.clear();
+
     for (size_t y = 0; y < Data["map"].size(); y++) {
         for (size_t x = 0; x < Data["map"][y].size(); x++) {
 
@@ -134,6 +140,29 @@ void GAME_Arena::BuildArena() {
                 m_Tilemap.emplace_back(Vector2i(x, y), TileId); // Cria valor X
         }
     }
+
+    // Adiciona os Characters na arena
+
+    if (!Builded) {
+
+        for (auto [key, character] : Data["characters"].items()) {
+
+            std::string Type = character["type"];
+            std::string Path = character["source"];
+            Vector2i TilePosition = Vector2i((int)character["position"][0], (int)character["position"][1]);
+
+            GAME_Character* Current = nullptr;
+
+            if (Type == "golem")
+                Current = new GAME_Golem(TilePosition, Path);
+            else if (Type == "titan") 
+                Current = new GAME_Titan(TilePosition, Path);
+
+            AddNode(Current);
+        }
+    }
+
+    Builded = true;
 }
 
 void GAME_Arena::PlayerRoundEnded() {
@@ -202,8 +231,19 @@ void GAME_Arena::_Event(SDL_Event& event) {
             }
         }
     }
-    else if (event.type == SDL_EVENT_KEY_DOWN && event.key.key == SDLK_RETURN)
-        PlayerRoundEnded();
+    else if (event.type == SDL_EVENT_KEY_DOWN) {
+
+        SDL_Keymod ModState = SDL_GetModState();
+        
+        if (event.key.key == SDLK_RETURN) // Enter pula o turno
+            PlayerRoundEnded();
+        
+        else if (ModState) {
+
+            if (SDL_KMOD_ALT && event.key.key == SDLK_F3) // Alt + F3 reinicia a arena json (menos os characters)
+                BuildArena();
+        }
+    }
 }
 
 void GAME_Arena::_Draw() {

@@ -58,7 +58,8 @@ void GAME_Titan::RunIa() {
 
         if (TileData.InTarget) {
 
-            AttackOn(m_TilePosition + TileData.Direction);
+            std::cout << "atacando em: " << TileData.Tile.ToString() << "\n";
+            AttackOn(TileData.Tile);
         }
         else {
 

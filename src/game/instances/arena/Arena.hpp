@@ -28,6 +28,8 @@ private:
 
     unsigned int m_CurrentRound = 1;
 
+    bool Builded = false;
+
     Vector2 m_TileSize = 0;
     Vector2 m_TileSourceSize = 0;
     Vector2 m_TileOffset = 0;

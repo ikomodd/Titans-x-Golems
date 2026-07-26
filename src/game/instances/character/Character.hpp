@@ -18,7 +18,6 @@ protected:
     float m_Shield = 0.f;
 
     float m_Damage = 0.f;
-    float m_DamageVariation = 0.f;
 
     unsigned int m_Actions = 0;
     unsigned int m_ActionsQuantity = 0;

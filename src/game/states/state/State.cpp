@@ -6,6 +6,8 @@ void GAME_GameState::Initialize() {
 
     _Ready();
 
+    m_Initialized = true;
+
     auto LinearChildren = GetLinearChildren();
 
     for (BSPLT_Node* node : LinearChildren) {
@@ -16,6 +18,4 @@ void GAME_GameState::Initialize() {
     }
 
     std::cout << " }\n[GAME_GameState] State inicializado com sucesso\n";
-
-    m_Initialized = true;
 }

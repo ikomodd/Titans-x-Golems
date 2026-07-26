@@ -35,6 +35,11 @@ bool GAME_Character::TileIsInAttackDirections(Vector2i tile) {
 void GAME_Character::BuildCharacter() {
 
     std::ifstream File("../" + m_SourcePath);
+    if (!File.is_open()) {
+        std::cerr << "[GAME_Character] Erro ao abrir o arquivo: " << m_SourcePath << "\n";
+        return;
+    }
+
     nlohmann::json Data = nlohmann::json::parse(File);
 
     Name = Data["id"];
@@ -42,7 +47,6 @@ void GAME_Character::BuildCharacter() {
     m_Health          = Data["health"];
     m_Shield          = Data["shield"];
     m_Damage          = Data["damage"];
-    m_DamageVariation = Data["damage_variation"];
     m_ActionsQuantity = Data["actions"];
 
     m_Actions = m_ActionsQuantity + 1; // + 1 porque tem que conciderar o MoveTo quando o character é criado
@@ -79,9 +83,7 @@ void GAME_Character::AttackOn(Vector2i tile_position) {
 
     GAME_Arena* Arena = GetParent<GAME_Arena>();
 
-    float CurrentDamage = m_Damage + m_DamageVariation; // precisa de um random pra m_DamageVariation
-
-    Arena->AttackTile(tile_position, CurrentDamage);
+    Arena->AttackTile(tile_position, m_Damage);
 
     m_Actions--;
 }
@@ -89,11 +91,12 @@ void GAME_Character::AttackOn(Vector2i tile_position) {
 void GAME_Character::GetDamage(float damage) {
 
     float CurrentDamage = damage - m_Shield;
+    if (CurrentDamage < 0) CurrentDamage = 0;
     if (m_Shield > 0) m_Shield--;
 
     m_Health -= CurrentDamage;
 
-    std::cout << m_Health << "\n";
+    std::cout << "Character: " << Name << " foi atacado; Health: " << m_Health << " Shield: " << m_Shield << "\n";
 
     if (m_Health <= 0)
         Destroy();

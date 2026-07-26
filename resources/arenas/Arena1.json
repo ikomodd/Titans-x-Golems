@@ -13,6 +13,11 @@
         {"id": 1, "name": "block", "position": [0.0, 0.0], "obstacle": false}
     ],
 
+    "characters": [
+        {"type": "golem", "source": "resources/characters/golems/Plague2.json", "position": [0, 0]},
+        {"type": "titan", "source": "resources/characters/titans/Testiel.json", "position": [7, 7]}
+    ],
+
     "map": [
         [1, 1, 1, 1, 1, 1, 1, 1],
         [1, 1, 1, 1, 1, 1, 1, 1],

@@ -29,8 +29,9 @@ void BSPLT_Children::AddNode(BSPLT_Node* node) {
     GAME_StateManager& StateManager = BSPLT_Manager<GAME_StateManager>::Get();
     GAME_GameState* CurrentState = StateManager.GetCurrentState();
 
-    if (CurrentState->IsInitialized())
+    if (CurrentState->IsInitialized()) {
         Node->_Ready();
+    }
 }
 
 void BSPLT_Children::RemoveNode(BSPLT_Node* node) {
