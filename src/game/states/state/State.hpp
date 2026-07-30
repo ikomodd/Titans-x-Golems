@@ -2,16 +2,12 @@
 
 #include "baseplate/instances/node/Node.hpp"
 
-class GAME_GameState : public BSPLT_Node {
+class GAME_GameState : public baseplate::Node {
 private:
-
-    bool m_Initialized = false;
 
 public:
 
-    bool IsInitialized() { return m_Initialized; }
+    void _Initialize() override;
 
-    void Initialize();
-
-    GAME_GameState(const char* name) : BSPLT_Node(name) {}
+    GAME_GameState(const char* name) : baseplate::Node(name) {}
 };

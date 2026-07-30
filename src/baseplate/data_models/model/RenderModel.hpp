@@ -7,22 +7,25 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-struct BSPLT_GLM_RenderModel {
-private:
+namespace baseplate::base_glm {
 
-    glm::mat4 Model = glm::mat4(1.0f);
+    struct RenderModel {
+    private:
 
-public:
+        glm::mat4 Model = glm::mat4(1.0f);
 
-    BSPLT_GLM_RenderModel(Vector2 position, Vector2 size) {
+    public:
 
-        Model = glm::translate(Model, glm::vec3(position.X, position.Y, 0.0f));
-        Model = glm::scale(Model, glm::vec3(size.X, size.Y, 1.0f));
-    }
+        RenderModel(baseplate::Vector2 position, baseplate::Vector2 size) {
 
-    void Bind(GLuint program, const char* uniform_name = "uModel") {
+            Model = glm::translate(Model, glm::vec3(position.X, position.Y, 0.0f));
+            Model = glm::scale(Model, glm::vec3(size.X, size.Y, 1.0f));
+        }
 
-        GLint UniformLocation = glGetUniformLocation(program, uniform_name);
-        glUniformMatrix4fv(UniformLocation, 1, GL_FALSE, glm::value_ptr(Model));
-    }
-};
+        void Bind(GLuint program, const char* uniform_name = "uModel") {
+
+            GLint UniformLocation = glGetUniformLocation(program, uniform_name);
+            glUniformMatrix4fv(UniformLocation, 1, GL_FALSE, glm::value_ptr(Model));
+        }
+    };
+}

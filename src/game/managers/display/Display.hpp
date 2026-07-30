@@ -12,7 +12,7 @@
 
 class GAME_Camera;
 
-class GAME_DisplayManager : public BSPLT_Manager<GAME_DisplayManager> {
+class GAME_DisplayManager : public baseplate::Manager<GAME_DisplayManager> {
 private:
 
     float m_Vertices[24] = {
@@ -28,26 +28,20 @@ private:
 
     GLuint VAO, VBO;
 
-    GAME_DisplayManager() : BSPLT_Manager<GAME_DisplayManager>("display_manager") {}
-    friend class BSPLT_Manager<GAME_DisplayManager>;
+    GAME_DisplayManager() : baseplate::Manager<GAME_DisplayManager>("display_manager") {}
+    friend class baseplate::Manager<GAME_DisplayManager>;
     friend class GAME_Camera;
 
-    Vector2 m_WindowSize = Vector2(800.f, 600.f);
+    baseplate::Vector2 m_WindowSize = baseplate::Vector2(800.f, 600.f);
 
     SDL_Window* m_Window = nullptr;
     SDL_GLContext m_Context = nullptr;
-
-    GAME_Camera* m_CurrentCamera = nullptr;
 
     glm::mat4 m_Projection;
 
 public:
 
-    GAME_Camera* GetCurrentCamera() {
-        return m_CurrentCamera;
-    }
-
-    Vector2 GetWindowSize() {
+    baseplate::Vector2 GetWindowSize() {
         return m_WindowSize;
     }
 

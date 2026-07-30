@@ -7,7 +7,8 @@
 void GAME_StateManager::PlayState(GAME_GameState* state) {
 
     StateStack.Push(state);
-    state->Initialize();
+
+    state->_Initialize();
 }
 
 void GAME_StateManager::CloseCurrentState() {

@@ -10,18 +10,17 @@ add_executable(Game
     src/game/managers/core/Core.cpp
     src/game/managers/display/Display.cpp
     src/game/managers/state/State.cpp
-    src/baseplate/inheritances/children/Children.cpp
     src/game/states/main_state/MainState.cpp
     src/game/states/state/State.cpp
     src/game/instances/arena/Arena.cpp
-    src/baseplate/data_models/vector/Vector2.cpp
     src/game/instances/character/Character.cpp
     src/game/instances/character/titan/Titan.cpp
-    src/baseplate/inheritances/transform/Transform.cpp
     src/game/instances/health_bar/HealthBar.cpp
-    src/baseplate/data_models/color/Color4.cpp
-
 )
+
+# LEMBRA DE TIRAR ISSO E O "clang_rt.asan_dynamic-x86_64.dll" DO BUILD!!!!!!!!!!!!!!
+#target_compile_options(Game PRIVATE -fsanitize=address,undefined -fno-omit-frame-pointer -g)
+#target_link_options(Game PRIVATE -fsanitize=address,undefined)
 
 find_package(SDL3 CONFIG REQUIRED)
 find_package(SDL3_image CONFIG REQUIRED)

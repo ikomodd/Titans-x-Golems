@@ -1,44 +1,70 @@
 #pragma once
 
+#include "../../instances/node/iNode.hpp"
 #include "../../data_models/vector/Vector2.hpp"
 
-class BSPLT_Node;
+namespace baseplate {
 
-class BSPLT_Transform2D {
-private:
+    class Transform2D {
+    private:
 
-    Vector2 m_LocalPosition = 0;
-    Vector2 m_GlobalPosition = 0;
-    
-    Vector2 m_Size = 0;
+        baseplate::Vector2 mLocalPosition = 0;
+        baseplate::Vector2 mGlobalPosition = 0;
+        
+        baseplate::Vector2 mSize = 0;
 
-public:
+    public:
 
-    BSPLT_Transform2D() {}
+        Transform2D() {}
 
-    // Get
+        // Get
 
-    Vector2 GetPosition() {
+        Vector2 GetPosition() {
 
-        return m_LocalPosition;
-    }
+            return mLocalPosition;
+        }
 
-    Vector2 GetGlobalPosition() {
+        Vector2 GetGlobalPosition() {
 
-        return m_GlobalPosition;
-    }
+            return mGlobalPosition;
+        }
 
-    Vector2 GetSize() {
+        Vector2 GetSize() {
 
-        return m_Size;
-    }
+            return mSize;
+        }
 
-    // Set
+        // Set
 
-    void SetPosition(Vector2 position);
-    void SetSize(Vector2 size);
+        void SetPosition(baseplate::Vector2 position) {
 
-private:
+            mLocalPosition = position;
+            // UpdateTransform();
+        }
 
-    void UpdateTransform();
-};
+        void SetSize(baseplate::Vector2 size) {
+
+            mSize = size;
+        }
+
+    private:
+
+        // void UpdateTransform() {
+
+        //     Node2D* OwnerNode = static_cast<Node2D*>(this);
+        //     Node2D* OwnerParent = OwnerNode->GetParent()->As<Node2D>();
+
+        //     if (OwnerParent) {
+
+        //         mGlobalPosition = OwnerParent->mGlobalPosition + mLocalPosition;
+
+        //         for (auto* child : OwnerNode->GetChildren()) {
+
+        //             Node2D* ChildNode = child->As<Node2D>();
+
+        //             ChildNode->UpdateTransform();
+        //         }
+        //     }
+        // }
+    };
+}

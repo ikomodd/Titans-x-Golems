@@ -8,24 +8,29 @@
 #include "game/instances/arena/Arena.hpp"
 #include "baseplate/data_models/model/RenderModel.hpp"
 
-bool GAME_Character::TileIsInMotionDirections(Vector2i tile) {
+#include "game/managers/display/Display.hpp"
+#include "game/instances/camera/Camera.hpp"
+
+bool GAME_Character::TileIsInMotionDirections(baseplate::Vector2i tile) {
+
+    // OBS: isso serve pra verificar algo em um vector
 
     if (std::any_of(m_MotionDirections.begin(), m_MotionDirections.end(),
-    [this, tile](const Vector2i& A) {
+    [this, tile](const baseplate::Vector2i& A) {
 
-        Vector2i ActionTile = m_TilePosition + A;
+        baseplate::Vector2i ActionTile = m_TilePosition + A;
         return ActionTile.X == tile.X && ActionTile.Y == tile.Y;
     }))
         return true;
     return false;
 }
 
-bool GAME_Character::TileIsInAttackDirections(Vector2i tile) {
+bool GAME_Character::TileIsInAttackDirections(baseplate::Vector2i tile) {
 
     if (std::any_of(m_AttackDirections.begin(), m_AttackDirections.end(),
-    [this, tile](const Vector2i& A) {
+    [this, tile](const baseplate::Vector2i& A) {
 
-        Vector2i ActionTile = m_TilePosition + A;
+        baseplate::Vector2i ActionTile = m_TilePosition + A;
         return ActionTile.X == tile.X && ActionTile.Y == tile.Y;
     }))
         return true;
@@ -66,20 +71,20 @@ void GAME_Character::BuildCharacter() {
     }
 }
 
-void GAME_Character::MoveTo(Vector2i tile_position) {
+void GAME_Character::MoveTo(baseplate::Vector2i tile_position) {
 
     GAME_Arena* Arena = GetParent<GAME_Arena>();
 
     if (Arena->CanMoveTo(tile_position) && tile_position != m_TilePosition) {
 
         m_TilePosition = tile_position;
-        SetPosition(Vector2(tile_position.X + tile_position.Y, tile_position.Y - tile_position.X) * Arena->GetTileSize());
+        SetPosition(baseplate::Vector2(tile_position.X + tile_position.Y, tile_position.Y - tile_position.X) * Arena->GetTileSize());
     }
 
     m_Actions--;
 }
 
-void GAME_Character::AttackOn(Vector2i tile_position) {
+void GAME_Character::AttackOn(baseplate::Vector2i tile_position) {
 
     GAME_Arena* Arena = GetParent<GAME_Arena>();
 
@@ -106,39 +111,41 @@ void GAME_Character::GetDamage(float damage) {
 
 void GAME_Character::_Ready() {
 
+    mDisplayManager = &baseplate::Manager<GAME_DisplayManager>::Get();
+
     BuildCharacter();
     MoveTo(m_SpawnPosition);
 }
 
 void GAME_Character::_Draw() {
 
-    m_ShaderAsset->Bind();
+    mShaderAsset->Bind();
 
-    GAME_Camera* CurrentCamera = m_DisplayManager->GetCurrentCamera();
-    Vector2 TextureSize = m_TextureAsset->TextureSize.ToVector2();
+    GAME_Camera* CurrentCamera = GAME_Camera::CurrentCamera;
+    baseplate::Vector2 TextureSize = mTextureAsset->TextureSize.ToVector2();
 
-    Vector2 CharacterPosition = Vector2(GetPosition().X - TextureSize.X / 2, GetPosition().Y - TextureSize.Y);
-    Vector2 CharacterSize = Vector2(TextureSize.X, TextureSize.Y);
+    baseplate::Vector2 CharacterPosition(GetPosition().X - TextureSize.X / 2, GetPosition().Y - TextureSize.Y);
+    baseplate::Vector2 CharacterSize(TextureSize.X, TextureSize.Y);
 
     CurrentCamera->TransformToCameraView(CharacterPosition, CharacterSize);
 
-    BSPLT_GLM_RenderModel Model(CharacterPosition, CharacterSize);
-    Model.Bind(m_ShaderAsset->Program, "uModel");
+    baseplate::base_glm::RenderModel Model(CharacterPosition, CharacterSize);
+    Model.Bind(mShaderAsset->Program, "uModel");
 
-    GLint ProjectionLoc = glGetUniformLocation(m_ShaderAsset->Program, "uProjection");
-    glUniformMatrix4fv(ProjectionLoc, 1, GL_FALSE, glm::value_ptr(m_DisplayManager->GetProjection()));
+    GLint ProjectionLoc = glGetUniformLocation(mShaderAsset->Program, "uProjection");
+    glUniformMatrix4fv(ProjectionLoc, 1, GL_FALSE, glm::value_ptr(mDisplayManager->GetProjection()));
 
     //nesse contexto é inultil, mas manti para uma futura implementação
-    Color4f BackgroundColorNormalized = BackgroundColor.Normalize();
-    GLint BackgroundColorLoc = glGetUniformLocation(m_ShaderAsset->Program, "uBackgroundColor");
+    baseplate::Color4f BackgroundColorNormalized = BackgroundColor.Normalize();
+    GLint BackgroundColorLoc = glGetUniformLocation(mShaderAsset->Program, "uBackgroundColor");
     glUniform4f(BackgroundColorLoc, BackgroundColorNormalized.R, BackgroundColorNormalized.G, BackgroundColorNormalized.B, BackgroundColorNormalized.A);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_TextureAsset->Texture);
+    glBindTexture(GL_TEXTURE_2D, mTextureAsset->Texture);
 
-    GLint TextureLoc = glGetUniformLocation(m_ShaderAsset->Program, "uTexture");
+    GLint TextureLoc = glGetUniformLocation(mShaderAsset->Program, "uTexture");
     glUniform1i(TextureLoc, 0);
 
-    glBindVertexArray(m_DisplayManager->GetVAO());
+    glBindVertexArray(mDisplayManager->GetVAO());
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }

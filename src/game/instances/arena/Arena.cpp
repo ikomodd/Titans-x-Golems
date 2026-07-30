@@ -9,9 +9,12 @@
 #include "game/instances/character/golem/Golem.hpp"
 #include "game/instances/character/titan/Titan.hpp"
 
+#include "game/managers/display/Display.hpp"
+#include "game/instances/camera/Camera.hpp"
+
 // [TODO] Esse arquivo ta muito grande e bem que poderia ser fragmentado
 
-bool GAME_Arena::TestTileClicked(Vector2 click_position, Vector2i tile_position) {
+bool GAME_Arena::TestTileClicked(baseplate::Vector2 click_position, baseplate::Vector2i tile_position) {
 
     // OBS: Esse bloco de codigo foi feito pela IA Claude. Sorry, geometria não é comigo.
 
@@ -58,7 +61,7 @@ void GAME_Arena::UnselectGolem() {
     m_CurrentGolem = nullptr;
 }
 
-bool GAME_Arena::CanMoveTo(Vector2i tile) {
+bool GAME_Arena::CanMoveTo(baseplate::Vector2i tile) {
 
     bool IsValid = false;
 
@@ -84,7 +87,7 @@ bool GAME_Arena::CanMoveTo(Vector2i tile) {
     return true;
 }
 
-void GAME_Arena::AttackTile(Vector2i tile, float damage) {
+void GAME_Arena::AttackTile(baseplate::Vector2i tile, float damage) {
 
     for (auto* node : GetChildren()) {
 
@@ -103,16 +106,16 @@ void GAME_Arena::BuildArena() {
     std::ifstream File("../" + m_JsonPath);
     nlohmann::json Data = nlohmann::json::parse(File);
 
-    m_TileSize = Vector2(Data["tile_size"][0], Data["tile_size"][1]);
-    m_TileSourceSize = Vector2(Data["tile_source_size"][0], Data["tile_source_size"][1]);
+    m_TileSize = baseplate::Vector2(Data["tile_size"][0], Data["tile_size"][1]);
+    m_TileSourceSize = baseplate::Vector2(Data["tile_source_size"][0], Data["tile_source_size"][1]);
 
-    m_TileOffset = Vector2(Data["tile_offset"][0], Data["tile_offset"][1]);
+    m_TileOffset = baseplate::Vector2(Data["tile_offset"][0], Data["tile_offset"][1]);
 
     DefineTextureAsset(Data["texture_name"]);
 
     DefineShaderAsset("block_shader");
 
-    m_DisplayManager->GetCurrentCamera()->SetPosition(Vector2((Data["map"][0].size() - 1) * m_TileSize.X, 0));
+    GAME_Camera::CurrentCamera->SetPosition(baseplate::Vector2((Data["map"][0].size() - 1) * m_TileSize.X, 0));
 
     // Converte o Tileset em dictionary JSON para o vetor de m_Tileset
 
@@ -121,7 +124,7 @@ void GAME_Arena::BuildArena() {
     for (auto& [key, data] : Data["tileset"].items()) {
 
         int Id = data["id"];
-        Vector2 SourcePosition = Vector2(data["position"][0], data["position"][1]);
+        baseplate::Vector2 SourcePosition = baseplate::Vector2(data["position"][0], data["position"][1]);
         bool Obstacle = data["obstacle"];
 
         m_Tileset[Id] = new ARENA_Tile(SourcePosition, Obstacle);
@@ -137,7 +140,7 @@ void GAME_Arena::BuildArena() {
             int TileId = Data["map"][y][x];
 
             if (m_Tileset.contains(TileId))
-                m_Tilemap.emplace_back(Vector2i(x, y), TileId); // Cria valor X
+                m_Tilemap.emplace_back(baseplate::Vector2i(x, y), TileId); // Cria valor X
         }
     }
 
@@ -145,11 +148,13 @@ void GAME_Arena::BuildArena() {
 
     if (!Builded) {
 
+        std::cout << "Durante Build da arena: " << this << "\n";
+
         for (auto [key, character] : Data["characters"].items()) {
 
             std::string Type = character["type"];
             std::string Path = character["source"];
-            Vector2i TilePosition = Vector2i((int)character["position"][0], (int)character["position"][1]);
+            baseplate::Vector2i TilePosition = baseplate::Vector2i((int)character["position"][0], (int)character["position"][1]);
 
             GAME_Character* Current = nullptr;
 
@@ -179,12 +184,14 @@ void GAME_Arena::PlayerRoundEnded() {
         else if (Golem)
             Golem->m_Actions = Golem->m_ActionsQuantity;
     }
-    m_CurrentRound++;
+    mCurrentRound++;
 }
 
 //
 
 void GAME_Arena::_Ready() {
+
+    mDisplayManager = &baseplate::Manager<GAME_DisplayManager>::Get();
 
     BuildArena();
 }
@@ -193,7 +200,7 @@ void GAME_Arena::_Event(SDL_Event& event) {
 
     if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT) {
 
-        Vector2 ClickPosition = m_DisplayManager->GetCurrentCamera()->GetWorldPosition(Vector2(event.button.x, event.button.y));
+        baseplate::Vector2 ClickPosition = GAME_Camera::CurrentCamera->GetWorldPosition(baseplate::Vector2(event.button.x, event.button.y));
 
         // Passa por todos os tiles
         for (auto& [tile_position, tile_id] : m_Tilemap) {
@@ -248,34 +255,34 @@ void GAME_Arena::_Event(SDL_Event& event) {
 
 void GAME_Arena::_Draw() {
 
-    GAME_Camera* CurrentCamera = m_DisplayManager->GetCurrentCamera();
-    m_ShaderAsset->Bind();
+    GAME_Camera* CurrentCamera = GAME_Camera::CurrentCamera;
+    mShaderAsset->Bind();
 
     for (auto [tile_position, tile_id] : m_Tilemap) {
 
-        Vector2 TilePosition = Vector2(
+        baseplate::Vector2 TilePosition(
             GetPosition().X + ((float)tile_position.X * m_TileSize.X + (float)tile_position.Y * m_TileSize.Y) - m_TileOffset.X,
             GetPosition().Y + ((float)tile_position.Y * m_TileSize.Y - (float)tile_position.X * m_TileSize.X) - m_TileOffset.Y
         );
 
-        Vector2 TileSize = Vector2(
+        baseplate::Vector2 TileSize(
             m_TileSourceSize.X,
             m_TileSourceSize.Y
         );
 
         CurrentCamera->TransformToCameraView(TilePosition, TileSize);
 
-        BSPLT_GLM_RenderModel Model(TilePosition, TileSize);
+        baseplate::base_glm::RenderModel Model(TilePosition, TileSize);
 
         //
 
-        GLint MotionTileLoc = glGetUniformLocation(m_ShaderAsset->Program, "uIsMotionTile");
+        GLint MotionTileLoc = glGetUniformLocation(mShaderAsset->Program, "uIsMotionTile");
         if (m_CurrentGolem && m_CurrentGolem->TileIsInMotionDirections(tile_position))
             glUniform1i(MotionTileLoc, 1);
         else
             glUniform1i(MotionTileLoc, 0);
 
-        GLint AttackTileLoc = glGetUniformLocation(m_ShaderAsset->Program, "uIsAttackTile");
+        GLint AttackTileLoc = glGetUniformLocation(mShaderAsset->Program, "uIsAttackTile");
         if (m_CurrentGolem && m_CurrentGolem->TileIsInAttackDirections(tile_position))
             glUniform1i(AttackTileLoc, 1);
         else
@@ -283,18 +290,18 @@ void GAME_Arena::_Draw() {
 
         //
 
-        GLint ProjectionLoc = glGetUniformLocation(m_ShaderAsset->Program, "uProjection");
-        glUniformMatrix4fv(ProjectionLoc, 1, GL_FALSE, glm::value_ptr(m_DisplayManager->GetProjection()));
+        GLint ProjectionLoc = glGetUniformLocation(mShaderAsset->Program, "uProjection");
+        glUniformMatrix4fv(ProjectionLoc, 1, GL_FALSE, glm::value_ptr(mDisplayManager->GetProjection()));
 
-        Model.Bind(m_ShaderAsset->Program, "uModel");
+        Model.Bind(mShaderAsset->Program, "uModel");
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_TextureAsset->Texture);
+        glBindTexture(GL_TEXTURE_2D, mTextureAsset->Texture);
 
-        GLint TextureLoc = glGetUniformLocation(m_ShaderAsset->Program, "uTexture");
+        GLint TextureLoc = glGetUniformLocation(mShaderAsset->Program, "uTexture");
         glUniform1i(TextureLoc, 0);
 
-        glBindVertexArray(m_DisplayManager->GetVAO());
+        glBindVertexArray(mDisplayManager->GetVAO());
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 } 

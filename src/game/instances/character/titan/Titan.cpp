@@ -5,20 +5,22 @@
 
 #include "../golem/Golem.hpp"
 
+// [TODO] Todo esse sistema ta errado
+
 TITAN_TileData GAME_Titan::GetTileData() {
 
     int MinLengthOfTileToGolemSquared = INT_MAX;
     GAME_Golem* NearestGolemOfTile = nullptr;
-    Vector2i NearestTileToGolem;
+    baseplate::Vector2i NearestTileToGolem;
 
-    for (Vector2i tile : m_AttackDirections) {
+    for (baseplate::Vector2i tile : m_AttackDirections) {
 
-        Vector2i TileInWorld = m_TilePosition + tile;
+        baseplate::Vector2i TileInWorld = m_TilePosition + tile;
 
         int MinLengthSquared = INT_MAX;
         GAME_Golem* NearestGolem = nullptr;
 
-        for (auto* node : GetParent()->GetChildren()) {
+        for (auto* node : GetParent<iNode>()->As<baseplate::Node>()->GetChildren()) {
 
             GAME_Golem* Golem = node->As<GAME_Golem>();
             if (Golem) {
@@ -41,7 +43,7 @@ TITAN_TileData GAME_Titan::GetTileData() {
     }
 
     bool InTarget = (MinLengthOfTileToGolemSquared == 0);
-    Vector2i Direction = (NearestGolemOfTile->GetTilePosition().ToVector2() - NearestTileToGolem.ToVector2()).Normalize().Sign().ToVector2i();
+    baseplate::Vector2i Direction = (NearestGolemOfTile->GetTilePosition().ToVector2() - NearestTileToGolem.ToVector2()).Normalize().Sign().ToVector2i();
 
     std::cout << InTarget << " " << NearestTileToGolem.ToString() << " " << Direction.ToString() << "\n";
 

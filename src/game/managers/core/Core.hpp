@@ -5,11 +5,15 @@
 
 #include "baseplate/manager/Manager.hpp"
 
-class GAME_CoreManager : public BSPLT_Manager<GAME_CoreManager> {
+class GAME_StateManager;
+
+class GAME_CoreManager : public baseplate::Manager<GAME_CoreManager> {
 private:
 
-    GAME_CoreManager() : BSPLT_Manager("core_manager") {}
-    friend class BSPLT_Manager<GAME_CoreManager>;
+    GAME_StateManager* m_StateManager = nullptr;
+
+    GAME_CoreManager() : baseplate::Manager<GAME_CoreManager>("core_manager") {}
+    friend class baseplate::Manager<GAME_CoreManager>;
 
 public:
 

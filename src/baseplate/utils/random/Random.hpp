@@ -1,9 +1,12 @@
 #include <random>
 
-int BSPLT_RandomI(int min, int max) {
+namespace baseplate {
 
-    static std::mt19937 Gen(std::random_device{}());
+    int RandomRangeI(int min, int max) {
 
-    std::uniform_int_distribution<> Distr(min, max);
-    return Distr(Gen);
+        static std::mt19937 Gen(std::random_device{}());
+
+        std::uniform_int_distribution<> Distr(min, max);
+        return Distr(Gen);
+    }
 }

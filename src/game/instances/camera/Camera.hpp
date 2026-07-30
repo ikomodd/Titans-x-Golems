@@ -4,7 +4,7 @@
 
 #include "game/managers/display/Display.hpp"
 
-class GAME_Camera : public BSPLT_Node2D {
+class GAME_Camera : public baseplate::Node2D {
 private:
 
     GAME_DisplayManager* m_DisplayManager = nullptr;
@@ -17,18 +17,20 @@ public:
 
     float Zoom;
 
-    GAME_Camera(const char* name, Vector2 position, float zoom, bool make_current) : Zoom(zoom), m_MakeCurrent(make_current), BSPLT_Node2D(name, position, 0) {}
+    inline static GAME_Camera* CurrentCamera = nullptr;
 
-    void TransformToCameraView(Vector2& node_position, Vector2& node_size) {
-        Vector2 WindowSize = m_DisplayManager->GetWindowSize();
+    GAME_Camera(const char* name, baseplate::Vector2 position, float zoom, bool make_current) : Zoom(zoom), m_MakeCurrent(make_current), baseplate::Node2D(name, position, 0) {}
 
-        node_position = Vector2(WindowSize.X / 2 + (node_position.X - GetPosition().X) * Zoom, WindowSize.Y / 2 + (node_position.Y - GetPosition().Y) * Zoom);
-        node_size = Vector2(node_size.X * Zoom, node_size.Y * Zoom);
+    void TransformToCameraView(baseplate::Vector2& node_position, baseplate::Vector2& node_size) {
+        baseplate::Vector2 WindowSize = m_DisplayManager->GetWindowSize();
+
+        node_position = baseplate::Vector2(WindowSize.X / 2 + (node_position.X - GetPosition().X) * Zoom, WindowSize.Y / 2 + (node_position.Y - GetPosition().Y) * Zoom);
+        node_size = baseplate::Vector2(node_size.X * Zoom, node_size.Y * Zoom);
     }
 
-    Vector2 GetWorldPosition(Vector2 point) {
+    baseplate::Vector2 GetWorldPosition(baseplate::Vector2 point) {
 
-        Vector2 WindowSize = m_DisplayManager->GetWindowSize();
+        baseplate::Vector2 WindowSize = m_DisplayManager->GetWindowSize();
 
         return (point - WindowSize / 2.f) / Zoom + GetPosition();
     }
@@ -47,10 +49,10 @@ public:
 
     void _Ready() override {
 
-        m_DisplayManager = &BSPLT_Manager<GAME_DisplayManager>::Get();
+        m_DisplayManager = &baseplate::Manager<GAME_DisplayManager>::Get();
         
         if (m_MakeCurrent)
-        m_DisplayManager->m_CurrentCamera = this;
+            CurrentCamera = this;
     }
 
     void _Draw() override {

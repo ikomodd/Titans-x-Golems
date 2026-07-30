@@ -19,21 +19,21 @@ int main() {
 
     // Inicia os managers
 
-    GAME_CoreManager& Core = BSPLT_Manager<GAME_CoreManager>::Get();
-    GAME_DisplayManager& Display = BSPLT_Manager<GAME_DisplayManager>::Get();
-    GAME_StateManager& State = BSPLT_Manager<GAME_StateManager>::Get();
+    GAME_CoreManager& Core = baseplate::Manager<GAME_CoreManager>::Get();
+    GAME_DisplayManager& Display = baseplate::Manager<GAME_DisplayManager>::Get();
+    GAME_StateManager& State = baseplate::Manager<GAME_StateManager>::Get();
 
-    BSPLT_iManager::InitManagers();
+    baseplate::iManager::InitManagers();
 
     // Inicia Assets
 
-    BSPLT_AssetData::CreateTextureAsset("block_texture", "assets/textures/Block.png");
-    BSPLT_AssetData::CreateTextureAsset("undefined_texture", "assets/textures/UndefinedTexture.png");
-    BSPLT_AssetData::CreateTextureAsset("character_standart", "assets/textures/CharacterStandart.png");
+    baseplate::AssetData::CreateTextureAsset("block_texture", "assets/textures/Block.png");
+    baseplate::AssetData::CreateTextureAsset("undefined_texture", "assets/textures/UndefinedTexture.png");
+    baseplate::AssetData::CreateTextureAsset("character_standart", "assets/textures/CharacterStandart.png");
 
-    BSPLT_AssetData::CreateShaderAsset("block_shader",  "assets/shaders/BasicVertex.vert", "assets/shaders/block/BlockShader.frag");
-    BSPLT_AssetData::CreateShaderAsset("texture_shader", "assets/shaders/BasicVertex.vert", "assets/shaders/texture/TextureShader.frag");
-    BSPLT_AssetData::CreateShaderAsset("color_shader",   "assets/shaders/BasicVertex.vert", "assets/shaders/color/ColorShader.frag");
+    baseplate::AssetData::CreateShaderAsset("block_shader",  "assets/shaders/BasicVertex.vert", "assets/shaders/block/BlockShader.frag");
+    baseplate::AssetData::CreateShaderAsset("texture_shader", "assets/shaders/BasicVertex.vert", "assets/shaders/texture/TextureShader.frag");
+    baseplate::AssetData::CreateShaderAsset("color_shader",   "assets/shaders/BasicVertex.vert", "assets/shaders/color/ColorShader.frag");
 
     // Cena inicial
 
@@ -44,17 +44,18 @@ int main() {
 
     while (Core.Running) {
         while (SDL_PollEvent(&Event)) {
-            BSPLT_iManager::CallEventManager(Event);
+
+            baseplate::iManager::CallEventManager(Event);
         }
 
-        BSPLT_iManager::ProcessManagers();
+        baseplate::iManager::ProcessManagers();
 
         SDL_Delay(10);
     }
 
     // Fecha
 
-    BSPLT_iManager::CloseManagers();
+    baseplate::iManager::CloseManagers();
 
     SDL_Quit();
 

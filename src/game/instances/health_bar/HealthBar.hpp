@@ -2,13 +2,17 @@
 
 #include "baseplate/instances/node2d/Node2D.hpp"
 
-class GAME_HealthBar : public BSPLT_Node2D {
+class GAME_HealthBar : public baseplate::Node2D {
 private:
+
+    using Vector2 = baseplate::Vector2;
 
     float m_FullHealth;
     float m_CurrentHealth;
 
 public:
+
+    GAME_HealthBar() : baseplate::Node2D("health_bar", 0, Vector2(2.0f, 50.0f)) {}
 
     void Update(float health);
 

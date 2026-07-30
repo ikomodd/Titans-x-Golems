@@ -1,20 +1,18 @@
 #include "State.hpp"
 
-void GAME_GameState::Initialize() {
+void GAME_GameState::_Initialize() {
 
     std::cout << "[GAME_GameState] Inicializando state: " << Name << " { ";
 
-    _Ready();
-
-    m_Initialized = true;
+    baseplate::iNode::_Initialize();
 
     auto LinearChildren = GetLinearChildren();
 
-    for (BSPLT_Node* node : LinearChildren) {
+    for (baseplate::iNode* inode : LinearChildren) {
 
-        std::cout << "Iniciando " << node->Name << "... ";
-        node->_Ready();
-        std::cout << node->Name << " finalizado; ";
+        std::cout << "Iniciando " << inode->Name << "... ";
+        inode->_Initialize();
+        std::cout << inode->Name << " finalizado; ";
     }
 
     std::cout << " }\n[GAME_GameState] State inicializado com sucesso\n";

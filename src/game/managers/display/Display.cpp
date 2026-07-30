@@ -3,11 +3,9 @@
 #include "game/managers/state/State.hpp"
 #include "game/states/state/State.hpp"
 
-#include "baseplate/data_models/vector/Vector2Int.hpp"
-
  void GAME_DisplayManager::SetWindowSize() {
 
-    Vector2i WindowSizeInt = 0;
+    baseplate::Vector2i WindowSizeInt = 0;
     SDL_GetWindowSize(m_Window, &WindowSizeInt.X, &WindowSizeInt.Y);
     m_WindowSize = WindowSizeInt.ToVector2();
 }
@@ -64,12 +62,12 @@ void GAME_DisplayManager::_Process() {
 
     glBindVertexArray(VAO);
     
-    GAME_StateManager& StateManager = BSPLT_Manager<GAME_StateManager>::Get();
+    GAME_StateManager& StateManager = baseplate::Manager<GAME_StateManager>::Get();
     auto LinearStateChildren = StateManager.GetCurrentState()->GetLinearChildren();
 
-    for (BSPLT_Node* node : LinearStateChildren) {
+    for (baseplate::iNode* inode : LinearStateChildren) {
 
-        node->_Draw();
+        inode->_Draw();
     }
 
     SDL_GL_SwapWindow(m_Window);

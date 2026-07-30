@@ -5,7 +5,7 @@
 
 void GAME_CoreManager::_Init() {
 
-
+    m_StateManager = &baseplate::Manager<GAME_StateManager>::Get();
 }
 
 void GAME_CoreManager::_Event(SDL_Event& event) {
@@ -13,37 +13,35 @@ void GAME_CoreManager::_Event(SDL_Event& event) {
     if (event.type == SDL_EVENT_QUIT)
         Running = false;
 
-    GAME_StateManager& StateManager = BSPLT_Manager<GAME_StateManager>::Get();
+    auto LinearStateChildren = m_StateManager->GetCurrentState()->GetLinearChildren();
+    for (baseplate::iNode* inode : LinearStateChildren) {
 
-    auto LinearStateChildren = StateManager.GetCurrentState()->GetLinearChildren();
-    for (BSPLT_Node* node : LinearStateChildren) {
-
-        node->_Event(event);
+        inode->_Event(event);
     }
 }
 
 void GAME_CoreManager::_Process() {
-    
-    GAME_StateManager& StateManager = BSPLT_Manager<GAME_StateManager>::Get();
 
-    auto LinearStateChildren = StateManager.GetCurrentState()->GetLinearChildren();
+    auto LinearStateChildren = m_StateManager->GetCurrentState()->GetLinearChildren();
     for (size_t i = 0; i < LinearStateChildren.size(); ) {
 
-        BSPLT_Node* Node = LinearStateChildren[i];
-        Node->_Process(0.0);
+        baseplate::iNode* iNode = LinearStateChildren[i];
+        iNode->_Process(0.0);
 
-        if (Node->m_DestroyMark) {
+        if (iNode->DestroyMark) {
 
-            for (auto* node_child : Node->GetChildren()) {
+            auto* MarkedNode = static_cast<baseplate::Node*>(iNode);
+
+            for (auto* node_child : MarkedNode->GetChildren()) {
                 node_child->Destroy();
             }
 
-            Node->GetParent()->RemoveNode(Node);
+            MarkedNode->GetParent()->As<baseplate::Node>()->RemoveNode(iNode);
             LinearStateChildren.erase(LinearStateChildren.begin() + i);
 
-            std::cout << "[GAME_Core] Node: " << Node->Name << " deletado com sucesso\n";
+            std::cout << "[GAME_Core] Node: " << iNode->Name << " deletado com sucesso\n";
 
-            delete Node;
+            delete iNode;
         }
         else i++;
     }

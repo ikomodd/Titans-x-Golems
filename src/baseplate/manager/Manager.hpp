@@ -4,82 +4,92 @@
 #include <iostream>
 #include <vector>
 
-// ---------------------------------------------------------
 
-class BSPLT_iManager {
-protected:
+namespace baseplate {
 
-    inline static std::vector<BSPLT_iManager*> m_Managers = {};
-    BSPLT_iManager() {}
-    virtual ~BSPLT_iManager() {}
+    // iManager ----------------------------------------------------
 
-public:
+    class iManager {
+    protected:
 
-    //
+        inline static std::vector<iManager*> m_Managers = {};
 
-    static void InitManagers() {
-        for (auto* manager : m_Managers) {
+        iManager() {}
+        virtual ~iManager() {}
 
-            manager->_Init();
-        }
-    }
+    public:
 
-    static void CallEventManager(SDL_Event& event) {
-        for (auto* manager : m_Managers) {
+        static void InitManagers() {
 
-            manager->_Event(event);
-        }
-    }
+            for (auto* manager : m_Managers) {
 
-    static void ProcessManagers() {
-        for (auto* manager : m_Managers) {
-
-            manager->_Process();
-        }
-    }
-
-    static void CloseManagers() {
-        for (auto* manager : m_Managers) {
-
-            manager->_Close();
-        }
-    }
-
-    //
-
-    virtual void _Init() {}
-    virtual void _Event(SDL_Event& event) {}
-    virtual void _Process() {}
-    virtual void _Close() {}
-};
-
-// [] -----------------------------------------
-
-template <typename T>
-class BSPLT_Manager : public BSPLT_iManager {
-public:
-
-    std::string Name;
-
-    //
-
-    static T& Get() {
-
-        static T ThisManager;
-        static bool Registered = false;
-
-        if (!Registered) {
-
-            m_Managers.push_back(&ThisManager);
-            Registered = true;
-
-            std::cout << "[BASEPLATE_MANAGER] Manager adicionado: " << ThisManager.Name << "\n";
+                manager->_Init();
+            }
         }
 
-        return ThisManager;
-    }
+        static void CallEventManager(SDL_Event& event) {
 
-protected:
-    
-    BSPLT_Manager(std::string name) : Name(name), BSPLT_iManager() {}
-};
+            for (auto* manager : m_Managers) {
+
+                manager->_Event(event);
+            }
+        }
+
+        static void ProcessManagers() {
+
+            for (auto* manager : m_Managers) {
+
+                manager->_Process();
+            }
+        }
+
+        static void CloseManagers() {
+
+            for (auto* manager : m_Managers) {
+
+                manager->_Close();
+            }
+        }
+
+        virtual void _Init() = 0;
+        virtual void _Event(SDL_Event& event) = 0;
+        virtual void _Process() = 0;
+        virtual void _Close() = 0;
+    };
+
+    // Manager -----------------------------------------
+
+    template <typename T>
+    class Manager : public iManager {
+    public:
+
+        std::string Name;
+
+        //
+
+        static T& Get() {
+
+            static T ThisManager;
+            static bool Registered = false;
+
+            if (!Registered) {
+
+                m_Managers.push_back(&ThisManager);
+                Registered = true;
+
+                std::cout << "[baseplate::Manager] Manager adicionado: " << ThisManager.Name << "\n";
+            }
+
+            return ThisManager;
+        }
+
+        void _Init() override {}
+        void _Event(SDL_Event& event) override {}
+        void _Process() override {}
+        void _Close() override {}
+
+    protected:
+        
+        Manager(std::string name) : Name(name), iManager() {}
+    };
+}

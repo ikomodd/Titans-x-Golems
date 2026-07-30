@@ -3,8 +3,11 @@
 #include "../node/Node.hpp"
 #include "../../inheritances/transform/Transform.hpp"
 
-class BSPLT_Node2D : public BSPLT_Node, public BSPLT_Transform2D {
-public:
+namespace baseplate {
 
-    BSPLT_Node2D(const char* name, Vector2 position, Vector2 size) : BSPLT_Node(name), BSPLT_Transform2D() {}
-};
+    class Node2D : public Node, public Transform2D {
+    public:
+
+        Node2D(const char* name, baseplate::Vector2 position, baseplate::Vector2 size) : Node(name), Transform2D() {}
+    };
+}

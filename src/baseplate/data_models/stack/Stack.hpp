@@ -2,36 +2,41 @@
 
 #include <vector>
 
-template <typename T>
-struct BSPLT_Stack {
-private:
+namespace baseplate {
 
-    std::vector<T> Content;
+    template <typename T>
+    struct Stack {
+    private:
 
-public:
+        std::vector<T> Content;
 
-    void Push(T instance) {
+    public:
 
-        Content.push_back(instance);
-    }
+    Stack() {}
 
-    void Pop() {
-        if (!Content.empty())
-            Content.pop_back();
-    }
+        void Push(T instance) {
 
-    bool IsEmpty() {
+            Content.push_back(instance);
+        }
 
-        return Content.empty();
-    }
+        void Pop() {
+            if (!Content.empty())
+                Content.pop_back();
+        }
 
-    size_t Size() {
+        bool IsEmpty() {
 
-        return Content.size();
-    }
+            return Content.empty();
+        }
 
-    T Get() {
+        size_t Size() {
 
-        return Content.back();
-    }
-};
+            return Content.size();
+        }
+
+        T Get() {
+
+            return Content.back();
+        }
+    };
+}
