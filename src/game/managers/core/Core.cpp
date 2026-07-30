@@ -3,26 +3,26 @@
 #include "game/managers/state/State.hpp"
 #include "game/states/state/State.hpp"
 
-void GAME_CoreManager::_Init() {
+void game::CoreManager::_Init() {
 
-    m_StateManager = &baseplate::Manager<GAME_StateManager>::Get();
+    mStateManager = &baseplate::Manager<StateManager>::Get();
 }
 
-void GAME_CoreManager::_Event(SDL_Event& event) {
+void game::CoreManager::_Event(SDL_Event& event) {
 
     if (event.type == SDL_EVENT_QUIT)
         Running = false;
 
-    auto LinearStateChildren = m_StateManager->GetCurrentState()->GetLinearChildren();
+    auto LinearStateChildren = mStateManager->GetCurrentState()->GetLinearChildren();
     for (baseplate::iNode* inode : LinearStateChildren) {
 
         inode->_Event(event);
     }
 }
 
-void GAME_CoreManager::_Process() {
+void game::CoreManager::_Process() {
 
-    auto LinearStateChildren = m_StateManager->GetCurrentState()->GetLinearChildren();
+    auto LinearStateChildren = mStateManager->GetCurrentState()->GetLinearChildren();
     for (size_t i = 0; i < LinearStateChildren.size(); ) {
 
         baseplate::iNode* iNode = LinearStateChildren[i];
@@ -39,7 +39,7 @@ void GAME_CoreManager::_Process() {
             MarkedNode->GetParent()->As<baseplate::Node>()->RemoveNode(iNode);
             LinearStateChildren.erase(LinearStateChildren.begin() + i);
 
-            std::cout << "[GAME_Core] Node: " << iNode->Name << " deletado com sucesso\n";
+            std::cout << "[game::CoreManager] Node: " << iNode->Name << " deletado com sucesso\n";
 
             delete iNode;
         }
@@ -47,6 +47,6 @@ void GAME_CoreManager::_Process() {
     }
 }
 
-void GAME_CoreManager::_Close() {
+void game::CoreManager::_Close() {
     
 }

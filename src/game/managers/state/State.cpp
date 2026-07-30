@@ -4,35 +4,14 @@
 
 // Controle
 
-void GAME_StateManager::PlayState(GAME_GameState* state) {
+void game::StateManager::PlayState(GAME_GameState* state) {
 
-    StateStack.Push(state);
+    mStateStack.Push(state);
 
     state->_Initialize();
 }
 
-void GAME_StateManager::CloseCurrentState() {
+void game::StateManager::CloseCurrentState() {
 
-    StateStack.Pop();
-}
-
-// Herança
-
-void GAME_StateManager::_Init() {
-
-}
-
-void GAME_StateManager::_Event(SDL_Event& event) {
-
-
-}
-
-void GAME_StateManager::_Process() {
-
-
-}
-
-void GAME_StateManager::_Close() {
-
-
+    mStateStack.Pop();
 }

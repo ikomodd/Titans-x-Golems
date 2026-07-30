@@ -11,37 +11,37 @@
 #include "game/managers/display/Display.hpp"
 #include "game/instances/camera/Camera.hpp"
 
-bool GAME_Character::TileIsInMotionDirections(baseplate::Vector2i tile) {
+bool game::Character::TileIsInMotionDirections(baseplate::Vector2i tile) {
 
     // OBS: isso serve pra verificar algo em um vector
 
-    if (std::any_of(m_MotionDirections.begin(), m_MotionDirections.end(),
+    if (std::any_of(mMotionDirections.begin(), mMotionDirections.end(),
     [this, tile](const baseplate::Vector2i& A) {
 
-        baseplate::Vector2i ActionTile = m_TilePosition + A;
+        baseplate::Vector2i ActionTile = mTilePosition + A;
         return ActionTile.X == tile.X && ActionTile.Y == tile.Y;
     }))
         return true;
     return false;
 }
 
-bool GAME_Character::TileIsInAttackDirections(baseplate::Vector2i tile) {
+bool game::Character::TileIsInAttackDirections(baseplate::Vector2i tile) {
 
-    if (std::any_of(m_AttackDirections.begin(), m_AttackDirections.end(),
+    if (std::any_of(mAttackDirections.begin(), mAttackDirections.end(),
     [this, tile](const baseplate::Vector2i& A) {
 
-        baseplate::Vector2i ActionTile = m_TilePosition + A;
+        baseplate::Vector2i ActionTile = mTilePosition + A;
         return ActionTile.X == tile.X && ActionTile.Y == tile.Y;
     }))
         return true;
     return false;
 }
 
-void GAME_Character::BuildCharacter() {
+void game::Character::BuildCharacter() {
 
-    std::ifstream File("../" + m_SourcePath);
+    std::ifstream File("../" + mSourcePath);
     if (!File.is_open()) {
-        std::cerr << "[GAME_Character] Erro ao abrir o arquivo: " << m_SourcePath << "\n";
+        std::cerr << "[game::Character] Erro ao abrir o arquivo: " << mSourcePath << "\n";
         return;
     }
 
@@ -49,12 +49,12 @@ void GAME_Character::BuildCharacter() {
 
     Name = Data["id"];
 
-    m_Health          = Data["health"];
-    m_Shield          = Data["shield"];
-    m_Damage          = Data["damage"];
-    m_ActionsQuantity = Data["actions"];
+    mHealth          = Data["health"];
+    mShield          = Data["shield"];
+    mDamage          = Data["damage"];
+    mActionsQuantity = Data["actions"];
 
-    m_Actions = m_ActionsQuantity + 1; // + 1 porque tem que conciderar o MoveTo quando o character é criado
+    mActions = mActionsQuantity + 1; // + 1 porque tem que conciderar o MoveTo quando o character é criado
 
     std::string TextureName = (Data["texture_name"] != "") ? Data["texture_name"] : "character_standart";
     DefineTextureAsset(TextureName);
@@ -62,66 +62,66 @@ void GAME_Character::BuildCharacter() {
 
     for (auto& [key, value] : Data["motion_directions"].items()) {
 
-        m_MotionDirections.emplace_back(value[0], value[1]);
+        mMotionDirections.emplace_back(value[0], value[1]);
     }
 
     for (auto& [key, value] : Data["attack_directions"].items()) {
 
-        m_AttackDirections.emplace_back(value[0], value[1]);
+        mAttackDirections.emplace_back(value[0], value[1]);
     }
 }
 
-void GAME_Character::MoveTo(baseplate::Vector2i tile_position) {
+void game::Character::MoveTo(baseplate::Vector2i tile_position) {
 
-    GAME_Arena* Arena = GetParent<GAME_Arena>();
+    Arena* arena = GetParent<Arena>();
 
-    if (Arena->CanMoveTo(tile_position) && tile_position != m_TilePosition) {
+    if (arena->CanMoveTo(tile_position) && tile_position != mTilePosition) {
 
-        m_TilePosition = tile_position;
-        SetPosition(baseplate::Vector2(tile_position.X + tile_position.Y, tile_position.Y - tile_position.X) * Arena->GetTileSize());
+        mTilePosition = tile_position;
+        SetPosition(baseplate::Vector2(tile_position.X + tile_position.Y, tile_position.Y - tile_position.X) * arena->GetTileSize());
     }
 
-    m_Actions--;
+    mActions--;
 }
 
-void GAME_Character::AttackOn(baseplate::Vector2i tile_position) {
+void game::Character::AttackOn(baseplate::Vector2i tile_position) {
 
-    GAME_Arena* Arena = GetParent<GAME_Arena>();
+    Arena* arena = GetParent<Arena>();
 
-    Arena->AttackTile(tile_position, m_Damage);
+    arena->AttackTile(tile_position, mDamage);
 
-    m_Actions--;
+    mActions--;
 }
 
-void GAME_Character::GetDamage(float damage) {
+void game::Character::GetDamage(float damage) {
 
-    float CurrentDamage = damage - m_Shield;
+    float CurrentDamage = damage - mShield;
     if (CurrentDamage < 0) CurrentDamage = 0;
-    if (m_Shield > 0) m_Shield--;
+    if (mShield > 0) mShield--;
 
-    m_Health -= CurrentDamage;
+    mHealth -= CurrentDamage;
 
-    std::cout << "Character: " << Name << " foi atacado; Health: " << m_Health << " Shield: " << m_Shield << "\n";
+    std::cout << "Character: " << Name << " foi atacado; Health: " << mHealth << " Shield: " << mShield << "\n";
 
-    if (m_Health <= 0)
+    if (mHealth <= 0)
         Destroy();
 }
 
 //
 
-void GAME_Character::_Ready() {
+void game::Character::_Ready() {
 
-    mDisplayManager = &baseplate::Manager<GAME_DisplayManager>::Get();
+    mDisplayManager = &baseplate::Manager<game::DisplayManager>::Get();
 
     BuildCharacter();
-    MoveTo(m_SpawnPosition);
+    MoveTo(mSpawnPosition);
 }
 
-void GAME_Character::_Draw() {
+void game::Character::_Draw(GLuint vao, glm::mat4 projection) {
 
     mShaderAsset->Bind();
 
-    GAME_Camera* CurrentCamera = GAME_Camera::CurrentCamera;
+    game::Camera* CurrentCamera = game::Camera::CurrentCamera;
     baseplate::Vector2 TextureSize = mTextureAsset->TextureSize.ToVector2();
 
     baseplate::Vector2 CharacterPosition(GetPosition().X - TextureSize.X / 2, GetPosition().Y - TextureSize.Y);
@@ -133,7 +133,7 @@ void GAME_Character::_Draw() {
     Model.Bind(mShaderAsset->Program, "uModel");
 
     GLint ProjectionLoc = glGetUniformLocation(mShaderAsset->Program, "uProjection");
-    glUniformMatrix4fv(ProjectionLoc, 1, GL_FALSE, glm::value_ptr(mDisplayManager->GetProjection()));
+    glUniformMatrix4fv(ProjectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
     //nesse contexto é inultil, mas manti para uma futura implementação
     baseplate::Color4f BackgroundColorNormalized = BackgroundColor.Normalize();
@@ -146,6 +146,6 @@ void GAME_Character::_Draw() {
     GLint TextureLoc = glGetUniformLocation(mShaderAsset->Program, "uTexture");
     glUniform1i(TextureLoc, 0);
 
-    glBindVertexArray(mDisplayManager->GetVAO());
+    glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }

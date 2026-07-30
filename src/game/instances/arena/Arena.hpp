@@ -9,70 +9,76 @@
 
 #include "baseplate/data_models/vector/Vector2.hpp"
 
-class GAME_DisplayManager;
+namespace game::arena {
 
-class GAME_Character;
-class GAME_Golem;
-class GAME_Titan;
+    struct Tile {
 
-struct ARENA_Tile {
+        baseplate::Vector2 SourcePosition;
 
-    baseplate::Vector2 SourcePosition;
+        bool Obstacle;
 
-    bool Obstacle;
+        Tile(baseplate::Vector2 source_position, bool obstacle) : SourcePosition(source_position), Obstacle(obstacle) {}
+    };
+}
 
-    ARENA_Tile(baseplate::Vector2 source_position, bool obstacle) : SourcePosition(source_position), Obstacle(obstacle) {}
-};
+namespace game {
 
-class GAME_Arena : public baseplate::Node2D, private baseplate::AssetData {
-private:
+    class DisplayManager;
+    class Character;
 
-    GAME_DisplayManager* mDisplayManager = nullptr;
+    class Golem;
+    class Titan;
 
-    unsigned int mCurrentRound = 1;
+    class Arena : public baseplate::Node2D, private baseplate::AssetData {
+    private:
 
-    bool Builded = false;
+        DisplayManager* mDisplayManager = nullptr;
 
-    baseplate::Vector2 m_TileSize = 0;
-    baseplate::Vector2 m_TileSourceSize = 0;
-    baseplate::Vector2 m_TileOffset = 0;
+        unsigned int mCurrentRound = 1;
 
-    std::unordered_map<int, ARENA_Tile*> m_Tileset;
-    std::vector<std::pair<baseplate::Vector2i, int>> m_Tilemap;
+        bool Builded = false;
 
-    std::string m_JsonPath = "";
+        baseplate::Vector2 m_TileSize = 0;
+        baseplate::Vector2 m_TileSourceSize = 0;
+        baseplate::Vector2 m_TileOffset = 0;
 
-    GAME_Golem* m_CurrentGolem = nullptr;
+        std::unordered_map<int, arena::Tile*> m_Tileset;
+        std::vector<std::pair<baseplate::Vector2i, int>> m_Tilemap;
 
-public:
+        std::string m_JsonPath = "";
 
-    GAME_Arena(const char* json_path) : m_JsonPath(json_path), baseplate::Node2D("arena", 0, 0) {}
+        Golem* m_CurrentGolem = nullptr;
 
-private:
+    public:
 
-    bool TestTileClicked(baseplate::Vector2 click_position, baseplate::Vector2i tile_position);
+        Arena(const char* json_path) : m_JsonPath(json_path), baseplate::Node2D("arena", 0, 0) {}
 
-    void SelectGolem(GAME_Golem* golem);
-    void UnselectGolem();
+    private:
 
-    void BuildArena();
+        bool TestTileClicked(baseplate::Vector2 click_position, baseplate::Vector2i tile_position);
 
-    void PlayerRoundEnded();
+        void SelectGolem(Golem* golem);
+        void UnselectGolem();
 
-public:
+        void BuildArena();
 
-    baseplate::Vector2 GetTileSize() {
-        return m_TileSize;
-    }
+        void PlayerRoundEnded();
+
+    public:
+
+        baseplate::Vector2 GetTileSize() {
+            return m_TileSize;
+        }
 
 
 
-    bool CanMoveTo(baseplate::Vector2i tile);
+        bool CanMoveTo(baseplate::Vector2i tile);
 
-    void AttackTile(baseplate::Vector2i tile, float damage);
+        void AttackTile(baseplate::Vector2i tile, float damage);
 
-    void _Ready() override;
-    void _Event(SDL_Event& event) override;
-    void _Draw() override;
-    void _Process(double delta) override;
-};
+        void _Ready() override;
+        void _Event(SDL_Event& event) override;
+        void _Draw(GLuint vao, glm::mat4 projection) override;
+        void _Process(double delta) override;
+    };
+}

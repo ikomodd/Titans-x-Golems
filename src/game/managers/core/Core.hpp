@@ -5,22 +5,25 @@
 
 #include "baseplate/manager/Manager.hpp"
 
-class GAME_StateManager;
+namespace game {
 
-class GAME_CoreManager : public baseplate::Manager<GAME_CoreManager> {
-private:
+    class StateManager;
 
-    GAME_StateManager* m_StateManager = nullptr;
+    class CoreManager : public baseplate::Manager<CoreManager> {
+    private:
 
-    GAME_CoreManager() : baseplate::Manager<GAME_CoreManager>("core_manager") {}
-    friend class baseplate::Manager<GAME_CoreManager>;
+        StateManager* mStateManager = nullptr;
 
-public:
+        CoreManager() : baseplate::Manager<CoreManager>("core_manager") {}
+        friend class baseplate::Manager<CoreManager>;
 
-    bool Running = true;
+    public:
 
-    void _Init() override;
-    void _Event(SDL_Event& event) override;
-    void _Process() override;
-    void _Close() override;
-};
+        bool Running = true;
+
+        void _Init() override;
+        void _Event(SDL_Event& event) override;
+        void _Process() override;
+        void _Close() override;
+    };
+}

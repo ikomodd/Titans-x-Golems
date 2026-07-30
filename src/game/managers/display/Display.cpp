@@ -3,41 +3,41 @@
 #include "game/managers/state/State.hpp"
 #include "game/states/state/State.hpp"
 
- void GAME_DisplayManager::SetWindowSize() {
+ void game::DisplayManager::SetWindowSize() {
 
     baseplate::Vector2i WindowSizeInt = 0;
-    SDL_GetWindowSize(m_Window, &WindowSizeInt.X, &WindowSizeInt.Y);
-    m_WindowSize = WindowSizeInt.ToVector2();
+    SDL_GetWindowSize(mWindow, &WindowSizeInt.X, &WindowSizeInt.Y);
+    mWindowSize = WindowSizeInt.ToVector2();
 }
 
 //
 
-void GAME_DisplayManager::_Init() {
+void game::DisplayManager::_Init() {
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
-    m_Window = SDL_CreateWindow("game", m_WindowSize.X, m_WindowSize.Y, SDL_WINDOW_OPENGL);
-    m_Context = SDL_GL_CreateContext(m_Window);
+    mWindow = SDL_CreateWindow("game", mWindowSize.X, mWindowSize.Y, SDL_WINDOW_OPENGL);
+    mContext = SDL_GL_CreateContext(mWindow);
 
     SetWindowSize();
 
     if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
-        std::cerr << "[GAME_DisplayManager] Erro ao iniciar o GLAD\n";
+        std::cerr << "[game::DisplayManager] Erro ao iniciar o GLAD\n";
 
-    glViewport(0, 0, m_WindowSize.X, m_WindowSize.Y);
+    glViewport(0, 0, mWindowSize.X, mWindowSize.Y);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
+    glGenVertexArrays(1, &mVAO);
+    glGenBuffers(1, &mVBO);
 
-    glBindVertexArray(VAO);
+    glBindVertexArray(mVAO);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(m_Vertices), m_Vertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(mVertices), mVertices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -47,33 +47,34 @@ void GAME_DisplayManager::_Init() {
 
     glBindVertexArray(0);
 
-    m_Projection = glm::ortho(0.0f, m_WindowSize.X, m_WindowSize.Y, 0.0f, -1.0f, 1.0f);
+    mProjection = glm::ortho(0.0f, mWindowSize.X, mWindowSize.Y, 0.0f, -1.0f, 1.0f);
+
+    mStateManager = &baseplate::Manager<StateManager>::Get();
 }
 
-void GAME_DisplayManager::_Event(SDL_Event& event) {
+void game::DisplayManager::_Event(SDL_Event& event) {
     if (event.type == SDL_EVENT_WINDOW_RESIZED)
         SetWindowSize();
 }
 
-void GAME_DisplayManager::_Process() {
+void game::DisplayManager::_Process() {
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glBindVertexArray(VAO);
+    glBindVertexArray(mVAO);
     
-    GAME_StateManager& StateManager = baseplate::Manager<GAME_StateManager>::Get();
-    auto LinearStateChildren = StateManager.GetCurrentState()->GetLinearChildren();
+    auto LinearStateChildren = mStateManager->GetCurrentState()->GetLinearChildren();
 
     for (baseplate::iNode* inode : LinearStateChildren) {
 
-        inode->_Draw();
+        inode->_Draw(mVAO, mProjection);
     }
 
-    SDL_GL_SwapWindow(m_Window);
+    SDL_GL_SwapWindow(mWindow);
 }
 
-void GAME_DisplayManager::_Close() {
+void game::DisplayManager::_Close() {
 
-    SDL_DestroyWindow(m_Window);
+    SDL_DestroyWindow(mWindow);
 }

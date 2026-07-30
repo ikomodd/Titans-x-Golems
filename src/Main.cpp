@@ -19,9 +19,9 @@ int main() {
 
     // Inicia os managers
 
-    GAME_CoreManager& Core = baseplate::Manager<GAME_CoreManager>::Get();
-    GAME_DisplayManager& Display = baseplate::Manager<GAME_DisplayManager>::Get();
-    GAME_StateManager& State = baseplate::Manager<GAME_StateManager>::Get();
+    auto& Core = baseplate::Manager<game::CoreManager>::Get();
+    auto& Display = baseplate::Manager<game::DisplayManager>::Get();
+    auto& State = baseplate::Manager<game::StateManager>::Get();
 
     baseplate::iManager::InitManagers();
 

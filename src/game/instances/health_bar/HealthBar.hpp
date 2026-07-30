@@ -2,20 +2,23 @@
 
 #include "baseplate/instances/node2d/Node2D.hpp"
 
-class GAME_HealthBar : public baseplate::Node2D {
-private:
+namespace game {
 
-    using Vector2 = baseplate::Vector2;
+    class HealthBar : public baseplate::Node2D {
+    private:
 
-    float m_FullHealth;
-    float m_CurrentHealth;
+        using Vector2 = baseplate::Vector2;
 
-public:
+        float m_FullHealth;
+        float m_CurrentHealth;
 
-    GAME_HealthBar() : baseplate::Node2D("health_bar", 0, Vector2(2.0f, 50.0f)) {}
+    public:
 
-    void Update(float health);
+        HealthBar() : baseplate::Node2D("health_bar", 0, Vector2(2.0f, 50.0f)) {}
 
-    void _Ready() override;
-    void _Draw() override;
-};
+        void Update(float health);
+
+        void _Ready() override;
+        void _Draw(GLuint vao, glm::mat4 projection) override;
+    };
+}

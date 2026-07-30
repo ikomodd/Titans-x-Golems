@@ -9,9 +9,9 @@
 
 void GAME_MainState::_Ready() {
 
-    auto* Camera = new GAME_Camera("main_camera", baseplate::Vector2(0.f, 0.f), 1.f, true);
-    AddNode(Camera);
+    auto* camera = new game::Camera("main_camera", baseplate::Vector2(0.f, 0.f), 1.f, true);
+    AddNode(camera);
 
-    auto* Arena = new GAME_Arena("resources/arenas/Arena1.json");
-    AddNode(Arena);
+    auto* arena = new game::Arena("resources/arenas/Arena1.json");
+    AddNode(arena);
 }

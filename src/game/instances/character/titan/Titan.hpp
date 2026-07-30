@@ -2,28 +2,34 @@
 
 #include "../Character.hpp"
 
-class GAME_Golem;
+namespace game::titan {
 
-struct TITAN_TileData {
+    struct TileData {
 
-    bool InTarget;
-    
-    baseplate::Vector2i Tile;
-    baseplate::Vector2i Direction;
+        bool InTarget;
+            
+        baseplate::Vector2i Tile;
+        baseplate::Vector2i Direction;
 
-    TITAN_TileData(bool in_target, baseplate::Vector2i tile, baseplate::Vector2i direction) : InTarget(in_target), Tile(tile), Direction(direction) {}
-};
+        TileData(bool in_target, baseplate::Vector2i tile, baseplate::Vector2i direction) : InTarget(in_target), Tile(tile), Direction(direction) {}
+    };
+}
 
-class GAME_Titan : public GAME_Character {
-public:
+namespace game {
 
-    GAME_Titan(baseplate::Vector2i tile_position, std::string source_path) : GAME_Character(tile_position, source_path) {}
+    class Golem;
 
-private:
+    class Titan : public Character {
+    public:
 
-    TITAN_TileData GetTileData();
+        Titan(baseplate::Vector2i tile_position, std::string source_path) : Character(tile_position, source_path) {}
 
-public:
+    private:
 
-    void RunIa();
-};
+        titan::TileData GetTileData();
+
+    public:
+
+        void RunIa();
+    };
+}

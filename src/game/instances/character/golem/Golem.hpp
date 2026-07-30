@@ -2,13 +2,16 @@
 
 #include "../Character.hpp"
 
-class GAME_Golem : public GAME_Character {
-public:
+namespace game {
 
-    GAME_Golem(baseplate::Vector2i tile_position, std::string source_path) : GAME_Character(tile_position, source_path) {}
+    class Golem : public Character {
+    public:
 
-    void TileSelected(baseplate::Vector2i tile) {
+        Golem(baseplate::Vector2i tile_position, std::string source_path) : Character(tile_position, source_path) {}
 
-        MoveTo(tile);
-    }
-};
+        void TileSelected(baseplate::Vector2i tile) {
+
+            MoveTo(tile);
+        }
+    };
+}

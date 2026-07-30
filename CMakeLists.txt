@@ -16,6 +16,7 @@ add_executable(Game
     src/game/instances/character/Character.cpp
     src/game/instances/character/titan/Titan.cpp
     src/game/instances/health_bar/HealthBar.cpp
+    src/game/instances/camera/Camera.cpp
 )
 
 # LEMBRA DE TIRAR ISSO E O "clang_rt.asan_dynamic-x86_64.dll" DO BUILD!!!!!!!!!!!!!!

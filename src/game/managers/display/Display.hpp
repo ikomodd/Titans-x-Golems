@@ -10,59 +10,62 @@
 
 #include "baseplate/data_models/vector/Vector2.hpp"
 
-class GAME_Camera;
+namespace game {
 
-class GAME_DisplayManager : public baseplate::Manager<GAME_DisplayManager> {
-private:
+    class Camera;
 
-    float m_Vertices[24] = {
+    class StateManager;
 
-        0.0f, 1.0f,     0.0f, 1.0f,
-        1.0f, 0.0f,     1.0f, 0.0f,
-        0.0f, 0.0f,     0.0f, 0.0f,
+    class DisplayManager : public baseplate::Manager<DisplayManager> {
+    private:
 
-        0.0f, 1.0f,     0.0f, 1.0f,
-        1.0f, 1.0f,     1.0f, 1.0f,
-        1.0f, 0.0f,     1.0f, 0.0f
+        StateManager* mStateManager = nullptr;
+
+        float mVertices[24] = {
+
+            0.0f, 1.0f,     0.0f, 1.0f,
+            1.0f, 0.0f,     1.0f, 0.0f,
+            0.0f, 0.0f,     0.0f, 0.0f,
+
+            0.0f, 1.0f,     0.0f, 1.0f,
+            1.0f, 1.0f,     1.0f, 1.0f,
+            1.0f, 0.0f,     1.0f, 0.0f
+        };
+
+        GLuint mVAO, mVBO;
+
+        DisplayManager() : baseplate::Manager<DisplayManager>("display_manager") {}
+        friend class baseplate::Manager<DisplayManager>;
+        friend class Camera;
+
+        baseplate::Vector2 mWindowSize = baseplate::Vector2(800.f, 600.f);
+
+        SDL_Window* mWindow = nullptr;
+        SDL_GLContext mContext = nullptr;
+
+        glm::mat4 mProjection;
+
+        void SetWindowSize();
+
+    public:
+
+        // Get
+
+        baseplate::Vector2 GetWindowSize() {
+            return mWindowSize;
+        }
+
+        glm::mat4 GetProjection() {
+            return mProjection;
+        }
+
+        GLuint GetVAO() {
+            return mVAO;
+        }
+
+        void _Init() override;
+        void _Event(SDL_Event& event) override;
+        void _Process() override;
+        void _Close() override;
     };
-
-    GLuint VAO, VBO;
-
-    GAME_DisplayManager() : baseplate::Manager<GAME_DisplayManager>("display_manager") {}
-    friend class baseplate::Manager<GAME_DisplayManager>;
-    friend class GAME_Camera;
-
-    baseplate::Vector2 m_WindowSize = baseplate::Vector2(800.f, 600.f);
-
-    SDL_Window* m_Window = nullptr;
-    SDL_GLContext m_Context = nullptr;
-
-    glm::mat4 m_Projection;
-
-public:
-
-    baseplate::Vector2 GetWindowSize() {
-        return m_WindowSize;
-    }
-
-    glm::mat4 GetProjection() {
-
-        return m_Projection;
-    }
-
-    GLuint GetVAO() {
-
-        return VAO;
-    }
-
-private:
-
-    void SetWindowSize();
-
-public:
-
-    void _Init() override;
-    void _Event(SDL_Event& event) override;
-    void _Process() override;
-    void _Close() override;
-};
+}

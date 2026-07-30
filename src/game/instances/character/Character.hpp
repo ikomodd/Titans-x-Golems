@@ -3,57 +3,60 @@
 #include "baseplate/instances/node2d/Node2D.hpp"
 #include "baseplate/inheritances/asset_data/AssetData.hpp"
 
-class GAME_DisplayManager;
+namespace game {
 
-class GAME_Arena;
+    class Arena;
 
-class GAME_Character : public baseplate::Node2D, private baseplate::AssetData {
-private:
+    class DisplayManager;
 
-    GAME_DisplayManager* mDisplayManager = nullptr;
+    class Character : public baseplate::Node2D, private baseplate::AssetData {
+    private:
 
-    std::string m_SourcePath;
+        DisplayManager* mDisplayManager = nullptr;
 
-protected:
+        std::string mSourcePath;
 
-    float m_Health = 0.f;
-    float m_Shield = 0.f;
+    protected:
 
-    float m_Damage = 0.f;
+        float mHealth = 0.f;
+        float mShield = 0.f;
 
-    unsigned int m_Actions = 0;
-    unsigned int m_ActionsQuantity = 0;
+        float mDamage = 0.f;
 
-    std::vector<baseplate::Vector2i> m_MotionDirections {};
-    std::vector<baseplate::Vector2i> m_AttackDirections {};
+        unsigned int mActions = 0;
+        unsigned int mActionsQuantity = 0;
 
-    baseplate::Vector2i m_SpawnPosition;
-    baseplate::Vector2i m_TilePosition = 0;
+        std::vector<baseplate::Vector2i> mMotionDirections {};
+        std::vector<baseplate::Vector2i> mAttackDirections {};
 
-public:
+        baseplate::Vector2i mSpawnPosition;
+        baseplate::Vector2i mTilePosition = 0;
 
-    GAME_Character(baseplate::Vector2i tile_position, std::string source_path) : m_SpawnPosition(tile_position), m_SourcePath(source_path), baseplate::Node2D("no_name_character", 0, 0) {}
-    friend class GAME_Arena;
+    public:
 
-    //
+        Character(baseplate::Vector2i tile_position, std::string source_path) : mSpawnPosition(tile_position), mSourcePath(source_path), baseplate::Node2D("no_name_character", 0, 0) {}
+        friend class Arena;
 
-    bool TileIsInMotionDirections(baseplate::Vector2i tile);
-    bool TileIsInAttackDirections(baseplate::Vector2i tile);
+        //
 
-    void BuildCharacter();
+        bool TileIsInMotionDirections(baseplate::Vector2i tile);
+        bool TileIsInAttackDirections(baseplate::Vector2i tile);
 
-    void MoveTo(baseplate::Vector2i tile_position);
-    void AttackOn(baseplate::Vector2i tile_position);
-    
-    void GetDamage(float damage);
+        void BuildCharacter();
 
-    baseplate::Vector2i GetTilePosition() {
+        void MoveTo(baseplate::Vector2i tile_position);
+        void AttackOn(baseplate::Vector2i tile_position);
+        
+        void GetDamage(float damage);
 
-        return m_TilePosition;
-    }
+        baseplate::Vector2i GetTilePosition() {
 
-    //
+            return mTilePosition;
+        }
 
-    void _Ready() override;
-    void _Draw() override;
-};
+        //
+
+        void _Ready() override;
+        void _Draw(GLuint vao, glm::mat4 projection) override;
+    };
+}

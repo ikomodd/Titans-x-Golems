@@ -7,56 +7,19 @@
 
 // [TODO] Todo esse sistema ta errado
 
-TITAN_TileData GAME_Titan::GetTileData() {
+game::titan::TileData game::Titan::GetTileData() {
 
-    int MinLengthOfTileToGolemSquared = INT_MAX;
-    GAME_Golem* NearestGolemOfTile = nullptr;
-    baseplate::Vector2i NearestTileToGolem;
 
-    for (baseplate::Vector2i tile : m_AttackDirections) {
-
-        baseplate::Vector2i TileInWorld = m_TilePosition + tile;
-
-        int MinLengthSquared = INT_MAX;
-        GAME_Golem* NearestGolem = nullptr;
-
-        for (auto* node : GetParent<iNode>()->As<baseplate::Node>()->GetChildren()) {
-
-            GAME_Golem* Golem = node->As<GAME_Golem>();
-            if (Golem) {
-
-                int LengthSquared = (Golem->GetTilePosition() - TileInWorld).LengthSquared();
-                if (LengthSquared < MinLengthSquared) {
-
-                    MinLengthSquared = LengthSquared;
-                    NearestGolem = Golem;
-                }
-            }
-        }
-
-        if (MinLengthSquared < MinLengthOfTileToGolemSquared) {
-
-            MinLengthOfTileToGolemSquared = MinLengthSquared;
-            NearestGolemOfTile = NearestGolem;
-            NearestTileToGolem = TileInWorld;
-        }
-    }
-
-    bool InTarget = (MinLengthOfTileToGolemSquared == 0);
-    baseplate::Vector2i Direction = (NearestGolemOfTile->GetTilePosition().ToVector2() - NearestTileToGolem.ToVector2()).Normalize().Sign().ToVector2i();
-
-    std::cout << InTarget << " " << NearestTileToGolem.ToString() << " " << Direction.ToString() << "\n";
-
-    return TITAN_TileData(InTarget, NearestTileToGolem, Direction);
+    return titan::TileData(false, 0, 0);
 }
 
 //
 
-void GAME_Titan::RunIa() {
+void game::Titan::RunIa() {
 
-    while (m_Actions > 0) {
+    while (mActions > 0) {
 
-        TITAN_TileData TileData = GetTileData();
+        titan::TileData TileData = GetTileData();
 
         if (TileData.InTarget) {
 
@@ -65,7 +28,7 @@ void GAME_Titan::RunIa() {
         }
         else {
 
-            MoveTo(m_TilePosition + TileData.Direction);
+            MoveTo(mTilePosition + TileData.Direction);
         }
     }
 }

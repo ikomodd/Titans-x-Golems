@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glad/glad.h>
+#include <glm/glm.hpp>
 #include <SDL3/SDL.h>
 #include <string>
 
@@ -64,7 +66,7 @@ namespace baseplate {
 
         virtual void _Ready() = 0;
         virtual void _Event(SDL_Event& event) = 0;
-        virtual void _Draw() = 0;
+        virtual void _Draw(GLuint vao, glm::mat4 projection) = 0;
         virtual void _Process(double delta) = 0;
         virtual void _Close() = 0;
     };

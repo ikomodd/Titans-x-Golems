@@ -1,16 +1,16 @@
 #include "HealthBar.hpp"
 
-void GAME_HealthBar::Update(float health) {
+void game::HealthBar::Update(float health) {
 
     
 }
 
-void GAME_HealthBar::_Ready() {
+void game::HealthBar::_Ready() {
 
 
 }
 
-void GAME_HealthBar::_Draw() {
+void game::HealthBar::_Draw(GLuint vao, glm::mat4 projection) {
 
 
 }
