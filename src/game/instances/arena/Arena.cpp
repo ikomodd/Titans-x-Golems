@@ -54,18 +54,18 @@ void game::Arena::UnselectGolem() {
 
 bool game::Arena::CanMoveTo(baseplate::Vector2i tile) {
 
-    bool IsValid = false;
+    bool isValid = false;
 
     // Ve se o tile é valido
     for (auto& [tile_position, tile_id] : m_Tilemap)  {
 
         if (tile_position == tile && !m_Tileset[tile_id]->Obstacle) {
-            IsValid = true;
+            isValid = true;
             break;
         }
     }
 
-    if (!IsValid)
+    if (!isValid)
         return false;
 
     // Vê se tem algum character no tile
@@ -143,13 +143,13 @@ void game::Arena::BuildArena() {
 
         for (auto [key, character] : Data["characters"].items()) {
 
-            std::string Type = character["type"];
+            std::string type = character["type"];
             std::string Path = character["source"];
             baseplate::Vector2i TilePosition = baseplate::Vector2i((int)character["position"][0], (int)character["position"][1]);
 
             Character* Current = nullptr;
 
-            if (Type == "golem")
+            if (type == "golem")
                 Current = new Golem(TilePosition, Path);
             else if (Type == "titan") 
                 Current = new Titan(TilePosition, Path);

@@ -1,0 +1,40 @@
+Checks: '-*,readability-identifier-naming'
+WarningsAsErrors: ''
+
+CheckOptions:
+  # Variáveis locais e globais
+  - key: readability-identifier-naming.VariableCase
+    value: camelBack
+
+  # Prefixo para membros privados
+  - key: readability-identifier-naming.PrivateMemberPrefix
+    value: 'm_'
+
+  - key: readability-identifier-naming.PrivateMemberCase
+    value: 'camelBack'
+
+  # Parâmetros de funções
+  - key: readability-identifier-naming.ParameterCase
+    value: lower_case
+
+  # Funcões
+  - key: readability-identifier-naming.FunctionCase
+    value: CamelCase
+
+  # Classes / Structs
+  - key: readability-identifier-naming.ClassCase
+    value: CamelCase
+
+  - key: readability-identifier-naming.StructCase
+    value: CamelCase
+
+  # Consts e enums
+  - key: readability-identifier-naming.ConstantCase
+    value: UPPER_CASE
+
+  - key: readability-identifier-naming.EnumConstantCase
+    value: UPPER_CASE
+
+  # ignorar 1 letra
+  - key: readability-identifier-naming.VariableIgnoredRegexp
+    value: '^[a-z]$'
