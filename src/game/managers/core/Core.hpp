@@ -12,18 +12,18 @@ namespace game {
     class CoreManager : public baseplate::Manager<CoreManager> {
     private:
 
-        StateManager* mStateManager = nullptr;
+        StateManager* m_stateManager = nullptr;
 
         CoreManager() : baseplate::Manager<CoreManager>("core_manager") {}
         friend class baseplate::Manager<CoreManager>;
 
     public:
 
-        bool Running = true;
+        bool running = true;
 
-        void _Init() override;
-        void _Event(SDL_Event& event) override;
-        void _Process() override;
-        void _Close() override;
+        void Init() override;
+        void Event(const SDL_Event& event) override;
+        void Process() override;
+        void Close() override;
     };
 }

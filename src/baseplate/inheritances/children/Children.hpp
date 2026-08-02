@@ -11,13 +11,13 @@ namespace baseplate {
     class Children {
     private:
 
-        iNode* mOwner = nullptr; // [NOTE] Depois tira isso e da cast direto pra iNode
+        iNode* m_owner = nullptr; // [NOTE] Depois tira isso e da cast direto pra iNode
 
-        std::vector<iNode*> mChildren = {};
+        std::vector<iNode*> m_children = {};
 
     public:
 
-    Children(iNode* owner_node) : mOwner(owner_node) {}
+    Children(iNode* owner_node) : m_owner(owner_node) {}
 
         // Adiciona um iNode na lista
 
@@ -25,28 +25,23 @@ namespace baseplate {
 
             // Verifica se o iNode já pertence a algum Children
 
-            if (inode->mParent) {
-                std::cerr << "[baseplate::Children] Não foi possivel adicionar o node: " << inode->Name << " em: " << mOwner->Name << ". O node ja tem um pai\n";
+            if (inode->m_parent) {
+                std::cerr << "[baseplate::Children] Não foi possivel adicionar o node: " << inode->name << " em: " << m_owner->name << ". O node ja tem um pai\n";
                 return;
             }
 
             // Adiciona inode na lista e define seu pai como mOwner
 
-            mChildren.push_back(inode);
-            inode->mParent = mOwner;
+            m_children.push_back(inode);
+            inode->m_parent = m_owner;
 
-            // [OBS] Elemento de Game em Baseplate, não pode
-
-            /*
-                Possivel solução: Colocar "bool mInitialized no inode e pegar o state diretamente pela tree,
-                já que GAME_State também é um node"
-            */
+            // Pega o origin da tree e verifica se está iniciado, se tiver, inicia o node aqui mesmo
 
             iNode* Origin = GetOrigin();
 
             if (Origin->IsInitialized()) {
 
-                inode->_Initialize();
+                inode->Initialize();
             }
         }
 
@@ -54,12 +49,12 @@ namespace baseplate {
 
         void RemoveNode(iNode* inode) {
 
-            for (size_t i = 0; i < mChildren.size(); i++) {
+            for (size_t i = 0; i < m_children.size(); i++) {
 
-                iNode* Current = mChildren[i];
-                if (Current == inode) {
+                iNode* current = m_children[i];
+                if (current == inode) {
                     
-                    mChildren.erase(mChildren.begin() + i);
+                    m_children.erase(m_children.begin() + i);
                     break;
                 }
             }
@@ -69,9 +64,9 @@ namespace baseplate {
 
         bool HasNode(std::string node_name) {
 
-            for (auto* child : mChildren) {
+            for (auto* child : m_children) {
 
-                if (child->Name == node_name)
+                if (child->name == node_name)
                     return true;
             }
             return false;
@@ -83,12 +78,12 @@ namespace baseplate {
 
             std::vector<iNode*> Result;
 
-            for (iNode* child : mChildren) {
+            for (iNode* child : m_children) {
 
                 Result.push_back(child);
 
-                auto* ChildChildren = dynamic_cast<Children*>(child);
-                Result.insert(Result.end(), ChildChildren->mChildren.begin(), ChildChildren->mChildren.end());
+                auto* childChildren = dynamic_cast<Children*>(child);
+                Result.insert(Result.end(), childChildren->m_children.begin(), childChildren->m_children.end());
             }
 
             return Result;
@@ -98,15 +93,15 @@ namespace baseplate {
 
         std::vector<iNode*> GetChildren() {
 
-            return mChildren;
+            return m_children;
         }
 
         iNode* GetOrigin() {
 
-            if (mOwner->mParent)
-                return dynamic_cast<Children*>(mOwner->mParent)->GetOrigin();
+            if (m_owner->m_parent)
+                return dynamic_cast<Children*>(m_owner->m_parent)->GetOrigin();
             else
-                return dynamic_cast<iNode*>(mOwner);
+                return dynamic_cast<iNode*>(m_owner);
         }
 
         // Retorna um iNode da lista
@@ -114,11 +109,11 @@ namespace baseplate {
         template <typename T = iNode>
         T* GetNode(std::string name) {
 
-            for (size_t i = 0; i <= mChildren.size(); i++) {
-                iNode* Child = mChildren[i];
+            for (size_t i = 0; i <= m_children.size(); i++) {
+                iNode* child = m_children[i];
 
-                if (Child->Name == name)
-                    return dynamic_cast<T*>(Child);
+                if (child->name == name)
+                    return dynamic_cast<T*>(child);
             }
             return nullptr;
         }

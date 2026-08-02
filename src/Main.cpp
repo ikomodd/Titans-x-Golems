@@ -15,13 +15,13 @@
 int main() {
 
     SDL_Init(SDL_INIT_VIDEO);
-    SDL_Event Event;
+    SDL_Event event;
 
     // Inicia os managers
 
-    auto& Core = baseplate::Manager<game::CoreManager>::Get();
-    auto& Display = baseplate::Manager<game::DisplayManager>::Get();
-    auto& State = baseplate::Manager<game::StateManager>::Get();
+    auto& core = baseplate::Manager<game::CoreManager>::Get();
+    auto& display = baseplate::Manager<game::DisplayManager>::Get();
+    auto& state = baseplate::Manager<game::StateManager>::Get();
 
     baseplate::iManager::InitManagers();
 
@@ -37,15 +37,15 @@ int main() {
 
     // Cena inicial
 
-    auto* MainState = new GAME_MainState();
-    State.PlayState(MainState);
+    auto* mainState = new game::txg::MainState();
+    state.PlayState(mainState);
 
     // Loop
 
-    while (Core.Running) {
-        while (SDL_PollEvent(&Event)) {
+    while (core.running) {
+        while (SDL_PollEvent(&event)) {
 
-            baseplate::iManager::CallEventManager(Event);
+            baseplate::iManager::CallEventManager(event);
         }
 
         baseplate::iManager::ProcessManagers();

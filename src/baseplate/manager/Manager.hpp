@@ -12,7 +12,7 @@ namespace baseplate {
     class iManager {
     protected:
 
-        inline static std::vector<iManager*> m_Managers = {};
+        inline static std::vector<iManager*> m_managers = {};
 
         iManager() {}
         virtual ~iManager() {}
@@ -21,40 +21,40 @@ namespace baseplate {
 
         static void InitManagers() {
 
-            for (auto* manager : m_Managers) {
+            for (auto* manager : m_managers) {
 
-                manager->_Init();
+                manager->Init();
             }
         }
 
         static void CallEventManager(SDL_Event& event) {
 
-            for (auto* manager : m_Managers) {
+            for (auto* manager : m_managers) {
 
-                manager->_Event(event);
+                manager->Event(event);
             }
         }
 
         static void ProcessManagers() {
 
-            for (auto* manager : m_Managers) {
+            for (auto* manager : m_managers) {
 
-                manager->_Process();
+                manager->Process();
             }
         }
 
         static void CloseManagers() {
 
-            for (auto* manager : m_Managers) {
+            for (auto* manager : m_managers) {
 
-                manager->_Close();
+                manager->Close();
             }
         }
 
-        virtual void _Init() = 0;
-        virtual void _Event(SDL_Event& event) = 0;
-        virtual void _Process() = 0;
-        virtual void _Close() = 0;
+        virtual void Init() = 0;
+        virtual void Event(const SDL_Event& event) = 0;
+        virtual void Process() = 0;
+        virtual void Close() = 0;
     };
 
     // Manager -----------------------------------------
@@ -63,33 +63,33 @@ namespace baseplate {
     class Manager : public iManager {
     public:
 
-        std::string Name;
+        std::string name;
 
         //
 
         static T& Get() {
 
-            static T ThisManager;
-            static bool Registered = false;
+            static T thisManager;
+            static bool registered = false;
 
-            if (!Registered) {
+            if (!registered) {
 
-                m_Managers.push_back(&ThisManager);
-                Registered = true;
+                m_managers.push_back(&thisManager);
+                registered = true;
 
-                std::cout << "[baseplate::Manager] Manager adicionado: " << ThisManager.Name << "\n";
+                std::cout << "[baseplate::Manager] Manager adicionado: " << thisManager.name << "\n";
             }
 
-            return ThisManager;
+            return thisManager;
         }
 
-        void _Init() override {}
-        void _Event(SDL_Event& event) override {}
-        void _Process() override {}
-        void _Close() override {}
+        void Init() override {}
+        void Event(const SDL_Event& event) override {}
+        void Process() override {}
+        void Close() override {}
 
     protected:
         
-        Manager(std::string name) : Name(name), iManager() {}
+        Manager(std::string name) : name(name), iManager() {}
     };
 }

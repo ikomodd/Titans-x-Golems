@@ -12,7 +12,7 @@ namespace baseplate {
     struct Vector2 {
     private:
 
-        float Eps = 0.01;
+        float m_eps = 0.01;
 
     public:
 
@@ -78,7 +78,7 @@ namespace baseplate {
 
             return Vector2(X / value, Y / value);
         }
-
+        
         Vector2 operator /= (const Vector2 other) {
             X /= other.X;
             Y /= other.Y;
@@ -89,7 +89,7 @@ namespace baseplate {
 
         bool operator == (const Vector2& other) const {
 
-            return (std::abs(X - other.X) < Eps && std::abs(Y - other.Y) < Eps);
+            return (std::abs(X - other.X) < m_eps && std::abs(Y - other.Y) < m_eps);
         }
 
         bool operator != (const Vector2& other) const {
@@ -114,10 +114,10 @@ namespace baseplate {
 
         Vector2 Normalize() const {
 
-            float Distance = Length();
+            float distance = Length();
 
-            if (Distance == 0.0f) return 0;
-            return Vector2(X / Distance, Y / Distance);
+            if (distance == 0.0f) return 0;
+            return Vector2(X / distance, Y / distance);
         }
 
         Vector2 Sign() {

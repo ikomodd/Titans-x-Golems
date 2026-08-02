@@ -2,10 +2,13 @@
 
 #include "../state/State.hpp"
 
-class GAME_MainState : public GAME_GameState {
-public:
+namespace game::txg {
 
-    GAME_MainState() : GAME_GameState("main_state") {}
+    class MainState : public GameState {
+    public:
 
-    void _Ready() override;
-};
+        MainState() : GameState("main_state") {}
+
+        void Ready() override;
+    };
+}

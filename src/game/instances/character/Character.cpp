@@ -15,11 +15,11 @@ bool game::Character::TileIsInMotionDirections(baseplate::Vector2i tile) {
 
     // OBS: isso serve pra verificar algo em um vector
 
-    if (std::any_of(mMotionDirections.begin(), mMotionDirections.end(),
+    if (std::any_of(m_motionDirections.begin(), m_motionDirections.end(),
     [this, tile](const baseplate::Vector2i& A) {
 
-        baseplate::Vector2i ActionTile = mTilePosition + A;
-        return ActionTile.X == tile.X && ActionTile.Y == tile.Y;
+        baseplate::Vector2i actionTile = m_tilePosition + A;
+        return actionTile.X == tile.X && actionTile.Y == tile.Y;
     }))
         return true;
     return false;
@@ -27,11 +27,11 @@ bool game::Character::TileIsInMotionDirections(baseplate::Vector2i tile) {
 
 bool game::Character::TileIsInAttackDirections(baseplate::Vector2i tile) {
 
-    if (std::any_of(mAttackDirections.begin(), mAttackDirections.end(),
+    if (std::any_of(m_attackDirections.begin(), m_attackDirections.end(),
     [this, tile](const baseplate::Vector2i& A) {
 
-        baseplate::Vector2i ActionTile = mTilePosition + A;
-        return ActionTile.X == tile.X && ActionTile.Y == tile.Y;
+        baseplate::Vector2i actionTile = m_tilePosition + A;
+        return actionTile.X == tile.X && actionTile.Y == tile.Y;
     }))
         return true;
     return false;
@@ -39,35 +39,35 @@ bool game::Character::TileIsInAttackDirections(baseplate::Vector2i tile) {
 
 void game::Character::BuildCharacter() {
 
-    std::ifstream File("../" + mSourcePath);
-    if (!File.is_open()) {
-        std::cerr << "[game::Character] Erro ao abrir o arquivo: " << mSourcePath << "\n";
+    std::ifstream file("../" + m_sourcePath);
+    if (!file.is_open()) {
+        std::cerr << "[game::Character] Erro ao abrir o arquivo: " << m_sourcePath << "\n";
         return;
     }
 
-    nlohmann::json Data = nlohmann::json::parse(File);
+    nlohmann::json data = nlohmann::json::parse(file);
 
-    Name = Data["id"];
+    name = data["id"];
 
-    mHealth          = Data["health"];
-    mShield          = Data["shield"];
-    mDamage          = Data["damage"];
-    mActionsQuantity = Data["actions"];
+    m_health          = data["health"];
+    m_shield          = data["shield"];
+    m_damage          = data["damage"];
+    m_actionsQuantity = data["actions"];
 
-    mActions = mActionsQuantity + 1; // + 1 porque tem que conciderar o MoveTo quando o character é criado
+    m_actions = m_actionsQuantity + 1; // + 1 porque tem que conciderar o MoveTo quando o character é criado
 
-    std::string TextureName = (Data["texture_name"] != "") ? Data["texture_name"] : "character_standart";
-    DefineTextureAsset(TextureName);
+    std::string textureName = (data["texture_name"] != "") ? data["texture_name"] : "character_standart";
+    DefineTextureAsset(textureName);
     DefineShaderAsset("texture_shader");
 
-    for (auto& [key, value] : Data["motion_directions"].items()) {
+    for (auto& [key, value] : data["motion_directions"].items()) {
 
-        mMotionDirections.emplace_back(value[0], value[1]);
+        m_motionDirections.emplace_back(value[0], value[1]);
     }
 
-    for (auto& [key, value] : Data["attack_directions"].items()) {
+    for (auto& [key, value] : data["attack_directions"].items()) {
 
-        mAttackDirections.emplace_back(value[0], value[1]);
+        m_attackDirections.emplace_back(value[0], value[1]);
     }
 }
 
@@ -75,76 +75,76 @@ void game::Character::MoveTo(baseplate::Vector2i tile_position) {
 
     Arena* arena = GetParent<Arena>();
 
-    if (arena->CanMoveTo(tile_position) && tile_position != mTilePosition) {
+    if (arena->CanMoveTo(tile_position) && tile_position != m_tilePosition) {
 
-        mTilePosition = tile_position;
+        m_tilePosition = tile_position;
         SetPosition(baseplate::Vector2(tile_position.X + tile_position.Y, tile_position.Y - tile_position.X) * arena->GetTileSize());
     }
 
-    mActions--;
+    m_actions--;
 }
 
 void game::Character::AttackOn(baseplate::Vector2i tile_position) {
 
     Arena* arena = GetParent<Arena>();
 
-    arena->AttackTile(tile_position, mDamage);
+    arena->AttackTile(tile_position, m_damage);
 
-    mActions--;
+    m_actions--;
 }
 
 void game::Character::GetDamage(float damage) {
 
-    float CurrentDamage = damage - mShield;
-    if (CurrentDamage < 0) CurrentDamage = 0;
-    if (mShield > 0) mShield--;
+    float currentDamage = damage - m_shield;
+    if (currentDamage < 0) currentDamage = 0;
+    if (m_shield > 0) m_shield--;
 
-    mHealth -= CurrentDamage;
+    m_health -= currentDamage;
 
-    std::cout << "Character: " << Name << " foi atacado; Health: " << mHealth << " Shield: " << mShield << "\n";
+    std::cout << "Character: " << name << " foi atacado; Health: " << m_health << " Shield: " << m_shield << "\n";
 
-    if (mHealth <= 0)
+    if (m_health <= 0)
         Destroy();
 }
 
 //
 
-void game::Character::_Ready() {
+void game::Character::Ready() {
 
-    mDisplayManager = &baseplate::Manager<game::DisplayManager>::Get();
+    m_displayManager = &baseplate::Manager<game::DisplayManager>::Get();
 
     BuildCharacter();
-    MoveTo(mSpawnPosition);
+    MoveTo(m_spawnPosition);
 }
 
-void game::Character::_Draw(GLuint vao, glm::mat4 projection) {
+void game::Character::Draw(GLuint vao, glm::mat4 projection) {
 
-    mShaderAsset->Bind();
+    m_shaderAsset->Bind();
 
-    game::Camera* CurrentCamera = game::Camera::CurrentCamera;
-    baseplate::Vector2 TextureSize = mTextureAsset->TextureSize.ToVector2();
+    game::Camera* currentCamera = Camera::currentCamera;
+    baseplate::Vector2 textureSize = m_textureAsset->textureSize.ToVector2();
 
-    baseplate::Vector2 CharacterPosition(GetPosition().X - TextureSize.X / 2, GetPosition().Y - TextureSize.Y);
-    baseplate::Vector2 CharacterSize(TextureSize.X, TextureSize.Y);
+    baseplate::Vector2 characterPosition(GetPosition().X - textureSize.X / 2, GetPosition().Y - textureSize.Y);
+    baseplate::Vector2 characterSize(textureSize.X, textureSize.Y);
 
-    CurrentCamera->TransformToCameraView(CharacterPosition, CharacterSize);
+    currentCamera->TransformToCameraView(characterPosition, characterSize);
 
-    baseplate::base_glm::RenderModel Model(CharacterPosition, CharacterSize);
-    Model.Bind(mShaderAsset->Program, "uModel");
+    baseplate::base_glm::RenderModel model(characterPosition, characterSize);
+    model.Bind(m_shaderAsset->program, "uModel");
 
-    GLint ProjectionLoc = glGetUniformLocation(mShaderAsset->Program, "uProjection");
-    glUniformMatrix4fv(ProjectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+    GLint projectionLoc = glGetUniformLocation(m_shaderAsset->program, "uProjection");
+    glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
     //nesse contexto é inultil, mas manti para uma futura implementação
-    baseplate::Color4f BackgroundColorNormalized = BackgroundColor.Normalize();
-    GLint BackgroundColorLoc = glGetUniformLocation(mShaderAsset->Program, "uBackgroundColor");
-    glUniform4f(BackgroundColorLoc, BackgroundColorNormalized.R, BackgroundColorNormalized.G, BackgroundColorNormalized.B, BackgroundColorNormalized.A);
+    baseplate::Color4f backgroundColorNormalized = backgroundColor.Normalize();
+    GLint backgroundColorLoc = glGetUniformLocation(m_shaderAsset->program, "uBackgroundColor");
+    glUniform4f(backgroundColorLoc, backgroundColorNormalized.R, backgroundColorNormalized.G, backgroundColorNormalized.B, backgroundColorNormalized.A);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, mTextureAsset->Texture);
+    glBindTexture(GL_TEXTURE_2D, m_textureAsset->texture);
 
-    GLint TextureLoc = glGetUniformLocation(mShaderAsset->Program, "uTexture");
-    glUniform1i(TextureLoc, 0);
+    GLint textureLoc = glGetUniformLocation(m_shaderAsset->program, "uTexture");
+    glUniform1i(textureLoc, 0);
 
     glBindVertexArray(vao);
     glDrawArrays(GL_TRIANGLES, 0, 6);

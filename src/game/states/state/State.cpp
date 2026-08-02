@@ -1,19 +1,21 @@
 #include "State.hpp"
 
-void GAME_GameState::_Initialize() {
+void game::GameState::Initialize() {
 
-    std::cout << "[GAME_GameState] Inicializando state: " << Name << " { ";
+    std::cout << "[game::GameState] Inicializando state: " << name << " { ";
 
-    baseplate::iNode::_Initialize();
+    // Inicialização padrão do inode (obrigatório para override de Initialize)
 
-    auto LinearChildren = GetLinearChildren();
+    baseplate::iNode::Initialize();
 
-    for (baseplate::iNode* inode : LinearChildren) {
+    auto linearChildren = GetLinearChildren();
 
-        std::cout << "Iniciando " << inode->Name << "... ";
-        inode->_Initialize();
-        std::cout << inode->Name << " finalizado; ";
+    for (baseplate::iNode* inode : linearChildren) {
+
+        std::cout << "Iniciando " << inode->name << "... ";
+        inode->Initialize();
+        std::cout << inode->name << " finalizado; ";
     }
 
-    std::cout << " }\n[GAME_GameState] State inicializado com sucesso\n";
+    std::cout << " }\n[game::GameState] State inicializado com sucesso\n";
 }

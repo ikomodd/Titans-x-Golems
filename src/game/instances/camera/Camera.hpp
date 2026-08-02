@@ -9,16 +9,16 @@ namespace game {
     class Camera : public baseplate::Node2D {
     private:
 
-        DisplayManager* mDisplayManager = nullptr;
-        bool mMakeCurrent;
+        DisplayManager* m_displayManager = nullptr;
+        bool m_makeCurrent;
 
     public:
 
-        float Zoom;
+        float zoom;
 
-        inline static Camera* CurrentCamera = nullptr;
+        inline static Camera* currentCamera = nullptr;
 
-        Camera(const char* name, baseplate::Vector2 position, float zoom, bool make_current) : Zoom(zoom), mMakeCurrent(make_current), baseplate::Node2D(name, position, 0) {}
+        Camera(const char* name, baseplate::Vector2 position, float zoom, bool make_current) : zoom(zoom), m_makeCurrent(make_current), baseplate::Node2D(name, position, 0) {}
 
         // Transforma a posição e tamanho de um node em relação à camera 
 
@@ -30,12 +30,12 @@ namespace game {
 
         //
 
-        void _Ready() override {
+        void Ready() override {
 
-            mDisplayManager = &baseplate::Manager<game::DisplayManager>::Get();
+            m_displayManager = &baseplate::Manager<game::DisplayManager>::Get();
             
-            if (mMakeCurrent)
-                CurrentCamera = this;
+            if (m_makeCurrent)
+                currentCamera = this;
         }
     };
 }

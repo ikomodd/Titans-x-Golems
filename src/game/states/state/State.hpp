@@ -2,12 +2,15 @@
 
 #include "baseplate/instances/node/Node.hpp"
 
-class GAME_GameState : public baseplate::Node {
-private:
+namespace game {
 
-public:
+    class GameState : public baseplate::Node {
+    private:
 
-    void _Initialize() override;
+    public:
 
-    GAME_GameState(const char* name) : baseplate::Node(name) {}
-};
+        void Initialize() override;
+
+        GameState(const char* name) : baseplate::Node(name) {}
+    };
+}

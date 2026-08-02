@@ -13,25 +13,25 @@ namespace baseplate {
     class AssetData {
     private:
 
-        inline static std::unordered_map<std::string, asset::AssetModel*> mLoadedAssets;
+        inline static std::unordered_map<std::string, asset::AssetModel*> m_loadedAssets;
 
     protected:
 
-        asset::ShaderAsset* mShaderAsset;
-        asset::TextureAsset* mTextureAsset;
+        asset::ShaderAsset* m_shaderAsset;
+        asset::TextureAsset* m_textureAsset;
 
     public:
 
-        baseplate::Color4 BackgroundColor = baseplate::ColorPressets::TRANSPARENT;
+        baseplate::Color4 backgroundColor = baseplate::ColorPressets::TRANSPARENT;
 
         // Cria um Asset de textura
 
         static void CreateTextureAsset(std::string texture_name, std::string texture_path) {
 
-            if (mLoadedAssets.find(texture_name) == mLoadedAssets.end()) {
+            if (m_loadedAssets.find(texture_name) == m_loadedAssets.end()) {
 
-                auto* TextureAsset = new asset::TextureAsset(texture_path);
-                mLoadedAssets[texture_name] = TextureAsset;
+                auto* textureAsset = new asset::TextureAsset(texture_path);
+                m_loadedAssets[texture_name] = textureAsset;
             }
             else
                 std::cerr << "[baseplate::AssetData] ja existe um asset chamado: " << texture_name << "\n";
@@ -41,10 +41,10 @@ namespace baseplate {
 
         static void CreateShaderAsset(std::string shader_name, std::string vertex_source, std::string fragment_source) {
 
-            if (mLoadedAssets.find(shader_name) == mLoadedAssets.end()) {
+            if (m_loadedAssets.find(shader_name) == m_loadedAssets.end()) {
 
-                auto* ShaderAsset = new asset::ShaderAsset(vertex_source, fragment_source);
-                mLoadedAssets[shader_name] = ShaderAsset;
+                auto* shaderAsset = new asset::ShaderAsset(vertex_source, fragment_source);
+                m_loadedAssets[shader_name] = shaderAsset;
             }
             else
                 std::cerr << "[baseplate::AssetData] Ja existe um asset chamado: " << shader_name << "\n";
@@ -54,11 +54,11 @@ namespace baseplate {
 
         void DefineTextureAsset(std::string texture_name) {
 
-            if (mLoadedAssets.find(texture_name) != mLoadedAssets.end()) {
+            if (m_loadedAssets.find(texture_name) != m_loadedAssets.end()) {
 
-                mTextureAsset = static_cast<asset::TextureAsset*>(mLoadedAssets[texture_name]);
+                m_textureAsset = static_cast<asset::TextureAsset*>(m_loadedAssets[texture_name]);
             }
-            else if (mLoadedAssets.find("undefined_texture") != mLoadedAssets.end())
+            else if (m_loadedAssets.find("undefined_texture") != m_loadedAssets.end())
                 DefineTextureAsset("undefined_texture");
             else
                 std::cerr << "[baseplate::AssetData] Textura: " << texture_name << " nao esta definido e nao ha nenhuma textura de depuraçao\n";
@@ -66,9 +66,9 @@ namespace baseplate {
 
         void DefineShaderAsset(std::string shader_name) {
 
-            if (mLoadedAssets.find(shader_name) != mLoadedAssets.end()) {
+            if (m_loadedAssets.find(shader_name) != m_loadedAssets.end()) {
 
-                mShaderAsset = static_cast<asset::ShaderAsset*>(mLoadedAssets[shader_name]);
+                m_shaderAsset = static_cast<asset::ShaderAsset*>(m_loadedAssets[shader_name]);
             }
             else
                 std::cerr << "[baseplate::AssetData] Shader: " << shader_name << " nao esta definido\n";

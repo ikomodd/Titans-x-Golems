@@ -1,3 +1,5 @@
 build/
-TODO.txt
 .vs/
+
+TODO.txt
+clang-tidy.dummy.cpp

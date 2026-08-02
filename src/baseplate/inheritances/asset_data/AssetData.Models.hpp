@@ -23,36 +23,36 @@ namespace baseplate::asset {
 
     struct TextureAsset : public AssetModel {
 
-        GLuint Texture;
-        Vector2i TextureSize = 0;
+        GLuint texture;
+        Vector2i textureSize = 0;
 
         TextureAsset(std::string texture_path) {
 
-            std::string FullPath = "../" + texture_path;
-            SDL_Surface* OriginalSurface = IMG_Load(FullPath.c_str());
+            std::string fullPath = "../" + texture_path;
+            SDL_Surface* originalSurface = IMG_Load(fullPath.c_str());
 
-            if (!OriginalSurface) {
+            if (!originalSurface) {
                 std::cerr << "[baseplate::asset::TextureAsset] Falha ao carregar: " << texture_path << ": \n" << SDL_GetError() << "\n";
-                Texture = 0;
+                texture = 0;
                 return;
             }
 
-            SDL_Surface* ConvertedSurface = SDL_ConvertSurface(OriginalSurface, SDL_PIXELFORMAT_RGBA32);
-            SDL_DestroySurface(OriginalSurface);
+            SDL_Surface* convertedSurface = SDL_ConvertSurface(originalSurface, SDL_PIXELFORMAT_RGBA32);
+            SDL_DestroySurface(originalSurface);
 
-            TextureSize = Vector2i(ConvertedSurface->w, ConvertedSurface->h);
+            textureSize = Vector2i(convertedSurface->w, convertedSurface->h);
 
-            glGenTextures(1, &Texture);
-            glBindTexture(GL_TEXTURE_2D, Texture);
+            glGenTextures(1, &texture);
+            glBindTexture(GL_TEXTURE_2D, texture);
 
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ConvertedSurface->w, ConvertedSurface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, ConvertedSurface->pixels);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, convertedSurface->w, convertedSurface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, convertedSurface->pixels);
 
-            SDL_DestroySurface(ConvertedSurface);
+            SDL_DestroySurface(convertedSurface);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
     };
@@ -61,60 +61,61 @@ namespace baseplate::asset {
 
     struct ShaderAsset : public AssetModel {
 
-        GLuint Program;
+        GLuint program;
 
         ShaderAsset(std::string vertex_source, std::string fragment_source) {
 
-            GLuint VertexShader = CompileShader(GL_VERTEX_SHADER, vertex_source.c_str());
-            GLuint FragmentShader = CompileShader(GL_FRAGMENT_SHADER, fragment_source.c_str());
+            GLuint vertexShader = CompileShader(GL_VERTEX_SHADER, vertex_source.c_str());
+            GLuint fragmentShader = CompileShader(GL_FRAGMENT_SHADER, fragment_source.c_str());
 
-            Program = glCreateProgram();
-            glAttachShader(Program, VertexShader);
-            glAttachShader(Program, FragmentShader);
-            glLinkProgram(Program);
+            program = glCreateProgram();
+            glAttachShader(program, vertexShader);
+            glAttachShader(program, fragmentShader);
+            glLinkProgram(program);
 
-            GLint Success;
-            glGetProgramiv(Program, GL_LINK_STATUS, &Success);
-            if (!Success) {
-                char Log[512];
-                glGetProgramInfoLog(Program, 512, nullptr, Log);
-                std::cerr << "[ASSET_ShaderAsset] Erro ao criar programa: " << Log << "\n";
+            GLint success;
+            glGetProgramiv(program, GL_LINK_STATUS, &success);
+            if (!success) {
+                char log[512];
+                glGetProgramInfoLog(program, 512, nullptr, log);
+                std::cerr << "[baseplate::asset::ShaderAsset] Erro ao criar programa: " << log << "\n";
             }
 
-            glDeleteShader(VertexShader);
-            glDeleteShader(FragmentShader);
+            glDeleteShader(vertexShader);
+            glDeleteShader(fragmentShader);
         }
 
         void Bind() {
 
-            glUseProgram(Program);
+            glUseProgram(program);
         }
 
     private:
 
         GLuint CompileShader(GLenum type, std::string source_path) {
 
-            std::ifstream File("../" + source_path);
-            std::stringstream Buffer;
-            Buffer << File.rdbuf();
-            std::string StringSource = Buffer.str();
-            const char* Source = StringSource.c_str();
+            std::ifstream file("../" + source_path);
+            std::stringstream buffer;
+            buffer << file.rdbuf();
+
+            std::string stringSource = buffer.str();
+            const char* source = stringSource.c_str();
 
             //
 
-            GLuint Shader = glCreateShader(type);
-            glShaderSource(Shader, 1, &Source, nullptr);
-            glCompileShader(Shader);
+            GLuint shader = glCreateShader(type);
+            glShaderSource(shader, 1, &source, nullptr);
+            glCompileShader(shader);
 
-            GLint Success;
-            glGetShaderiv(Shader, GL_LINK_STATUS, &Success);
-            if (!Success) {
-                char Log[512];
-                glGetShaderInfoLog(Program, 512, nullptr, Log);
-                std::cerr << "[ASSET_ShaderAsset] Erro ao criar compilar shader: " << Log << "\n";
+            GLint success;
+            glGetShaderiv(shader, GL_LINK_STATUS, &success);
+            if (!success) {
+                char log[512];
+                glGetShaderInfoLog(program, 512, nullptr, log);
+                std::cerr << "[baseplate::asset::ShaderAsset] Erro ao criar compilar shader: " << log << "\n";
             }
 
-            return Shader;
+            return shader;
         }
     };
 }

@@ -12,10 +12,10 @@ namespace baseplate {
 
         Node(const char* name) : iNode(name), Children(this) {}
 
-        void _Ready()  override {}
-        void _Event(SDL_Event& event) override {}
-        void _Draw(GLuint vao, glm::mat4 projection) override {}
-        void _Process(double delta)  override {}
-        void _Close() override {}
+        void Ready()  override {}
+        void Event(const SDL_Event& event) override {}
+        void Draw(GLuint vao, glm::mat4 projection) override {}
+        void Process(double delta)  override {}
+        void Close() override {}
     };
 }

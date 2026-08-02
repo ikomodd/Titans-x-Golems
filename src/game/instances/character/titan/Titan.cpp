@@ -17,18 +17,18 @@ game::titan::TileData game::Titan::GetTileData() {
 
 void game::Titan::RunIa() {
 
-    while (mActions > 0) {
+    while (m_actions > 0) {
 
-        titan::TileData TileData = GetTileData();
+        titan::TileData tileData = GetTileData();
 
-        if (TileData.InTarget) {
+        if (tileData.inTarget) {
 
-            std::cout << "atacando em: " << TileData.Tile.ToString() << "\n";
-            AttackOn(TileData.Tile);
+            std::cout << "atacando em: " << tileData.tile.ToString() << "\n";
+            AttackOn(tileData.tile);
         }
         else {
 
-            MoveTo(mTilePosition + TileData.Direction);
+            MoveTo(m_tilePosition + tileData.direction);
         }
     }
 }

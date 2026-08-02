@@ -8,7 +8,7 @@ namespace baseplate {
     struct Stack {
     private:
 
-        std::vector<T> Content;
+        std::vector<T> content;
 
     public:
 
@@ -16,27 +16,27 @@ namespace baseplate {
 
         void Push(T instance) {
 
-            Content.push_back(instance);
+            content.push_back(instance);
         }
 
         void Pop() {
-            if (!Content.empty())
-                Content.pop_back();
+            if (!content.empty())
+                content.pop_back();
         }
 
         bool IsEmpty() {
 
-            return Content.empty();
+            return content.empty();
         }
 
         size_t Size() {
 
-            return Content.size();
+            return content.size();
         }
 
         T Get() {
 
-            return Content.back();
+            return content.back();
         }
     };
 }

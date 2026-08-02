@@ -6,35 +6,34 @@
 namespace game {
 
     class Arena;
-
     class DisplayManager;
 
     class Character : public baseplate::Node2D, private baseplate::AssetData {
     private:
 
-        DisplayManager* mDisplayManager = nullptr;
+        DisplayManager* m_displayManager = nullptr;
 
-        std::string mSourcePath;
-
+        std::string m_sourcePath;
+        
     protected:
 
-        float mHealth = 0.f;
-        float mShield = 0.f;
+        float m_health = 0.f;
+        float m_shield = 0.f;
 
-        float mDamage = 0.f;
+        float m_damage = 0.f;
 
-        unsigned int mActions = 0;
-        unsigned int mActionsQuantity = 0;
+        unsigned int m_actions = 0;
+        unsigned int m_actionsQuantity = 0;
 
-        std::vector<baseplate::Vector2i> mMotionDirections {};
-        std::vector<baseplate::Vector2i> mAttackDirections {};
+        std::vector<baseplate::Vector2i> m_motionDirections {};
+        std::vector<baseplate::Vector2i> m_attackDirections {};
 
-        baseplate::Vector2i mSpawnPosition;
-        baseplate::Vector2i mTilePosition = 0;
+        baseplate::Vector2i m_spawnPosition;
+        baseplate::Vector2i m_tilePosition = 0;
 
     public:
 
-        Character(baseplate::Vector2i tile_position, std::string source_path) : mSpawnPosition(tile_position), mSourcePath(source_path), baseplate::Node2D("no_name_character", 0, 0) {}
+        Character(baseplate::Vector2i tile_position, std::string source_path) : m_spawnPosition(tile_position), m_sourcePath(source_path), baseplate::Node2D("no_name_character", 0, 0) {}
         friend class Arena;
 
         //
@@ -51,12 +50,12 @@ namespace game {
 
         baseplate::Vector2i GetTilePosition() {
 
-            return mTilePosition;
+            return m_tilePosition;
         }
 
         //
 
-        void _Ready() override;
-        void _Draw(GLuint vao, glm::mat4 projection) override;
+        void Ready() override;
+        void Draw(GLuint vao, glm::mat4 projection) override;
     };
 }

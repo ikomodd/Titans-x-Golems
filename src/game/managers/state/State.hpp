@@ -3,9 +3,11 @@
 #include "baseplate/manager/Manager.hpp"
 #include "baseplate/data_models/stack/Stack.hpp"
 
-class GAME_GameState;
+
 
 namespace game {
+
+    class GameState;
 
     class StateManager : public baseplate::Manager<StateManager> {
     private:
@@ -13,19 +15,19 @@ namespace game {
         StateManager() : baseplate::Manager<StateManager>("state_manager") {};
         friend class baseplate::Manager<StateManager>;
 
-        baseplate::Stack<GAME_GameState*> mStateStack;
+        baseplate::Stack<GameState*> m_stateStack;
 
     public:
 
-        void PlayState(GAME_GameState* state);
+        void PlayState(GameState* state);
         void CloseCurrentState();
 
         //
 
-        template <typename T = GAME_GameState>
-        GAME_GameState* GetCurrentState() {
+        template <typename T = GameState>
+        GameState* GetCurrentState() {
 
-            return dynamic_cast<T*>(mStateStack.Get());
+            return dynamic_cast<T*>(m_stateStack.Get());
         }
     };
 }

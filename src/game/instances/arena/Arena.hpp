@@ -32,30 +32,33 @@ namespace game {
     class Arena : public baseplate::Node2D, private baseplate::AssetData {
     private:
 
-        DisplayManager* mDisplayManager = nullptr;
+        using Vector2 = baseplate::Vector2;
+        using Vector2i = baseplate::Vector2i;
 
-        unsigned int mCurrentRound = 1;
+        DisplayManager* m_displayManager = nullptr;
 
-        bool Builded = false;
+        unsigned int m_currentRound = 1;
 
-        baseplate::Vector2 m_TileSize = 0;
-        baseplate::Vector2 m_TileSourceSize = 0;
-        baseplate::Vector2 m_TileOffset = 0;
+        bool m_builded = false;
 
-        std::unordered_map<int, arena::Tile*> m_Tileset;
-        std::vector<std::pair<baseplate::Vector2i, int>> m_Tilemap;
+        Vector2 m_tileSize = 0;
+        Vector2 m_tileSourceSize = 0;
+        Vector2 m_tileOffset = 0;
 
-        std::string m_JsonPath = "";
+        std::unordered_map<int, arena::Tile*> m_tileset;
+        std::vector<std::pair<Vector2i, int>> m_tilemap;
 
-        Golem* m_CurrentGolem = nullptr;
+        std::string m_jsonPath = "";
+
+        Golem* m_currentGolem = nullptr;
 
     public:
-
-        Arena(const char* json_path) : m_JsonPath(json_path), baseplate::Node2D("arena", 0, 0) {}
+        
+        Arena(const char* json_path) : m_jsonPath(json_path), baseplate::Node2D("arena", 0, 0) {}
 
     private:
 
-        bool TestTileClicked(baseplate::Vector2 click_position, baseplate::Vector2i tile_position);
+        bool TestTileClicked(Vector2 click_position, Vector2i tile_position);
 
         void SelectGolem(Golem* golem);
         void UnselectGolem();
@@ -66,19 +69,19 @@ namespace game {
 
     public:
 
-        baseplate::Vector2 GetTileSize() {
-            return m_TileSize;
+        Vector2 GetTileSize() {
+            return m_tileSize;
         }
 
 
 
-        bool CanMoveTo(baseplate::Vector2i tile);
+        bool CanMoveTo(Vector2i tile);
 
-        void AttackTile(baseplate::Vector2i tile, float damage);
+        void AttackTile(Vector2i tile, float damage);
 
-        void _Ready() override;
-        void _Event(SDL_Event& event) override;
-        void _Draw(GLuint vao, glm::mat4 projection) override;
-        void _Process(double delta) override;
+        void Ready() override;
+        void Event(const SDL_Event& event) override;
+        void Draw(GLuint vao, ::glm::mat4 projection) override;
+        void Process(double delta) override;
     };
 }

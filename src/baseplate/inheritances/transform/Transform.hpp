@@ -8,10 +8,10 @@ namespace baseplate {
     class Transform2D {
     private:
 
-        baseplate::Vector2 mLocalPosition = 0;
-        baseplate::Vector2 mGlobalPosition = 0;
+        baseplate::Vector2 m_localPosition = 0;
+        baseplate::Vector2 m_globalPosition = 0;
         
-        baseplate::Vector2 mSize = 0;
+        baseplate::Vector2 m_size = 0;
 
     public:
 
@@ -21,30 +21,30 @@ namespace baseplate {
 
         Vector2 GetPosition() {
 
-            return mLocalPosition;
+            return m_localPosition;
         }
 
         Vector2 GetGlobalPosition() {
 
-            return mGlobalPosition;
+            return m_globalPosition;
         }
 
         Vector2 GetSize() {
 
-            return mSize;
+            return m_size;
         }
 
         // Set
 
         void SetPosition(baseplate::Vector2 position) {
 
-            mLocalPosition = position;
+            m_localPosition = position;
             // UpdateTransform();
         }
 
         void SetSize(baseplate::Vector2 size) {
 
-            mSize = size;
+            m_size = size;
         }
 
     private:

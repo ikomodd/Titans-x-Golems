@@ -4,14 +4,14 @@
 
 // Controle
 
-void game::StateManager::PlayState(GAME_GameState* state) {
+void game::StateManager::PlayState(GameState* state) {
 
-    mStateStack.Push(state);
+    m_stateStack.Push(state);
 
-    state->_Initialize();
+    state->Initialize();
 }
 
 void game::StateManager::CloseCurrentState() {
 
-    mStateStack.Pop();
+    m_stateStack.Pop();
 }

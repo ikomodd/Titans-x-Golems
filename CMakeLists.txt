@@ -17,12 +17,8 @@ add_executable(Game
     src/game/instances/character/Character.cpp
     src/game/instances/character/titan/Titan.cpp
     src/game/instances/health_bar/HealthBar.cpp
-    src/game/instances/camera/Camera.cpp
+    src/game/instances/camera/Camera.cpp # ARQUIVO DE DEBUG PRA O TIDY
 )
-
-# LEMBRA DE TIRAR ISSO E O "clang_rt.asan_dynamic-x86_64.dll" DO BUILD!!!!!!!!!!!!!!
-#target_compile_options(Game PRIVATE -fsanitize=address,undefined -fno-omit-frame-pointer -g)
-#target_link_options(Game PRIVATE -fsanitize=address,undefined)
 
 find_package(SDL3 CONFIG REQUIRED)
 find_package(SDL3_image CONFIG REQUIRED)

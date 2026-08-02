@@ -6,12 +6,12 @@ namespace game::titan {
 
     struct TileData {
 
-        bool InTarget;
+        bool inTarget;
             
-        baseplate::Vector2i Tile;
-        baseplate::Vector2i Direction;
+        baseplate::Vector2i tile;
+        baseplate::Vector2i direction;
 
-        TileData(bool in_target, baseplate::Vector2i tile, baseplate::Vector2i direction) : InTarget(in_target), Tile(tile), Direction(direction) {}
+        TileData(bool in_target, baseplate::Vector2i tile, baseplate::Vector2i direction) : inTarget(in_target), tile(tile), direction(direction) {}
     };
 }
 

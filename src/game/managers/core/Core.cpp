@@ -3,50 +3,50 @@
 #include "game/managers/state/State.hpp"
 #include "game/states/state/State.hpp"
 
-void game::CoreManager::_Init() {
+void game::CoreManager::Init() {
 
-    mStateManager = &baseplate::Manager<StateManager>::Get();
+    m_stateManager = &baseplate::Manager<StateManager>::Get();
 }
 
-void game::CoreManager::_Event(SDL_Event& event) {
+void game::CoreManager::Event(const SDL_Event& event) {
 
     if (event.type == SDL_EVENT_QUIT)
-        Running = false;
+        running = false;
 
-    auto LinearStateChildren = mStateManager->GetCurrentState()->GetLinearChildren();
-    for (baseplate::iNode* inode : LinearStateChildren) {
+    auto linearStateChildren = m_stateManager->GetCurrentState()->GetLinearChildren();
+    for (baseplate::iNode* inode : linearStateChildren) {
 
-        inode->_Event(event);
+        inode->Event(event);
     }
 }
 
-void game::CoreManager::_Process() {
+void game::CoreManager::Process() {
 
-    auto LinearStateChildren = mStateManager->GetCurrentState()->GetLinearChildren();
-    for (size_t i = 0; i < LinearStateChildren.size(); ) {
+    auto linearStateChildren = m_stateManager->GetCurrentState()->GetLinearChildren();
+    for (size_t i = 0; i < linearStateChildren.size(); ) {
 
-        baseplate::iNode* iNode = LinearStateChildren[i];
-        iNode->_Process(0.0);
+        baseplate::iNode* inode = linearStateChildren[i];
+        inode->Process(0.0);
 
-        if (iNode->DestroyMark) {
+        if (inode->destroyMark) {
 
-            auto* MarkedNode = static_cast<baseplate::Node*>(iNode);
+            auto* MarkedNode = static_cast<baseplate::Node*>(inode);
 
             for (auto* node_child : MarkedNode->GetChildren()) {
                 node_child->Destroy();
             }
 
-            MarkedNode->GetParent()->As<baseplate::Node>()->RemoveNode(iNode);
-            LinearStateChildren.erase(LinearStateChildren.begin() + i);
+            MarkedNode->GetParent()->As<baseplate::Node>()->RemoveNode(inode);
+            linearStateChildren.erase(linearStateChildren.begin() + i);
 
-            std::cout << "[game::CoreManager] Node: " << iNode->Name << " deletado com sucesso\n";
+            std::cout << "[game::CoreManager] Node: " << inode->name << " deletado com sucesso\n";
 
-            delete iNode;
+            delete inode;
         }
         else i++;
     }
 }
 
-void game::CoreManager::_Close() {
+void game::CoreManager::Close() {
     
 }

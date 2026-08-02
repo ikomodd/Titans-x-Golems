@@ -5,39 +5,39 @@
 
  void game::DisplayManager::SetWindowSize() {
 
-    baseplate::Vector2i WindowSizeInt = 0;
-    SDL_GetWindowSize(mWindow, &WindowSizeInt.X, &WindowSizeInt.Y);
-    mWindowSize = WindowSizeInt.ToVector2();
+    baseplate::Vector2i windowSizeInt = 0;
+    SDL_GetWindowSize(m_window, &windowSizeInt.X, &windowSizeInt.Y);
+    m_windowSize = windowSizeInt.ToVector2();
 }
 
 //
 
-void game::DisplayManager::_Init() {
+void game::DisplayManager::Init() {
 
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
-    mWindow = SDL_CreateWindow("game", mWindowSize.X, mWindowSize.Y, SDL_WINDOW_OPENGL);
-    mContext = SDL_GL_CreateContext(mWindow);
+    m_window = SDL_CreateWindow("game", m_windowSize.X, m_windowSize.Y, SDL_WINDOW_OPENGL);
+    m_context = SDL_GL_CreateContext(m_window);
 
     SetWindowSize();
 
     if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
         std::cerr << "[game::DisplayManager] Erro ao iniciar o GLAD\n";
 
-    glViewport(0, 0, mWindowSize.X, mWindowSize.Y);
+    glViewport(0, 0, m_windowSize.X, m_windowSize.Y);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glGenVertexArrays(1, &mVAO);
-    glGenBuffers(1, &mVBO);
+    glGenVertexArrays(1, &m_vao);
+    glGenBuffers(1, &m_vbo);
 
-    glBindVertexArray(mVAO);
+    glBindVertexArray(m_vbo);
 
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(mVertices), mVertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertices), m_vertices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
@@ -47,34 +47,34 @@ void game::DisplayManager::_Init() {
 
     glBindVertexArray(0);
 
-    mProjection = glm::ortho(0.0f, mWindowSize.X, mWindowSize.Y, 0.0f, -1.0f, 1.0f);
+    m_projection = glm::ortho(0.0f, m_windowSize.X, m_windowSize.Y, 0.0f, -1.0f, 1.0f);
 
-    mStateManager = &baseplate::Manager<StateManager>::Get();
+    m_stateManager = &baseplate::Manager<StateManager>::Get();
 }
 
-void game::DisplayManager::_Event(SDL_Event& event) {
+void game::DisplayManager::Event(const SDL_Event& event) {
     if (event.type == SDL_EVENT_WINDOW_RESIZED)
         SetWindowSize();
 }
 
-void game::DisplayManager::_Process() {
+void game::DisplayManager::Process() {
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glBindVertexArray(mVAO);
+    glBindVertexArray(m_vao);
     
-    auto LinearStateChildren = mStateManager->GetCurrentState()->GetLinearChildren();
+    auto linearStateChildren = m_stateManager->GetCurrentState()->GetLinearChildren();
 
-    for (baseplate::iNode* inode : LinearStateChildren) {
+    for (baseplate::iNode* inode : linearStateChildren) {
 
-        inode->_Draw(mVAO, mProjection);
+        inode->Draw(m_vao, m_projection);
     }
 
-    SDL_GL_SwapWindow(mWindow);
+    SDL_GL_SwapWindow(m_window);
 }
 
-void game::DisplayManager::_Close() {
+void game::DisplayManager::Close() {
 
-    SDL_DestroyWindow(mWindow);
+    SDL_DestroyWindow(m_window);
 }
