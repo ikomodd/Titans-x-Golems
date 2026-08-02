@@ -193,7 +193,7 @@ void game::Arena::Event(const SDL_Event& event) {
 
     if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT) {
 
-        baseplate::Vector2 clickPosition = game::Camera::currentCamera->GetWorldPosition(baseplate::Vector2(event.button.x, event.button.y));
+        baseplate::Vector2 clickPosition = Camera::currentCamera->GetWorldPosition(baseplate::Vector2(event.button.x, event.button.y));
 
         // Passa por todos os tiles
         for (auto& [tile_position, tile_id] : m_tilemap) {
@@ -244,6 +244,31 @@ void game::Arena::Event(const SDL_Event& event) {
                 BuildArena();
         }
     }
+    else if (event.type == SDL_EVENT_MOUSE_MOTION) {
+
+        bool hasTarget = false;
+        baseplate::Vector2 mousePosition = Camera::currentCamera->GetWorldPosition(baseplate::Vector2(event.motion.x, event.motion.y));
+
+        for (auto [tile_position, tile_id] : m_tilemap) {
+
+            if (TestTileClicked(mousePosition, tile_position)) {
+
+                for (auto* inode : GetChildren()) {
+
+                    auto* titan = inode->As<Titan>();
+                    if (titan && titan->m_tilePosition == tile_position) {
+
+                        m_titanInMouseTarget = titan;
+                        hasTarget = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!hasTarget)
+            m_titanInMouseTarget = nullptr;
+    }
 }
 
 void game::Arena::Draw(GLuint vao, glm::mat4 projection) {
@@ -267,17 +292,18 @@ void game::Arena::Draw(GLuint vao, glm::mat4 projection) {
 
         baseplate::base_glm::RenderModel model(tilePosition, tileSize);
 
-        //
+        // Da destaque nos tiles referentes ao Golem selecionado
 
         GLint motionTileLoc = glGetUniformLocation(m_shaderAsset->program, "uIsMotionTile");
-        if (m_currentGolem && m_currentGolem->TileIsInMotionDirections(tile_position))
+        GLint attackTileLoc = glGetUniformLocation(m_shaderAsset->program, "uIsAttackTile");
+
+        if (m_currentGolem && m_currentGolem->TileIsInMotionDirections(tile_position) || m_titanInMouseTarget && m_titanInMouseTarget->TileIsInMotionDirections(tile_position))
             glUniform1i(motionTileLoc, 1);
         else
             glUniform1i(motionTileLoc, 0);
 
-        GLint attackTileLoc = glGetUniformLocation(m_shaderAsset->program, "uIsAttackTile");
-        if (m_currentGolem && m_currentGolem->TileIsInAttackDirections(tile_position))
-            glUniform1i(attackTileLoc, 1);
+        if (m_currentGolem && m_currentGolem->TileIsInAttackDirections(tile_position) || m_titanInMouseTarget && m_titanInMouseTarget->TileIsInAttackDirections(tile_position))
+             glUniform1i(attackTileLoc, 1);
         else
             glUniform1i(attackTileLoc, 0);
 

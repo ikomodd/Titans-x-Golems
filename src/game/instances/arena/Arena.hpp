@@ -50,6 +50,7 @@ namespace game {
 
         std::string m_jsonPath = "";
 
+        Titan* m_titanInMouseTarget = nullptr;
         Golem* m_currentGolem = nullptr;
 
     public:
