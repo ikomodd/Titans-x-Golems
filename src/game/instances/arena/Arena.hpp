@@ -45,6 +45,8 @@ namespace game {
         Vector2 m_tileSourceSize = 0;
         Vector2 m_tileOffset = 0;
 
+        Vector2i m_mapSize = 0;
+
         std::unordered_map<int, arena::Tile*> m_tileset;
         std::vector<std::pair<Vector2i, int>> m_tilemap;
 
@@ -70,15 +72,25 @@ namespace game {
 
     public:
 
+        // Get
+
         Vector2 GetTileSize() {
             return m_tileSize;
         }
 
+        std::vector<std::pair<Vector2i, int>> GetMap() {
 
+            return m_tilemap;
+        }
+
+        //
 
         bool CanMoveTo(Vector2i tile);
-
         void AttackTile(Vector2i tile, float damage);
+        bool IsAValidTile(Vector2i tile, bool ignore_characters = false);
+        std::vector<Vector2i> MakeBFS(Character* character, Vector2i origin, Vector2i target);
+
+        //
 
         void Ready() override;
         void Event(const SDL_Event& event) override;

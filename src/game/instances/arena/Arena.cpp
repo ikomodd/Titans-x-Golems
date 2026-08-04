@@ -79,7 +79,7 @@ bool game::Arena::CanMoveTo(Vector2i tile) {
     return true;
 }
 
-void game::Arena::AttackTile(baseplate::Vector2i tile, float damage) {
+void game::Arena::AttackTile(Vector2i tile, float damage) {
 
     for (auto* node : GetChildren()) {
 
@@ -89,6 +89,36 @@ void game::Arena::AttackTile(baseplate::Vector2i tile, float damage) {
             character->GetDamage(damage);
         }
     }
+}
+
+bool game::Arena::IsAValidTile(Vector2i tile, bool ignore_characters) {
+
+    bool result = true;
+
+    // Se está dentro do mapa
+
+    if (!(tile.X >= 0 && tile.X <= m_mapSize.X && tile.Y >= 0 && tile.Y <= m_mapSize.Y))
+        result = false;
+
+    // Se é colidível
+
+        // dps
+    
+    // Se tem alguem em cima
+
+    if (!ignore_characters) {
+        for (auto* child_node : GetChildren()) {
+
+            Character* character = child_node->As<Character>();
+            if (character && character->m_tilePosition == tile) {
+
+                result = false;
+                break;
+            }
+        }
+    }
+
+    return result;
 }
 
 //
@@ -101,8 +131,9 @@ void game::Arena::BuildArena() {
 
     m_tileSize = baseplate::Vector2(data["tile_size"][0], data["tile_size"][1]);
     m_tileSourceSize = baseplate::Vector2(data["tile_source_size"][0], data["tile_source_size"][1]);
-
     m_tileOffset = baseplate::Vector2(data["tile_offset"][0], data["tile_offset"][1]);
+
+    m_mapSize = baseplate::Vector2i(data["map_size"][0], data["map_size"][1]);
 
     DefineTextureAsset(data["texture_name"]);
 

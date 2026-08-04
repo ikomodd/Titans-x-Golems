@@ -17,7 +17,8 @@ add_executable(Game
     src/game/instances/character/Character.cpp
     src/game/instances/character/titan/Titan.cpp
     src/game/instances/health_bar/HealthBar.cpp
-    src/game/instances/camera/Camera.cpp # ARQUIVO DE DEBUG PRA O TIDY
+    src/game/instances/camera/Camera.cpp
+    src/game/instances/arena/Arena.BFS.cpp # ARQUIVO DE DEBUG PRA O TIDY
 )
 
 find_package(SDL3 CONFIG REQUIRED)
