@@ -22,8 +22,11 @@ namespace game {
 
         float m_damage = 0.f;
 
-        unsigned int m_actions = 0;
-        unsigned int m_actionsQuantity = 0;
+        int m_actions = 0;
+        int m_actionsQuantity = 0;
+
+        int m_attackCost = 0;
+        int m_motionCost = 0;
 
         std::vector<baseplate::Vector2i> m_motionDirections {};
         std::vector<baseplate::Vector2i> m_attackDirections {};
@@ -43,8 +46,8 @@ namespace game {
 
         void BuildCharacter();
 
-        void MoveTo(baseplate::Vector2i tile_position);
-        void AttackOn(baseplate::Vector2i tile_position);
+        bool MoveTo(baseplate::Vector2i tile_position, bool free = false);
+        bool AttackOn(baseplate::Vector2i tile_position);
         
         void GetDamage(float damage);
 

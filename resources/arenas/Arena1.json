@@ -14,7 +14,8 @@
     ],
 
     "characters": [
-        {"type": "golem", "source": "resources/characters/golems/Plague2.json", "position": [0, 0]},
+        {"type": "golem", "source": "resources/characters/golems/Tank.json", "position": [0, 0]},
+        {"type": "golem", "source": "resources/characters/golems/Sniper.json", "position": [0, 7]},
         {"type": "titan", "source": "resources/characters/titans/Testiel.json", "position": [7, 7]}
     ],
 

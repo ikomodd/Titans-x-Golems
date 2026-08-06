@@ -1,0 +1,25 @@
+{
+    "id": "tank_golem",
+    "name": "Tank",
+    "description": "Golem classe Tanque, mais força, mais vida, menos movimento",
+
+    "texture_name": "",
+
+    "health": 4.0,
+    "shield": 12.0,
+
+    "damage": 2.0,
+
+    "actions": 3,
+
+    "attack_cost": 1,
+    "motion_cost": 2,
+
+    "motion_directions": [
+        [0, 1], [1, 0], [-1, 0], [0, -1]
+    ],
+    
+    "attack_directions": [
+        [0, 3], [3, 0], [-3, 0], [0, -3]
+    ]
+}

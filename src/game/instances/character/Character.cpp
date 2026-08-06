@@ -54,7 +54,10 @@ void game::Character::BuildCharacter() {
     m_damage          = data["damage"];
     m_actionsQuantity = data["actions"];
 
-    m_actions = m_actionsQuantity + 1; // + 1 porque tem que conciderar o MoveTo quando o character é criado
+    m_actions = m_actionsQuantity;
+
+    m_attackCost = data["attack_cost"];
+    m_motionCost = data["motion_cost"];
 
     std::string textureName = (data["texture_name"] != "") ? data["texture_name"] : "character_standart";
     DefineTextureAsset(textureName);
@@ -71,26 +74,41 @@ void game::Character::BuildCharacter() {
     }
 }
 
-void game::Character::MoveTo(baseplate::Vector2i tile_position) {
+bool game::Character::MoveTo(baseplate::Vector2i tile_position, bool free) {
 
     Arena* arena = GetParent<Arena>();
 
-    if (arena->CanMoveTo(tile_position) && tile_position != m_tilePosition) {
+    if (m_actions - m_motionCost >= 0 && arena->IsAValidTile(tile_position) && tile_position != m_tilePosition) {
 
         m_tilePosition = tile_position;
         SetPosition(baseplate::Vector2(tile_position.X + tile_position.Y, tile_position.Y - tile_position.X) * arena->GetTileSize());
-    }
+        
+        if (!free)
+            m_actions -= m_motionCost;
 
-    m_actions--;
+        std::cout << m_actions << "\n";
+
+        // Retorna o resultado
+
+        return true;
+    }
+    return false;
 }
 
-void game::Character::AttackOn(baseplate::Vector2i tile_position) {
+bool game::Character::AttackOn(baseplate::Vector2i tile_position) {
 
     Arena* arena = GetParent<Arena>();
 
-    arena->AttackTile(tile_position, m_damage);
+    if (m_actions - m_attackCost >= 0) {
 
-    m_actions--;
+        arena->AttackTile(tile_position, m_damage);
+        m_actions -= m_attackCost;
+
+        // Retorna o resultado
+
+        return true;
+    }
+    return false;
 }
 
 void game::Character::GetDamage(float damage) {
@@ -114,7 +132,7 @@ void game::Character::Ready() {
     m_displayManager = &baseplate::Manager<game::DisplayManager>::Get();
 
     BuildCharacter();
-    MoveTo(m_spawnPosition);
+    MoveTo(m_spawnPosition, true);
 }
 
 void game::Character::Draw(GLuint vao, glm::mat4 projection) {

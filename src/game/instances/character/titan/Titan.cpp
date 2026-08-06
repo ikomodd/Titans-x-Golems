@@ -65,13 +65,15 @@ void game::Titan::RunIa() {
 
     auto* arena = GetParent<Arena>();
 
-    while (m_actions > 0) {
+    bool fail = false;
+
+    while (m_actions > 0 && fail == false) {
 
         titan::TargetData targetData = GetTargetData();
 
         if (targetData.inTarget)
-            AttackOn(targetData.tile);
+            fail = AttackOn(targetData.tile);
         else
-            MoveTo(GetNextStep());
+            fail = MoveTo(GetNextStep());
     }
 }

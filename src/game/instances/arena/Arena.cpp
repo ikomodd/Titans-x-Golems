@@ -37,6 +37,8 @@ bool game::Arena::TestTileClicked(Vector2 click_position, Vector2i tile_position
     return false;
 }
 
+//
+
 void game::Arena::SelectGolem(Golem* golem) {
 
     // Se ja tiver um character selecionado, deseleciona
@@ -53,31 +55,7 @@ void game::Arena::UnselectGolem() {
     m_currentGolem = nullptr;
 }
 
-bool game::Arena::CanMoveTo(Vector2i tile) {
-
-    bool isValid = false;
-
-    // Ve se o tile é valido
-    for (auto& [tile_position, tile_id] : m_tilemap)  {
-
-        if (tile_position == tile && !m_tileset[tile_id]->Obstacle) {
-            isValid = true;
-            break;
-        }
-    }
-
-    if (!isValid)
-        return false;
-
-    // Vê se tem algum character no tile
-    for (auto* node : GetChildren()) {
-
-        Character* character = node->As<game::Character>();
-        if (character && character->m_tilePosition == tile)
-            return false;
-    }
-    return true;
-}
+//
 
 void game::Arena::AttackTile(Vector2i tile, float damage) {
 
@@ -87,6 +65,13 @@ void game::Arena::AttackTile(Vector2i tile, float damage) {
         if (character && character->m_tilePosition == tile) {
 
             character->GetDamage(damage);
+            
+            m_titanInMouseTarget = nullptr; // Evita crash no Draw()
+
+            /*
+                Quando um titã morre, o Draw() tenta desenhar as direções de movimento e ataque dele, e como
+                ele já foi deletado, m_titanInMouseTarget aponta pra um local inválido causando crash
+            */
         }
     }
 }
@@ -222,23 +207,29 @@ void game::Arena::Ready() {
 
 void game::Arena::Event(const SDL_Event& event) {
 
+    // Se o botão esquerdo do mouse for clicado: Detecta cliques nos tiles e executa ações
+
     if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN && event.button.button == SDL_BUTTON_LEFT) {
 
         baseplate::Vector2 clickPosition = Camera::currentCamera->GetWorldPosition(baseplate::Vector2(event.button.x, event.button.y));
 
         // Passa por todos os tiles
+
         for (auto& [tile_position, tile_id] : m_tilemap) {
 
-            // Encontra o tile clicado
+            // Vê se o tile atual do loop foi clicado
+
             if (TestTileClicked(clickPosition, tile_position)) {
 
                 bool hasGolemSelected = false;
 
                 // Vê se a posição do tile clicado corresponde a algum golem
+
                 for (auto* node : GetChildren()) {
                     auto* golem = node->As<Golem>();
 
-                    // Verifica se é um character; se tem ações; se está na posição do tile clicado e se não é o character selecionado atual
+                    // Se é um golem; se tem ações; se está na posição do tile clicado e se não é o golem selecionado atual: Seleciona o novo golem
+                    
                     if (golem && golem->m_actions > 0 && golem->m_tilePosition == tile_position && golem != m_currentGolem) {
 
                         hasGolemSelected = true;
@@ -246,22 +237,37 @@ void game::Arena::Event(const SDL_Event& event) {
                     }
                 }
                 
-                // se nenhum tile for selecionado; se tem um character selecionado e se o a posição do tile ta presente na ActionDirections do character selecionado, executa a ação do character e deseleciona
+                // Se já tiver algum golem selecionado e se ele não foi trocado
+
                 if (m_currentGolem && !hasGolemSelected) {
 
-                    if (m_currentGolem->TileIsInMotionDirections(tile_position)) {
+                    // Se o tile clicado estiver nas direções de movimento do golem selecionado: Move para o tile atual
+
+                    if (m_currentGolem->TileIsInMotionDirections(tile_position))
                         m_currentGolem->MoveTo(tile_position);
-                        UnselectGolem();
-                    }
-                    else if (m_currentGolem->TileIsInAttackDirections(tile_position)) {
+
+                    // Se o tile clicado estiver nas direções de ataque do golem selecionado: Ataca o tile atual
+
+                    else if (m_currentGolem->TileIsInAttackDirections(tile_position))
                         m_currentGolem->AttackOn(tile_position);
+
+                    // Deseleciona o golem atual se ele não tiver mais movimentos
+
+                    /*
+                        OBS: Talvez no futuro seja interessante se ao invés de ver: m_actions <= 0, ele fazer algo tipo:
+                        m_actions - m_motionCost <= 0 && m_actions - m_attackCost <= 0
+                    */
+
+                    if (m_currentGolem->m_actions <= 0)
                         UnselectGolem();
-                    }
                 }
                 break;
             }
         }
     }
+    
+    // Se uma tecla do teclado for clicada
+    
     else if (event.type == SDL_EVENT_KEY_DOWN) {
 
         SDL_Keymod modState = SDL_GetModState();
@@ -275,6 +281,9 @@ void game::Arena::Event(const SDL_Event& event) {
                 BuildArena();
         }
     }
+
+    // Se o mouse se mover: Mostra informações rápidas na tela, como as direções de movimento dos golems
+
     else if (event.type == SDL_EVENT_MOUSE_MOTION) {
 
         bool hasTarget = false;

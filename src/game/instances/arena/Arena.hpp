@@ -85,7 +85,6 @@ namespace game {
 
         //
 
-        bool CanMoveTo(Vector2i tile);
         void AttackTile(Vector2i tile, float damage);
         bool IsAValidTile(Vector2i tile, bool ignore_characters = false);
         std::vector<Vector2i> MakeBFS(Character* character, Vector2i origin, Vector2i target);

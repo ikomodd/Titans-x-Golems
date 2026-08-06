@@ -10,8 +10,12 @@ void game::CoreManager::Init() {
 
 void game::CoreManager::Event(const SDL_Event& event) {
 
+    // Fecha o loop ao dar quit
+
     if (event.type == SDL_EVENT_QUIT)
         running = false;
+
+    // Passa o event para os nodes do state atual
 
     auto linearStateChildren = m_stateManager->GetCurrentState()->GetLinearChildren();
     for (baseplate::iNode* inode : linearStateChildren) {
@@ -22,28 +26,15 @@ void game::CoreManager::Event(const SDL_Event& event) {
 
 void game::CoreManager::Process() {
 
+    // Lista linear de todos os nodes do state atual
+
     auto linearStateChildren = m_stateManager->GetCurrentState()->GetLinearChildren();
-    for (size_t i = 0; i < linearStateChildren.size(); ) {
 
-        baseplate::iNode* inode = linearStateChildren[i];
+    // Chama o virtual Process() nos inodes da lista
+
+    for (baseplate::iNode* inode : linearStateChildren) {
+
         inode->Process(0.0);
-
-        if (inode->destroyMark) {
-
-            auto* MarkedNode = static_cast<baseplate::Node*>(inode);
-
-            for (auto* node_child : MarkedNode->GetChildren()) {
-                node_child->Destroy();
-            }
-
-            MarkedNode->GetParent()->As<baseplate::Node>()->RemoveNode(inode);
-            linearStateChildren.erase(linearStateChildren.begin() + i);
-
-            std::cout << "[game::CoreManager] Node: " << inode->name << " deletado com sucesso\n";
-
-            delete inode;
-        }
-        else i++;
     }
 }
 

@@ -29,5 +29,9 @@ namespace game {
 
             return dynamic_cast<T*>(m_stateStack.Get());
         }
+
+        //
+
+        void Process() override;
     };
 }
