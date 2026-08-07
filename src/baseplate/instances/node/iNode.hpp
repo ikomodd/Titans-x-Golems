@@ -22,7 +22,7 @@ namespace baseplate {
 
         std::string name;
 
-        iNode(const char* name) : name(name) {}
+        iNode(std::string name) : name(name) {}
         friend class Children;
         virtual ~iNode() = default;
 

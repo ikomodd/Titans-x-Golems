@@ -1,8 +1,10 @@
-#include "State.hpp"
+#include "Origin.hpp"
 
-void game::GameState::Initialize() {
+#include <iostream>
 
-    std::cout << "[game::GameState] Inicializando state: " << name << " { ";
+void game::Origin::Initialize() {
+
+    std::cout << "[game::Origin] Inicializando origin: " << name << " { ";
 
     // Inicialização padrão do inode (obrigatório para override de Initialize)
 
@@ -17,5 +19,5 @@ void game::GameState::Initialize() {
         std::cout << inode->name << " finalizado; ";
     }
 
-    std::cout << " }\n[game::GameState] State inicializado com sucesso\n";
+    std::cout << " }\n[game::Origin] origin inicializado com sucesso\n";
 }

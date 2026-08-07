@@ -1,7 +1,7 @@
 #include "Display.hpp"
 
-#include "game/managers/state/State.hpp"
-#include "game/states/state/State.hpp"
+#include "game/managers/scene/Scene.hpp"
+#include "game/origins/Origin.hpp"
 
  void game::DisplayManager::SetWindowSize() {
 
@@ -49,7 +49,7 @@ void game::DisplayManager::Init() {
 
     m_projection = glm::ortho(0.0f, m_windowSize.X, m_windowSize.Y, 0.0f, -1.0f, 1.0f);
 
-    m_stateManager = &baseplate::Manager<StateManager>::Get();
+    m_sceneManager = &baseplate::Manager<SceneManager>::Get();
 }
 
 void game::DisplayManager::Event(const SDL_Event& event) {
@@ -64,9 +64,9 @@ void game::DisplayManager::Process() {
 
     glBindVertexArray(m_vao);
     
-    auto linearStateChildren = m_stateManager->GetCurrentState()->GetLinearChildren();
+    auto linearSceneChildren = m_sceneManager->GetCurrentScene()->GetLinearChildren();
 
-    for (baseplate::iNode* inode : linearStateChildren) {
+    for (baseplate::iNode* inode : linearSceneChildren) {
 
         inode->Draw(m_vao, m_projection);
     }

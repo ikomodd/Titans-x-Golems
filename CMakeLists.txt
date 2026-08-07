@@ -10,15 +10,15 @@ add_executable(Game
     src/Main.cpp
     src/game/managers/core/Core.cpp
     src/game/managers/display/Display.cpp
-    src/game/managers/state/State.cpp
-    src/game/states/main_state/MainState.cpp
-    src/game/states/state/State.cpp
+    src/game/managers/scene/Scene.cpp
+    src/game/origins/main_scene/MainScene.cpp
+    src/game/origins/Origin.cpp
     src/game/instances/arena/Arena.cpp
     src/game/instances/character/Character.cpp
     src/game/instances/character/titan/Titan.cpp
     src/game/instances/health_bar/HealthBar.cpp
     src/game/instances/camera/Camera.cpp
-    src/game/instances/arena/Arena.BFS.cpp # ARQUIVO DE DEBUG PRA O TIDY
+    src/game/instances/arena/Arena.BFS.cpp
 )
 
 find_package(SDL3 CONFIG REQUIRED)

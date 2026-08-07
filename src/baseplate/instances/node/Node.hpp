@@ -10,7 +10,7 @@ namespace baseplate {
     class Node : public iNode, public Children {
     public:
 
-        Node(const char* name) : iNode(name), Children(this) {}
+        Node(std::string name) : iNode(name), Children(this) {}
 
         void Ready()  override {}
         void Event(const SDL_Event& event) override {}

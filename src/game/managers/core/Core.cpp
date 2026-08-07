@@ -1,11 +1,11 @@
 #include "Core.hpp"
 
-#include "game/managers/state/State.hpp"
-#include "game/states/state/State.hpp"
+#include "game/managers/scene/Scene.hpp"
+#include "game/origins/Origin.hpp"
 
 void game::CoreManager::Init() {
 
-    m_stateManager = &baseplate::Manager<StateManager>::Get();
+    m_sceneManager = &baseplate::Manager<SceneManager>::Get();
 }
 
 void game::CoreManager::Event(const SDL_Event& event) {
@@ -15,10 +15,10 @@ void game::CoreManager::Event(const SDL_Event& event) {
     if (event.type == SDL_EVENT_QUIT)
         running = false;
 
-    // Passa o event para os nodes do state atual
+    // Passa o event para os nodes da cena atual
 
-    auto linearStateChildren = m_stateManager->GetCurrentState()->GetLinearChildren();
-    for (baseplate::iNode* inode : linearStateChildren) {
+    auto linearSceneChildren = m_sceneManager->GetCurrentScene()->GetLinearChildren();
+    for (baseplate::iNode* inode : linearSceneChildren) {
 
         inode->Event(event);
     }
@@ -26,13 +26,13 @@ void game::CoreManager::Event(const SDL_Event& event) {
 
 void game::CoreManager::Process() {
 
-    // Lista linear de todos os nodes do state atual
+    // Lista linear de todos os nodes da cena atual
 
-    auto linearStateChildren = m_stateManager->GetCurrentState()->GetLinearChildren();
+    auto linearSceneChildren = m_sceneManager->GetCurrentScene()->GetLinearChildren();
 
     // Chama o virtual Process() nos inodes da lista
 
-    for (baseplate::iNode* inode : linearStateChildren) {
+    for (baseplate::iNode* inode : linearSceneChildren) {
 
         inode->Process(0.0);
     }

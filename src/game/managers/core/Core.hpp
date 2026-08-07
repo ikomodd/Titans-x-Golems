@@ -7,12 +7,12 @@
 
 namespace game {
 
-    class StateManager;
+    class SceneManager;
 
     class CoreManager : public baseplate::Manager<CoreManager> {
     private:
 
-        StateManager* m_stateManager = nullptr;
+        SceneManager* m_sceneManager = nullptr;
 
         CoreManager() : baseplate::Manager<CoreManager>("core_manager") {}
         friend class baseplate::Manager<CoreManager>;

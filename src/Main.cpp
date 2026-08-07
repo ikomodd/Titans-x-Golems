@@ -8,9 +8,9 @@
 
 #include "game/managers/core/Core.hpp"
 #include "game/managers/display/Display.hpp"
-#include "game/managers/state/State.hpp"
+#include "game/managers/scene/Scene.hpp"
 
-#include "game/states/main_state/MainState.hpp"
+#include "game/origins/main_scene/MainScene.hpp"
 
 int main() {
 
@@ -21,7 +21,7 @@ int main() {
 
     auto& core = baseplate::Manager<game::CoreManager>::Get();
     auto& display = baseplate::Manager<game::DisplayManager>::Get();
-    auto& state = baseplate::Manager<game::StateManager>::Get();
+    auto& scene = baseplate::Manager<game::SceneManager>::Get();
 
     baseplate::iManager::InitManagers();
 
@@ -37,8 +37,8 @@ int main() {
 
     // Cena inicial
 
-    auto* mainState = new game::txg::MainState();
-    state.PlayState(mainState);
+    auto* mainScene = new game::MainScene();
+    scene.PlayScene(mainScene);
 
     // Loop
 

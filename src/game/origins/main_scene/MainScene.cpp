@@ -1,4 +1,4 @@
-#include "MainState.hpp"
+#include "MainScene.hpp"
 
 #include "game/instances/arena/Arena.hpp"
 
@@ -7,7 +7,7 @@
 
 #include "game/instances/camera/Camera.hpp"
 
-void game::txg::MainState::Ready() {
+void game::MainScene::Ready() {
 
     auto* camera = new Camera("main_camera", baseplate::Vector2(0.f, 0.f), 1.f, true);
     AddNode(camera);
