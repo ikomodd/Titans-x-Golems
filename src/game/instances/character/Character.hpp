@@ -1,6 +1,6 @@
 #pragma once
 
-#include "baseplate/instances/node2d/Node2D.hpp"
+#include "game/instances/node2d/Node2D.hpp"
 #include "baseplate/inheritances/asset_data/AssetData.hpp"
 
 namespace game {
@@ -8,7 +8,7 @@ namespace game {
     class Arena;
     class DisplayManager;
 
-    class Character : public baseplate::Node2D, private baseplate::AssetData {
+    class Character : public Node2D, private baseplate::AssetData {
     private:
 
         DisplayManager* m_displayManager = nullptr;
@@ -36,7 +36,7 @@ namespace game {
 
     public:
 
-        Character(baseplate::Vector2i tile_position, std::string source_path) : m_spawnPosition(tile_position), m_sourcePath(source_path), baseplate::Node2D("no_name_character", 0, 0) {}
+        Character(baseplate::Vector2i tile_position, std::string source_path) : m_spawnPosition(tile_position), m_sourcePath(source_path), Node2D("no_name_character", 0, 0) {}
         friend class Arena;
 
         //

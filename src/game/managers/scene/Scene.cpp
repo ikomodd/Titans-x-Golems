@@ -30,13 +30,13 @@ void game::SceneManager::Process() {
 
         if (inode->destroyMark) {
 
-            auto* MarkedNode = static_cast<baseplate::Node*>(inode);
+            auto* MarkedNode = static_cast<Node*>(inode);
 
             for (auto* node_child : MarkedNode->GetChildren()) {
                 node_child->Destroy();
             }
 
-            MarkedNode->GetParent()->As<baseplate::Node>()->RemoveNode(inode);
+            MarkedNode->GetParent()->As<Node>()->RemoveNode(inode);
             linearSceneChildren.erase(linearSceneChildren.begin() + i);
 
             std::cout << "[game::CoreManager] Node: " << inode->name << " deletado com sucesso\n";

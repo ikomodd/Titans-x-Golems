@@ -1,12 +1,12 @@
 #pragma once
 
-#include "baseplate/instances/node2d/Node2D.hpp"
+#include "game/instances/node2d/Node2D.hpp"
 
 #include "game/managers/display/Display.hpp"
 
 namespace game {
 
-    class Camera : public baseplate::Node2D {
+    class Camera : public Node2D {
     private:
 
         DisplayManager* m_displayManager = nullptr;
@@ -18,7 +18,7 @@ namespace game {
 
         inline static Camera* currentCamera = nullptr;
 
-        Camera(const char* name, baseplate::Vector2 position, float zoom, bool make_current) : zoom(zoom), m_makeCurrent(make_current), baseplate::Node2D(name, position, 0) {}
+        Camera(const char* name, baseplate::Vector2 position, float zoom, bool make_current) : zoom(zoom), m_makeCurrent(make_current), Node2D(name, position, 0) {}
 
         // Transforma a posição e tamanho de um node em relação à camera 
 

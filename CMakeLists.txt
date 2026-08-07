@@ -16,7 +16,6 @@ add_executable(Game
     src/game/instances/arena/Arena.cpp
     src/game/instances/character/Character.cpp
     src/game/instances/character/titan/Titan.cpp
-    src/game/instances/health_bar/HealthBar.cpp
     src/game/instances/camera/Camera.cpp
     src/game/instances/arena/Arena.BFS.cpp
 )

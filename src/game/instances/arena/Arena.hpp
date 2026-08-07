@@ -4,7 +4,7 @@
 #include <nlohmann/json.hpp>
 #include <unordered_map>
 
-#include "baseplate/instances/node2d/Node2D.hpp"
+#include "game/instances/node2d/Node2D.hpp"
 #include "baseplate/inheritances/asset_data/AssetData.hpp"
 
 #include "baseplate/data_models/vector/Vector2.hpp"
@@ -29,7 +29,7 @@ namespace game {
     class Golem;
     class Titan;
 
-    class Arena : public baseplate::Node2D, private baseplate::AssetData {
+    class Arena : public Node2D, private baseplate::AssetData {
     private:
 
         using Vector2 = baseplate::Vector2;
@@ -57,7 +57,7 @@ namespace game {
 
     public:
         
-        Arena(const char* json_path) : m_jsonPath(json_path), baseplate::Node2D("arena", 0, 0) {}
+        Arena(const char* json_path) : m_jsonPath(json_path), Node2D("arena", 0, 0) {}
 
     private:
 
