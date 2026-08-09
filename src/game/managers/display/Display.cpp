@@ -1,7 +1,10 @@
 #include "Display.hpp"
 
 #include "game/managers/scene/Scene.hpp"
+#include "game/managers/interface/Interface.hpp"
 #include "game/origins/Origin.hpp"
+
+#include <algorithm>
 
  void game::DisplayManager::SetWindowSize() {
 
@@ -49,6 +52,7 @@ void game::DisplayManager::Init() {
 
     m_projection = glm::ortho(0.0f, m_windowSize.X, m_windowSize.Y, 0.0f, -1.0f, 1.0f);
 
+    m_interfaceManager = &baseplate::Manager<InterfaceManager>::Get();
     m_sceneManager = &baseplate::Manager<SceneManager>::Get();
 }
 
@@ -63,10 +67,18 @@ void game::DisplayManager::Process() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     glBindVertexArray(m_vao);
-    
+
+    //
+
+    auto linearInterfaceChildren = m_interfaceManager->GetCurrentInterface()->GetLinearChildren();
     auto linearSceneChildren = m_sceneManager->GetCurrentScene()->GetLinearChildren();
 
-    for (baseplate::iNode* inode : linearSceneChildren) {
+    std::vector<baseplate::iNode*> allChildrens;
+    
+    allChildrens.insert(allChildrens.end(), linearSceneChildren.begin(), linearSceneChildren.end());
+    allChildrens.insert(allChildrens.end(), linearInterfaceChildren.begin(), linearInterfaceChildren.end());
+    
+    for (baseplate::iNode* inode : allChildrens) {
 
         inode->Draw(m_vao, m_projection);
     }

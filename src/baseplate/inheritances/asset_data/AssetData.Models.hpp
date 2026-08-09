@@ -85,11 +85,6 @@ namespace baseplate::asset {
             glDeleteShader(fragmentShader);
         }
 
-        void Bind() {
-
-            glUseProgram(program);
-        }
-
     private:
 
         GLuint CompileShader(GLenum type, std::string source_path) {

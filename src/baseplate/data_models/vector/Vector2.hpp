@@ -53,7 +53,7 @@ namespace baseplate {
 
         Vector2 operator * (const Vector2 other) const {
 
-            return Vector2(X * other.X, Y * other.X);
+            return Vector2(X * other.X, Y * other.Y);
         }
 
         Vector2 operator * (const float value) const {

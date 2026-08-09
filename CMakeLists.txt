@@ -18,6 +18,10 @@ add_executable(Game
     src/game/instances/character/titan/Titan.cpp
     src/game/instances/camera/Camera.cpp
     src/game/instances/arena/Arena.BFS.cpp
+    src/game/managers/interface/Interface.cpp
+    src/game/origins/main_ui/MainUi.cpp
+    src/game/instances/frame/Frame2D.cpp
+    src/game/instances/frame/texture_label/TextureLabel.cpp
 )
 
 find_package(SDL3 CONFIG REQUIRED)

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace baseplate {
 
     struct Color4f;
@@ -35,6 +37,7 @@ namespace baseplate {
         }
 
         Color4f Normalize();
+        std::string ToString();
     };
 
     // Color4f ---------------
@@ -58,6 +61,8 @@ namespace baseplate {
                 case ColorPressets::TRANSPARENT: {R =   0; G =   0; B =   0; A =   0;} break;
             }
         }
+
+        std::string ToString();
     };
 
     // Conversão Color4 ---
@@ -65,5 +70,17 @@ namespace baseplate {
     inline Color4f Color4::Normalize() {
 
         return Color4f((float)R / 255, (float)G / 255, (float)B / 255, (float)A / 255);
+    }
+
+    inline std::string Color4::ToString() {
+
+        return "Color4(" + std::to_string(R) + ", " + std::to_string(G) + ", " + std::to_string(B) + ", " + std::to_string(A) + ")";
+    }
+
+    // Conversão Color4f
+
+    inline std::string Color4f::ToString() {
+
+        return "Color4(" + std::to_string(R) + ", " + std::to_string(G) + ", " + std::to_string(B) + ", " + std::to_string(A) + ")";
     }
 }

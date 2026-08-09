@@ -6,6 +6,8 @@
 
 #include "baseplate/data_models/color/Color4.hpp"
 
+#include "baseplate/data_models/model/RenderModel.hpp"
+
 #include "AssetData.Models.hpp"
 
 namespace baseplate {
@@ -37,7 +39,7 @@ namespace baseplate {
                 std::cerr << "[baseplate::AssetData] ja existe um asset chamado: " << texture_name << "\n";
         }
 
-        // Cria um Asset de Shader
+        // Cria um Asset de shader
 
         static void CreateShaderAsset(std::string shader_name, std::string vertex_source, std::string fragment_source) {
 
@@ -63,6 +65,8 @@ namespace baseplate {
             else
                 std::cerr << "[baseplate::AssetData] Textura: " << texture_name << " nao esta definido e nao ha nenhuma textura de depuraçao\n";
         }
+
+        // Pega um shader da lista para si próprio
 
         void DefineShaderAsset(std::string shader_name) {
 

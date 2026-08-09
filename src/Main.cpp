@@ -9,8 +9,10 @@
 #include "game/managers/core/Core.hpp"
 #include "game/managers/display/Display.hpp"
 #include "game/managers/scene/Scene.hpp"
+#include "game/managers/interface/Interface.hpp"
 
 #include "game/origins/main_scene/MainScene.hpp"
+#include "game/origins/main_ui/MainUi.hpp"
 
 int main() {
 
@@ -21,6 +23,7 @@ int main() {
 
     auto& core = baseplate::Manager<game::CoreManager>::Get();
     auto& display = baseplate::Manager<game::DisplayManager>::Get();
+    auto& interface = baseplate::Manager<game::InterfaceManager>::Get();
     auto& scene = baseplate::Manager<game::SceneManager>::Get();
 
     baseplate::iManager::InitManagers();
@@ -34,6 +37,11 @@ int main() {
     baseplate::AssetData::CreateShaderAsset("block_shader",  "assets/shaders/BasicVertex.vert", "assets/shaders/block/BlockShader.frag");
     baseplate::AssetData::CreateShaderAsset("texture_shader", "assets/shaders/BasicVertex.vert", "assets/shaders/texture/TextureShader.frag");
     baseplate::AssetData::CreateShaderAsset("color_shader",   "assets/shaders/BasicVertex.vert", "assets/shaders/color/ColorShader.frag");
+
+    // Interface inicial
+
+    auto* MainUi = new game::MainUi();
+    interface.PlayInterface(MainUi);
 
     // Cena inicial
 

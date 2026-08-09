@@ -3,8 +3,6 @@
 #include <fstream>
 #include <algorithm>
 
-#include "baseplate/data_models/model/RenderModel.hpp"
-
 #include "game/instances/character/Character.hpp"
 #include "game/instances/character/golem/Golem.hpp"
 #include "game/instances/character/titan/Titan.hpp"
@@ -314,7 +312,8 @@ void game::Arena::Event(const SDL_Event& event) {
 void game::Arena::Draw(GLuint vao, glm::mat4 projection) {
 
     game::Camera* currentCamera = game::Camera::currentCamera;
-    m_shaderAsset->Bind();
+
+    glUseProgram(m_shaderAsset->program);
 
     for (auto [tile_position, tile_id] : m_tilemap) {
 
@@ -329,8 +328,6 @@ void game::Arena::Draw(GLuint vao, glm::mat4 projection) {
         );
 
         currentCamera->TransformToCameraView(tilePosition, tileSize);
-
-        baseplate::base_glm::RenderModel model(tilePosition, tileSize);
 
         // Da destaque nos tiles referentes ao Golem selecionado
 
@@ -350,9 +347,12 @@ void game::Arena::Draw(GLuint vao, glm::mat4 projection) {
         //
 
         GLint projectionLoc = glGetUniformLocation(m_shaderAsset->program, "uProjection");
-        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, ::glm::value_ptr(projection));
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-        model.Bind(m_shaderAsset->program, "uModel");
+        baseplate::gl::RenderModel model(tilePosition, tileSize);
+
+        GLint modelLoc = glGetUniformLocation(m_shaderAsset->program, "uModel");
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model.GetMatrix()));
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_textureAsset->texture);

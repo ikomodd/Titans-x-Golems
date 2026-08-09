@@ -7,7 +7,6 @@
 void game::SceneManager::PlayScene(Origin* origin) {
 
     m_sceneStack.push(origin);
-
     origin->Initialize();
 }
 
@@ -22,7 +21,7 @@ void game::SceneManager::Process() {
 
     // Deleta nodes marcados
 
-    auto linearSceneChildren = GetCurrentScene()->GetLinearChildren();
+    auto linearSceneChildren = m_sceneStack.top()->GetLinearChildren();
 
     for (size_t i = 0; i < linearSceneChildren.size(); ) {
 
@@ -39,7 +38,7 @@ void game::SceneManager::Process() {
             MarkedNode->GetParent()->As<Node>()->RemoveNode(inode);
             linearSceneChildren.erase(linearSceneChildren.begin() + i);
 
-            std::cout << "[game::CoreManager] Node: " << inode->name << " deletado com sucesso\n";
+            std::cout << "[game::InterfaceManager] Node: " << inode->name << " deletado com sucesso\n";
 
             delete inode;
         }

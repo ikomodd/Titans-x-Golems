@@ -14,11 +14,14 @@
 namespace game {
 
     class Camera;
+
     class SceneManager;
+    class InterfaceManager;
 
     class DisplayManager : public baseplate::Manager<DisplayManager> {
     private:
 
+        InterfaceManager* m_interfaceManager = nullptr;
         SceneManager* m_sceneManager = nullptr;
 
         float m_vertices[24] = {

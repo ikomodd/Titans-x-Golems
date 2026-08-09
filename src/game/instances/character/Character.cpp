@@ -6,7 +6,6 @@
 #include <iostream>
 
 #include "game/instances/arena/Arena.hpp"
-#include "baseplate/data_models/model/RenderModel.hpp"
 
 #include "game/managers/display/Display.hpp"
 #include "game/instances/camera/Camera.hpp"
@@ -137,7 +136,7 @@ void game::Character::Ready() {
 
 void game::Character::Draw(GLuint vao, glm::mat4 projection) {
 
-    m_shaderAsset->Bind();
+    glUseProgram(m_shaderAsset->program);
 
     game::Camera* currentCamera = Camera::currentCamera;
     baseplate::Vector2 textureSize = m_textureAsset->textureSize.ToVector2();
@@ -147,8 +146,12 @@ void game::Character::Draw(GLuint vao, glm::mat4 projection) {
 
     currentCamera->TransformToCameraView(characterPosition, characterSize);
 
-    baseplate::base_glm::RenderModel model(characterPosition, characterSize);
-    model.Bind(m_shaderAsset->program, "uModel");
+    //
+
+    baseplate::gl::RenderModel model(characterPosition, characterSize);
+    
+    GLint modelLoc = glGetUniformLocation(m_shaderAsset->program, "uModel");
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model.GetMatrix()));
 
     GLint projectionLoc = glGetUniformLocation(m_shaderAsset->program, "uProjection");
     glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
