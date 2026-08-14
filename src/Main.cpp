@@ -2,6 +2,7 @@
 
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 #include "baseplate/manager/Manager.hpp"
 #include "baseplate/inheritances/asset_data/AssetData.hpp"
@@ -17,6 +18,8 @@
 int main() {
 
     SDL_Init(SDL_INIT_VIDEO);
+    TTF_Init();
+
     SDL_Event event;
 
     // Inicia os managers
@@ -37,6 +40,9 @@ int main() {
     baseplate::AssetData::CreateShaderAsset("block_shader",  "assets/shaders/BasicVertex.vert", "assets/shaders/block/BlockShader.frag");
     baseplate::AssetData::CreateShaderAsset("texture_shader", "assets/shaders/BasicVertex.vert", "assets/shaders/texture/TextureShader.frag");
     baseplate::AssetData::CreateShaderAsset("color_shader",   "assets/shaders/BasicVertex.vert", "assets/shaders/color/ColorShader.frag");
+
+    baseplate::AssetData::CreateFontAsset("jacquard_12", "assets/fonts/jacquard12/Jacquard12-Regular.ttf", 48.f);
+    baseplate::AssetData::CreateFontAsset("geist_pixel", "assets/fonts/geist_pixel/GeistPixel-Regular-VariableFont_ELSH.ttf", 32.f);
 
     // Interface inicial
 

@@ -4,13 +4,20 @@
 #include "game/managers/interface/Interface.hpp"
 #include "game/origins/Origin.hpp"
 
+#include "game/instances/frame/Frame2D.hpp"
+
 #include <algorithm>
 
  void game::DisplayManager::SetWindowSize() {
 
     baseplate::Vector2i windowSizeInt = 0;
     SDL_GetWindowSize(m_window, &windowSizeInt.X, &windowSizeInt.Y);
-    m_windowSize = windowSizeInt.ToVector2();
+    m_windowSize = windowSizeInt.ToVector2() / projectionScale;
+
+    baseplate::Vector2 realySize = windowSizeInt.ToVector2();
+
+    m_projection = glm::ortho(0.0f, m_windowSize.X, m_windowSize.Y, 0.0f, -1.0f, 1.0f);
+    glViewport(0, 0, realySize.X, realySize.Y);
 }
 
 //
@@ -21,15 +28,13 @@ void game::DisplayManager::Init() {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
-    m_window = SDL_CreateWindow("game", m_windowSize.X, m_windowSize.Y, SDL_WINDOW_OPENGL);
+    m_window = SDL_CreateWindow("game", m_windowSize.X, m_windowSize.Y, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
     m_context = SDL_GL_CreateContext(m_window);
-
-    SetWindowSize();
 
     if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress))
         std::cerr << "[game::DisplayManager] Erro ao iniciar o GLAD\n";
 
-    glViewport(0, 0, m_windowSize.X, m_windowSize.Y);
+    SetWindowSize();
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -50,15 +55,24 @@ void game::DisplayManager::Init() {
 
     glBindVertexArray(0);
 
-    m_projection = glm::ortho(0.0f, m_windowSize.X, m_windowSize.Y, 0.0f, -1.0f, 1.0f);
-
     m_interfaceManager = &baseplate::Manager<InterfaceManager>::Get();
     m_sceneManager = &baseplate::Manager<SceneManager>::Get();
 }
 
 void game::DisplayManager::Event(const SDL_Event& event) {
-    if (event.type == SDL_EVENT_WINDOW_RESIZED)
+    if (event.type == SDL_EVENT_WINDOW_RESIZED) {
+
         SetWindowSize();
+
+        auto linearInterfaceChildren = m_interfaceManager->GetCurrentInterface()->GetLinearChildren();
+
+        for (auto* node : linearInterfaceChildren) {
+
+            Frame2D* frame = node->As<Frame2D>();
+            if (frame)
+                frame->UpdateTransform(m_windowSize);
+        }
+    }
 }
 
 void game::DisplayManager::Process() {

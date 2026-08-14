@@ -6,6 +6,7 @@
 
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include <glad/glad.h>
 
 #include "../../data_models/vector/Vector2.hpp"
@@ -21,14 +22,20 @@ namespace baseplate::asset {
         virtual ~AssetModel() {}
     };
 
+    // Textura
+
     struct TextureAsset : public AssetModel {
 
         GLuint texture;
         Vector2i textureSize = 0;
 
+        bool isDynamic = false;
+
+        // Cria o asset a partir de um path
+
         TextureAsset(std::string texture_path) {
 
-            std::string fullPath = "../" + texture_path;
+            std::string fullPath = "../" + texture_path; // <- tem que tirar isso
             SDL_Surface* originalSurface = IMG_Load(fullPath.c_str());
 
             if (!originalSurface) {
@@ -55,9 +62,46 @@ namespace baseplate::asset {
             SDL_DestroySurface(convertedSurface);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
+
+        // Cria o asset a partir de um texto para um asset de texto
+
+        TextureAsset(std::string text, Color4 color, TTF_Font* font) {
+
+            isDynamic = true;
+
+            SDL_Color textColor = {(Uint8)color.R, (Uint8)color.G, (Uint8)color.B, (Uint8)color.A};
+            SDL_Surface* originalTextSurface = TTF_RenderText_Blended(font, text.c_str(), 0, textColor);
+            
+            if (!originalTextSurface) {
+                std::cerr << "[baseplate::asset::TextureAsset] Falha ao gerar texto: " << text << "\n" << SDL_GetError() << "\n";
+                texture = 0;
+                return;
+            }
+
+            SDL_Surface* convertedTextSurface = SDL_ConvertSurface(originalTextSurface, SDL_PIXELFORMAT_RGBA32);
+            SDL_DestroySurface(originalTextSurface);
+
+            textureSize = Vector2i(convertedTextSurface->w, convertedTextSurface->h);
+
+            glGenTextures(1, &texture);
+            glBindTexture(GL_TEXTURE_2D, texture);
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, convertedTextSurface->w, convertedTextSurface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, convertedTextSurface->pixels);
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
+
+        ~TextureAsset() {
+
+            glDeleteTextures(1, &texture);
+        }
     };
 
-    //
+    // Shader
 
     struct ShaderAsset : public AssetModel {
 
@@ -83,6 +127,11 @@ namespace baseplate::asset {
 
             glDeleteShader(vertexShader);
             glDeleteShader(fragmentShader);
+        }
+
+        ~ShaderAsset() {
+
+            glDeleteProgram(program);
         }
 
     private:
@@ -111,6 +160,24 @@ namespace baseplate::asset {
             }
 
             return shader;
+        }
+    };
+
+    struct FontAsset : public AssetModel {
+
+        TTF_Font* font;
+
+        FontAsset(std::string font_path, float size) {
+
+            std::string fullPath = "../" + font_path;
+            font = TTF_OpenFont(fullPath.c_str(), size);
+
+            if (font == nullptr)
+                std::cerr << "[baseplate::asset::FontAsset] Erro ao criar font: " << font_path << "\n" << SDL_GetError() << "\n";
+        }
+        ~FontAsset() {
+
+            TTF_CloseFont(font);
         }
     };
 }

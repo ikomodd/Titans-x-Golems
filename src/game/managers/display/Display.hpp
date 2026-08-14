@@ -52,6 +52,8 @@ namespace game {
 
     public:
 
+        float projectionScale = 1.5f;
+
         // Get
 
         baseplate::Vector2 GetWindowSize() {

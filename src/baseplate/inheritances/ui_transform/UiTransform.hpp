@@ -3,6 +3,10 @@
 #include "../../data_models/vector/Vector2.hpp"
 #include "../../instances/node/iNode.hpp"
 
+#include "../asset_data/AssetData.hpp"
+
+#include <algorithm>
+
 namespace baseplate {
 
     class UiTransform {
@@ -38,14 +42,22 @@ namespace baseplate {
 
             auto* nodeOwner = dynamic_cast<iNode*>(this);
 
-            if (nodeOwner->GetParent() == nullptr) {
+            auto* ownerAssetData = dynamic_cast<AssetData*>(nodeOwner);
+            auto* parentTransform = dynamic_cast<UiTransform*>(nodeOwner->GetParent());
 
-                m_size = window_size * localSize;
-                m_position = (localPosition * window_size) - positionAnchor * m_size;
-            }
-            else {
+            if (!parentTransform) {
 
+                if (ownerAssetData && ownerAssetData->HasTexture()) {
+                    float pivot = std::min(window_size.X, window_size.Y);
 
+                    m_size = localSize * pivot;
+                    m_position = (localPosition * window_size) - positionAnchor * m_size;
+                }
+                else {
+
+                    m_size = localSize * window_size;
+                    m_position = (localPosition * window_size) - positionAnchor * m_size;
+                }
             }
         }
     };

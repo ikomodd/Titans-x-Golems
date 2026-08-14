@@ -11,5 +11,7 @@ baseplate::Vector2 game::Camera::GetWorldPosition(baseplate::Vector2 point) {
 
     baseplate::Vector2 windowSize = m_displayManager->GetWindowSize();
 
-    return (point - windowSize / 2.f) / zoom + GetPosition();
+    baseplate::Vector2 logicalPoint = point / m_displayManager->projectionScale;
+
+    return (logicalPoint - windowSize / 2.f) / zoom + GetPosition();
 }
