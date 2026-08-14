@@ -29,6 +29,8 @@ namespace game {
     class Golem;
     class Titan;
 
+    class TextLabel;
+
     class Arena : public Node2D, private baseplate::AssetData {
     private:
 
@@ -54,6 +56,8 @@ namespace game {
 
         Titan* m_titanInMouseTarget = nullptr;
         Golem* m_currentGolem = nullptr;
+
+        TextLabel* m_roundDisplay = nullptr;
 
     public:
         

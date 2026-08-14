@@ -10,6 +10,10 @@
 #include "game/managers/display/Display.hpp"
 #include "game/instances/camera/Camera.hpp"
 
+#include "game/managers/interface/Interface.hpp"
+#include "game/instances/frame/text_label/TextLabel.hpp"
+#include "game/origins/Origin.hpp"
+
 // [TODO] Esse arquivo ta muito grande e bem que poderia ser fragmentado
 
 bool game::Arena::TestTileClicked(Vector2 click_position, Vector2i tile_position) {
@@ -192,6 +196,7 @@ void game::Arena::PlayerRoundEnded() {
             golem->m_actions = golem->m_actionsQuantity;
     }
     m_currentRound++;
+    m_roundDisplay->ChangeText("Round: " + std::to_string(m_currentRound));
 }
 
 //
@@ -199,6 +204,10 @@ void game::Arena::PlayerRoundEnded() {
 void game::Arena::Ready() {
 
     m_displayManager = &baseplate::Manager<game::DisplayManager>::Get();
+
+    auto& interfaceManager = baseplate::Manager<InterfaceManager>::Get();
+
+    m_roundDisplay = interfaceManager.GetCurrentInterface()->GetNode<TextLabel>("round_display");
 
     BuildArena();
 }
